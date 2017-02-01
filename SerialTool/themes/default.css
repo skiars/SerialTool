@@ -11,7 +11,7 @@ QComboBox, QSpinBox, QDoubleSpinBox, QTextEdit, QListWidget, QLineEdit {
   border: 1px solid gray;
   border-radius: 3px;
   padding: 1px 2px 1px 2px; /* 针对于组合框中的文本内容 */
-  min-width: 4em; /* 组合框的最小宽度 */
+  min-width: 3em; /* 组合框的最小宽度 */
 }
 
 QListWidget {
@@ -127,7 +127,7 @@ QGroupBox{
 QGroupBox::title {
   subcontrol-origin: margin;
   subcontrol-position: top left;
-  left:10px;       /* 线的偏离度 */
+  left: 10px;       /* 线的偏离度 */
   margin-left: 0px;
   padding:0 1px;   /* 文字在方框中位置的偏离度 */
 }
@@ -147,6 +147,10 @@ QScrollBar:handle:hover {
 
 QScrollBar:handle:pressed {
   background: gray;
+}
+
+QScrollBar::add-page, QScrollBar::sub-page {
+    background: none;
 }
 
 QScrollBar::add-line:hover, QScrollBar::sub-line:hover {

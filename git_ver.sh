@@ -1,5 +1,5 @@
 #!/bin/bash
-rm -f SerialTool/source/version.h
+rm -f SerialTool/include/version.h
 git rev-list HEAD | sort > config.git-hash
 LOCALVER=`wc -l config.git-hash | awk '{print $1}'`
 if [ $LOCALVER \> 1 ] ; then
@@ -18,6 +18,6 @@ else
 fi
 rm -f config.git-hash
 
-cat SerialTool/ver_temp.h | sed "s/\$GIT_VERSION/$GIT_VERSION/g" > SerialTool/source/version.h
+cat SerialTool/ver_temp.h | sed "s/\$GIT_VERSION/$GIT_VERSION/g" > SerialTool/include/version.h
 
 echo "Generated version.h"

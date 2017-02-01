@@ -86,6 +86,9 @@
     <ClCompile Include="GeneratedFiles\Release\moc_serialtool.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\qrc_serialtool.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="ui\aboutbox.ui">
@@ -118,38 +121,6 @@
     <CustomBuild Include="include\serialtool.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="resource\images\start.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="resource\images\pause.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="resource\images\config.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="resource\images\save.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="resource\images\exit.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="resource\images\port config.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="resource\images\connect.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="resource\images\clear.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="resource\images\close.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="resource\images\icon.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource\serialtool.rc">
