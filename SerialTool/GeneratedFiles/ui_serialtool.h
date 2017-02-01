@@ -68,6 +68,7 @@ public:
     QVBoxLayout *verticalLayout_3;
     QTextEdit *textEditRead;
     QHBoxLayout *horizontalLayout_5;
+    QWidget *widget;
     QVBoxLayout *verticalLayout_4;
     QGroupBox *groupBox;
     QGridLayout *gridLayout_2;
@@ -78,13 +79,13 @@ public:
     QGridLayout *gridLayout;
     QRadioButton *portWriteHex;
     QCheckBox *resendBox;
+    QLabel *label_3;
     QSpinBox *spinBoxStepTime;
     QRadioButton *portWriteAscii;
-    QLabel *label_3;
     QGridLayout *gridLayout_3;
-    QComboBox *comboBox;
     QPushButton *sendButton;
     QTextEdit *textEditWrite;
+    QComboBox *comboBox;
     QWidget *tab;
     QHBoxLayout *horizontalLayout_2;
     QVBoxLayout *verticalLayout;
@@ -215,6 +216,7 @@ public:
         comboBoxPortNum->setSizePolicy(sizePolicy3);
         comboBoxPortNum->setMinimumSize(QSize(120, 0));
         comboBoxPortNum->setMaximumSize(QSize(120, 16777215));
+        comboBoxPortNum->setStyleSheet(QStringLiteral("width: 120px;"));
 
         horizontalLayout->addWidget(comboBoxPortNum);
 
@@ -258,16 +260,25 @@ public:
         horizontalLayout_5 = new QHBoxLayout();
         horizontalLayout_5->setSpacing(6);
         horizontalLayout_5->setObjectName(QStringLiteral("horizontalLayout_5"));
-        verticalLayout_4 = new QVBoxLayout();
-        verticalLayout_4->setSpacing(6);
+        widget = new QWidget(tab_2);
+        widget->setObjectName(QStringLiteral("widget"));
+        sizePolicy2.setHeightForWidth(widget->sizePolicy().hasHeightForWidth());
+        widget->setSizePolicy(sizePolicy2);
+        verticalLayout_4 = new QVBoxLayout(widget);
+        verticalLayout_4->setSpacing(3);
+        verticalLayout_4->setContentsMargins(11, 11, 11, 11);
         verticalLayout_4->setObjectName(QStringLiteral("verticalLayout_4"));
-        groupBox = new QGroupBox(tab_2);
+        verticalLayout_4->setContentsMargins(4, 4, 2, 0);
+        groupBox = new QGroupBox(widget);
         groupBox->setObjectName(QStringLiteral("groupBox"));
+        sizePolicy3.setHeightForWidth(groupBox->sizePolicy().hasHeightForWidth());
+        groupBox->setSizePolicy(sizePolicy3);
         gridLayout_2 = new QGridLayout(groupBox);
         gridLayout_2->setSpacing(6);
         gridLayout_2->setContentsMargins(11, 11, 11, 11);
         gridLayout_2->setObjectName(QStringLiteral("gridLayout_2"));
-        gridLayout_2->setContentsMargins(-1, 4, -1, 4);
+        gridLayout_2->setVerticalSpacing(5);
+        gridLayout_2->setContentsMargins(-1, -1, -1, 4);
         checkBox_2 = new QCheckBox(groupBox);
         checkBox_2->setObjectName(QStringLiteral("checkBox_2"));
         checkBox_2->setEnabled(false);
@@ -288,15 +299,16 @@ public:
 
         verticalLayout_4->addWidget(groupBox);
 
-        groupBox_2 = new QGroupBox(tab_2);
+        groupBox_2 = new QGroupBox(widget);
         groupBox_2->setObjectName(QStringLiteral("groupBox_2"));
-        sizePolicy.setHeightForWidth(groupBox_2->sizePolicy().hasHeightForWidth());
-        groupBox_2->setSizePolicy(sizePolicy);
+        sizePolicy3.setHeightForWidth(groupBox_2->sizePolicy().hasHeightForWidth());
+        groupBox_2->setSizePolicy(sizePolicy3);
         gridLayout = new QGridLayout(groupBox_2);
         gridLayout->setSpacing(6);
         gridLayout->setContentsMargins(11, 11, 11, 11);
         gridLayout->setObjectName(QStringLiteral("gridLayout"));
-        gridLayout->setContentsMargins(-1, 4, -1, 4);
+        gridLayout->setVerticalSpacing(5);
+        gridLayout->setContentsMargins(-1, -1, 4, 4);
         portWriteHex = new QRadioButton(groupBox_2);
         portWriteHex->setObjectName(QStringLiteral("portWriteHex"));
 
@@ -307,10 +319,15 @@ public:
 
         gridLayout->addWidget(resendBox, 2, 0, 1, 1);
 
+        label_3 = new QLabel(groupBox_2);
+        label_3->setObjectName(QStringLiteral("label_3"));
+
+        gridLayout->addWidget(label_3, 2, 3, 1, 1);
+
         spinBoxStepTime = new QSpinBox(groupBox_2);
         spinBoxStepTime->setObjectName(QStringLiteral("spinBoxStepTime"));
         spinBoxStepTime->setMinimum(10);
-        spinBoxStepTime->setMaximum(60000);
+        spinBoxStepTime->setMaximum(120000);
         spinBoxStepTime->setValue(1000);
 
         gridLayout->addWidget(spinBoxStepTime, 2, 1, 1, 1);
@@ -321,30 +338,15 @@ public:
 
         gridLayout->addWidget(portWriteAscii, 1, 0, 1, 1);
 
-        label_3 = new QLabel(groupBox_2);
-        label_3->setObjectName(QStringLiteral("label_3"));
-
-        gridLayout->addWidget(label_3, 2, 3, 1, 1);
-
 
         verticalLayout_4->addWidget(groupBox_2);
 
 
-        horizontalLayout_5->addLayout(verticalLayout_4);
+        horizontalLayout_5->addWidget(widget);
 
         gridLayout_3 = new QGridLayout();
         gridLayout_3->setSpacing(6);
         gridLayout_3->setObjectName(QStringLiteral("gridLayout_3"));
-        comboBox = new QComboBox(tab_2);
-        comboBox->setObjectName(QStringLiteral("comboBox"));
-        QSizePolicy sizePolicy5(QSizePolicy::Expanding, QSizePolicy::Fixed);
-        sizePolicy5.setHorizontalStretch(0);
-        sizePolicy5.setVerticalStretch(0);
-        sizePolicy5.setHeightForWidth(comboBox->sizePolicy().hasHeightForWidth());
-        comboBox->setSizePolicy(sizePolicy5);
-
-        gridLayout_3->addWidget(comboBox, 1, 0, 1, 1);
-
         sendButton = new QPushButton(tab_2);
         sendButton->setObjectName(QStringLiteral("sendButton"));
         sendButton->setEnabled(false);
@@ -355,13 +357,18 @@ public:
 
         textEditWrite = new QTextEdit(tab_2);
         textEditWrite->setObjectName(QStringLiteral("textEditWrite"));
-        QSizePolicy sizePolicy6(QSizePolicy::Expanding, QSizePolicy::Ignored);
-        sizePolicy6.setHorizontalStretch(0);
-        sizePolicy6.setVerticalStretch(0);
-        sizePolicy6.setHeightForWidth(textEditWrite->sizePolicy().hasHeightForWidth());
-        textEditWrite->setSizePolicy(sizePolicy6);
+        QSizePolicy sizePolicy5(QSizePolicy::Expanding, QSizePolicy::Ignored);
+        sizePolicy5.setHorizontalStretch(0);
+        sizePolicy5.setVerticalStretch(0);
+        sizePolicy5.setHeightForWidth(textEditWrite->sizePolicy().hasHeightForWidth());
+        textEditWrite->setSizePolicy(sizePolicy5);
 
         gridLayout_3->addWidget(textEditWrite, 0, 0, 1, 2);
+
+        comboBox = new QComboBox(tab_2);
+        comboBox->setObjectName(QStringLiteral("comboBox"));
+
+        gridLayout_3->addWidget(comboBox, 1, 0, 1, 1);
 
 
         horizontalLayout_5->addLayout(gridLayout_3);
@@ -390,11 +397,11 @@ public:
 
         horizontalScrollBar = new QScrollBar(tab);
         horizontalScrollBar->setObjectName(QStringLiteral("horizontalScrollBar"));
-        QSizePolicy sizePolicy7(QSizePolicy::Expanding, QSizePolicy::Minimum);
-        sizePolicy7.setHorizontalStretch(0);
-        sizePolicy7.setVerticalStretch(0);
-        sizePolicy7.setHeightForWidth(horizontalScrollBar->sizePolicy().hasHeightForWidth());
-        horizontalScrollBar->setSizePolicy(sizePolicy7);
+        QSizePolicy sizePolicy6(QSizePolicy::Expanding, QSizePolicy::Minimum);
+        sizePolicy6.setHorizontalStretch(0);
+        sizePolicy6.setVerticalStretch(0);
+        sizePolicy6.setHeightForWidth(horizontalScrollBar->sizePolicy().hasHeightForWidth());
+        horizontalScrollBar->setSizePolicy(sizePolicy6);
         horizontalScrollBar->setPageStep(100);
         horizontalScrollBar->setOrientation(Qt::Horizontal);
 
@@ -408,11 +415,11 @@ public:
         verticalLayout_9->setObjectName(QStringLiteral("verticalLayout_9"));
         channelList = new QListWidget(tab);
         channelList->setObjectName(QStringLiteral("channelList"));
-        QSizePolicy sizePolicy8(QSizePolicy::Ignored, QSizePolicy::Expanding);
-        sizePolicy8.setHorizontalStretch(0);
-        sizePolicy8.setVerticalStretch(0);
-        sizePolicy8.setHeightForWidth(channelList->sizePolicy().hasHeightForWidth());
-        channelList->setSizePolicy(sizePolicy8);
+        QSizePolicy sizePolicy7(QSizePolicy::Ignored, QSizePolicy::Expanding);
+        sizePolicy7.setHorizontalStretch(0);
+        sizePolicy7.setVerticalStretch(0);
+        sizePolicy7.setHeightForWidth(channelList->sizePolicy().hasHeightForWidth());
+        channelList->setSizePolicy(sizePolicy7);
 
         verticalLayout_9->addWidget(channelList);
 
@@ -576,8 +583,8 @@ public:
         groupBox_2->setTitle(QApplication::translate("SerialToolClass", "\345\217\221\351\200\201\350\256\276\347\275\256", 0));
         portWriteHex->setText(QApplication::translate("SerialToolClass", "Hex", 0));
         resendBox->setText(QApplication::translate("SerialToolClass", "\351\207\215\345\244\215\345\217\221\351\200\201", 0));
-        portWriteAscii->setText(QApplication::translate("SerialToolClass", "ASCII", 0));
         label_3->setText(QApplication::translate("SerialToolClass", "ms", 0));
+        portWriteAscii->setText(QApplication::translate("SerialToolClass", "ASCII", 0));
 #ifndef QT_NO_TOOLTIP
         sendButton->setToolTip(QApplication::translate("SerialToolClass", "Ctrl + Enter", 0));
 #endif // QT_NO_TOOLTIP

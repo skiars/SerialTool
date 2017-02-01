@@ -84,13 +84,11 @@ public:
         tab1->setObjectName(QStringLiteral("tab1"));
         verticalLayout_2 = new QVBoxLayout(tab1);
         verticalLayout_2->setObjectName(QStringLiteral("verticalLayout_2"));
-        verticalLayout_2->setContentsMargins(3, 3, 3, 3);
+        verticalLayout_2->setContentsMargins(3, 9, 3, 3);
         groupBox = new QGroupBox(tab1);
         groupBox->setObjectName(QStringLiteral("groupBox"));
         gridLayout_2 = new QGridLayout(groupBox);
         gridLayout_2->setObjectName(QStringLiteral("gridLayout_2"));
-        gridLayout_2->setHorizontalSpacing(3);
-        gridLayout_2->setContentsMargins(3, 3, 3, 3);
         fontMultiSetButton = new QPushButton(groupBox);
         fontMultiSetButton->setObjectName(QStringLiteral("fontMultiSetButton"));
 
@@ -178,6 +176,7 @@ public:
         tab2->setObjectName(QStringLiteral("tab2"));
         verticalLayout_3 = new QVBoxLayout(tab2);
         verticalLayout_3->setObjectName(QStringLiteral("verticalLayout_3"));
+        verticalLayout_3->setContentsMargins(3, -1, 3, 3);
         groupBox_3 = new QGroupBox(tab2);
         groupBox_3->setObjectName(QStringLiteral("groupBox_3"));
         gridLayout_3 = new QGridLayout(groupBox_3);

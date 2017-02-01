@@ -46,9 +46,10 @@ public:
         verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
         horizontalLayout = new QHBoxLayout();
         horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
+        horizontalLayout->setContentsMargins(16, -1, 16, -1);
         label1 = new QLabel(AboutBox);
         label1->setObjectName(QStringLiteral("label1"));
-        QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
+        QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
         sizePolicy.setHeightForWidth(label1->sizePolicy().hasHeightForWidth());
@@ -71,6 +72,10 @@ public:
         sizePolicy1.setVerticalStretch(0);
         sizePolicy1.setHeightForWidth(groupBox->sizePolicy().hasHeightForWidth());
         groupBox->setSizePolicy(sizePolicy1);
+        groupBox->setStyleSheet(QLatin1String("QGroupBox::title {\n"
+"  subcontrol-position: middle;\n"
+"  left: 0px;\n"
+"}"));
         groupBox->setAlignment(Qt::AlignCenter);
         verticalLayout_2 = new QVBoxLayout(groupBox);
         verticalLayout_2->setObjectName(QStringLiteral("verticalLayout_2"));

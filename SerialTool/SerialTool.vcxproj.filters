@@ -24,60 +24,36 @@
       <SourceControlFiles>False</SourceControlFiles>
     </Filter>
     <Filter Include="Generated Files\Debug">
-      <UniqueIdentifier>{eb121284-05b1-41f0-ad90-b35518adae07}</UniqueIdentifier>
+      <UniqueIdentifier>{2f3eb98f-613a-44cd-bd30-e690d4fbdf37}</UniqueIdentifier>
       <Extensions>cpp;moc</Extensions>
       <SourceControlFiles>False</SourceControlFiles>
     </Filter>
     <Filter Include="Generated Files\Release">
-      <UniqueIdentifier>{1b20c530-7ca4-48af-8022-d0333fe97ed4}</UniqueIdentifier>
+      <UniqueIdentifier>{b45b4993-3244-4b95-b793-0db82181128e}</UniqueIdentifier>
       <Extensions>cpp;moc</Extensions>
       <SourceControlFiles>False</SourceControlFiles>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
+    <ClCompile Include="source\aboutbox.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="serialtool.cpp">
+    <ClCompile Include="source\channelitem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_serialtool.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_serialtool.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\qrc_serialtool.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="qcustomplot.cpp">
+    <ClCompile Include="source\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_qcustomplot.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_qcustomplot.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="portsetbox.cpp">
+    <ClCompile Include="source\optionsbox.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_portsetbox.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_portsetbox.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="optionsbox.cpp">
+    <ClCompile Include="source\portsetbox.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_optionsbox.cpp">
-      <Filter>Generated Files\Debug</Filter>
+    <ClCompile Include="source\qcustomplot.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_optionsbox.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="channelitem.cpp">
+    <ClCompile Include="source\serialtool.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_channelitem.cpp">
@@ -86,65 +62,106 @@
     <ClCompile Include="GeneratedFiles\Release\moc_channelitem.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="aboutbox.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="GeneratedFiles\Debug\moc_optionsbox.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_optionsbox.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_portsetbox.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_portsetbox.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_qcustomplot.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_qcustomplot.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_serialtool.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_serialtool.cpp">
+      <Filter>Generated Files\Release</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="serialtool.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="serialtool.ui">
+    <CustomBuild Include="ui\aboutbox.ui">
       <Filter>Form Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="serialtool.qrc">
+    <CustomBuild Include="ui\optionsbox.ui">
+      <Filter>Form Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="ui\portsetbox.ui">
+      <Filter>Form Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="ui\serialtool.ui">
+      <Filter>Form Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="resource\serialtool.qrc">
       <Filter>Resource Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="qcustomplot.h">
+    <CustomBuild Include="include\channelitem.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="portsetbox.ui">
-      <Filter>Form Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="portsetbox.h">
+    <CustomBuild Include="include\optionsbox.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="optionsbox.ui">
-      <Filter>Form Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="optionsbox.h">
+    <CustomBuild Include="include\portsetbox.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="channelitem.h">
+    <CustomBuild Include="include\qcustomplot.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="aboutbox.ui">
-      <Filter>Form Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="aboutbox.h">
+    <CustomBuild Include="include\serialtool.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="GeneratedFiles\ui_serialtool.h">
-      <Filter>Generated Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GeneratedFiles\ui_portsetbox.h">
-      <Filter>Generated Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GeneratedFiles\ui_optionsbox.h">
-      <Filter>Generated Files</Filter>
-    </ClInclude>
-    <ClInclude Include="version.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GeneratedFiles\ui_aboutbox.h">
-      <Filter>Generated Files</Filter>
-    </ClInclude>
+    <Image Include="resource\images\start.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resource\images\pause.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resource\images\config.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resource\images\save.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resource\images\exit.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resource\images\port config.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resource\images\connect.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resource\images\clear.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resource\images\close.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resource\images\icon.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="serialtool.rc">
+    <ResourceCompile Include="resource\serialtool.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\aboutbox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\version.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
