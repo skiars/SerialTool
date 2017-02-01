@@ -21,7 +21,7 @@
    <string>SerialTool</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="serialtool.qrc">
+   <iconset resource="../resource/serialtool.qrc">
     <normaloff>:/SerialTool/images/icon.ico</normaloff>:/SerialTool/images/icon.ico</iconset>
   </property>
   <widget class="QWidget" name="centralWidget">
@@ -698,7 +698,7 @@
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionSave">
    <property name="icon">
-    <iconset resource="serialtool.qrc">
+    <iconset resource="../resource/serialtool.qrc">
      <normaloff>:/SerialTool/images/save.ico</normaloff>:/SerialTool/images/save.ico</iconset>
    </property>
    <property name="text">
@@ -710,7 +710,7 @@
   </action>
   <action name="actionOption">
    <property name="icon">
-    <iconset resource="serialtool.qrc">
+    <iconset resource="../resource/serialtool.qrc">
      <normaloff>:/SerialTool/images/config.ico</normaloff>:/SerialTool/images/config.ico</iconset>
    </property>
    <property name="text">
@@ -719,7 +719,7 @@
   </action>
   <action name="openPortAction">
    <property name="icon">
-    <iconset resource="serialtool.qrc">
+    <iconset resource="../resource/serialtool.qrc">
      <normaloff>:/SerialTool/images/connect.png</normaloff>:/SerialTool/images/connect.png</iconset>
    </property>
    <property name="text">
@@ -734,7 +734,7 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset resource="serialtool.qrc">
+    <iconset resource="../resource/serialtool.qrc">
      <normaloff>:/SerialTool/images/pause.ico</normaloff>
      <activeoff>:/SerialTool/images/pause.png</activeoff>:/SerialTool/images/pause.ico</iconset>
    </property>
@@ -747,7 +747,7 @@
   </action>
   <action name="clearAction">
    <property name="icon">
-    <iconset resource="serialtool.qrc">
+    <iconset resource="../resource/serialtool.qrc">
      <normaloff>:/SerialTool/images/clear.png</normaloff>:/SerialTool/images/clear.png</iconset>
    </property>
    <property name="text">
@@ -759,7 +759,7 @@
   </action>
   <action name="portSetAction">
    <property name="icon">
-    <iconset resource="serialtool.qrc">
+    <iconset resource="../resource/serialtool.qrc">
      <normaloff>:/SerialTool/images/port config.png</normaloff>:/SerialTool/images/port config.png</iconset>
    </property>
    <property name="text">
@@ -771,7 +771,7 @@
   </action>
   <action name="actionClose">
    <property name="icon">
-    <iconset resource="serialtool.qrc">
+    <iconset resource="../resource/serialtool.qrc">
      <normaloff>:/SerialTool/images/exit.ico</normaloff>:/SerialTool/images/exit.ico</iconset>
    </property>
    <property name="text">
@@ -841,7 +841,7 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="serialtool.qrc"/>
+  <include location="../resource/serialtool.qrc"/>
  </resources>
  <connections/>
 </ui>

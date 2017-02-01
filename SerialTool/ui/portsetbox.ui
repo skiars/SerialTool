@@ -164,7 +164,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="serialtool.qrc"/>
+  <include location="../resource/serialtool.qrc"/>
  </resources>
  <connections>
   <connection>
