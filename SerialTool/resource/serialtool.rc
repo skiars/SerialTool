@@ -3,9 +3,9 @@
 #else
 #include <winver.h>
 #endif
-#include "version.h"
+#include "../include/version.h"
 
-IDI_ICON1 ICON DISCARDABLE ".\images\icon.ico"
+IDI_ICON1 ICON DISCARDABLE "./images/icon.ico"
 VS_VERSION_INFO VERSIONINFO
     FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG

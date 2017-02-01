@@ -7,7 +7,7 @@ int main(int argc, char *argv[])
     SerialTool w;
     w.show();
 
-    QFile qss("style.css");
+    QFile qss("themes/default.css");
     qss.open(QFile::ReadOnly);
     a.setStyleSheet(qss.readAll());
     qss.close();

@@ -1,0 +1,280 @@
+* {
+  font-family: 'Microsoft YaHei UI', '微软雅黑';
+}
+
+QMainWindow {
+  background: white;
+}
+
+QComboBox, QSpinBox, QDoubleSpinBox, QTextEdit, QListWidget, QLineEdit {
+  background: white;
+  border: 1px solid gray;
+  border-radius: 3px;
+  padding: 1px 2px 1px 2px; /* 针对于组合框中的文本内容 */
+  min-width: 4em; /* 组合框的最小宽度 */
+}
+
+QListWidget {
+  padding: 1px 1px 1px 2px;
+}
+
+QComboBox::drop-down {
+  subcontrol-origin: padding;
+  subcontrol-position: top right;
+  width: 20px;
+  border-top-right-radius: 3px; /* same radius as the QComboBox */
+  border-bottom-right-radius: 3px;
+  image: url(themes/images/arrow_down.png);
+}
+
+QComboBox:hover {
+  background: #E5E5FF;
+}
+
+QComboBox::drop-down:pressed {
+  background: #A0CDFF;
+}
+
+QSpinBox:hover, QDoubleSpinBox:hover {
+  border: 1px solid darkslategray;
+}
+
+QSpinBox::up-button, QDoubleSpinBox::up-button {
+  subcontrol-origin: padding;
+  subcontrol-position: top right;
+
+  width: 16px;
+  image: url(themes/images/up.png);
+  border-radius: 2px;
+}
+
+QSpinBox::down-button, QDoubleSpinBox::down-button {
+  subcontrol-origin: padding;
+  subcontrol-position: bottom right;
+
+  width: 16px;
+  image: url(themes/images/down.png);
+  border-radius: 2px;
+}
+
+QSpinBox::up-button:hover, QSpinBox::down-button:hover,
+QDoubleSpinBox::up-button:hover, QDoubleSpinBox::down-button:hover {
+  background: #A0CCff;
+}
+
+QSpinBox::up-button:pressed, QDoubleSpinBox::up-button:pressed {
+  top: -2px;
+}
+
+QSpinBox::down-button:pressed, QDoubleSpinBox::down-button:pressed {
+  bottom: -2px;
+}
+
+QTabWidget::pane { /* The tab widget frame */
+  border: 1px solid #C2C7CB;
+  border-radius: 3px;
+  top: -1px;
+  background: #EAEAEA
+}
+
+QTabWidget::tab-bar {
+  left: 5px; /* move to the right by 5px */
+}
+
+/* Style the tab using the tab sub-control. Note that
+    it reads QTabBar _not_ QTabWidget */
+QTabBar::tab {
+  background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                              stop: 0 #E1E1E1, stop: 0.4 #DDDDDD,
+                              stop: 0.5 #D8D8D8, stop: 1.0 #D3D3D3);
+  border: 1px solid #C4C4C3;
+  border-bottom-color: #C2C7CB; /* same as the pane color */
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+  min-width: 8ex;
+  padding: 0px 5px 0px; /* 上, 左右, 下边距 */
+}
+
+QTabBar::tab:selected, QTabBar::tab:hover {
+  background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                              stop: 0 #fafafa, stop: 0.4 #f4f4f4,
+                              stop: 0.5 #e7e7e7, stop: 1.0 #fafafa);
+}
+
+QTabBar::tab:selected {
+  border-color: #9B9B9B;
+  border-bottom-color: #f4f4f4; /* same as pane color */
+}
+
+QTabBar::tab:!selected {
+  margin-top: 2px; /* make non-selected tabs look smaller */
+}
+
+QTextEdit {
+  background: #F8F8F8
+}
+
+QTextEdit:focus {
+  border: 1px solid darkslategray;
+}
+
+QGroupBox{
+  border:1px solid darkgray;
+  border-radius: 3px;
+  margin-top: 0.5em;
+}
+
+QGroupBox::title {
+  subcontrol-origin: margin;
+  subcontrol-position: top left;
+  left:10px;       /* 线的偏离度 */
+  margin-left: 0px;
+  padding:0 1px;   /* 文字在方框中位置的偏离度 */
+}
+
+QScrollBar {
+  background: white;
+}
+
+QScrollBar:handle {
+  background: lightgray;
+  border-radius: 2px;
+}
+
+QScrollBar:handle:hover {
+  background: darkgray;
+}
+
+QScrollBar:handle:pressed {
+  background: gray;
+}
+
+QScrollBar::add-line:hover, QScrollBar::sub-line:hover {
+  background: #B0C4DE;
+}
+
+QScrollBar::add-line:pressed, QScrollBar::sub-line:pressed {
+  background: #8090A0;
+}
+
+QScrollBar::horizontal {
+  height: 15px;
+  border-top: 1px solid gray;
+  border-bottom: 1px solid gray;
+  margin: 0px 15px 0px;
+}
+
+QScrollBar:handle::horizontal {
+  min-width: 20px;
+}
+
+QScrollBar::add-line:horizontal {
+  width: 15px;
+  subcontrol-position: right;
+  subcontrol-origin: margin;
+  border-top-right-radius: 3px;
+  border-bottom-right-radius: 3px;
+  border-top: 1px solid gray;
+  border-bottom: 1px solid gray;
+  border-right: 1px solid gray;
+  image: url(themes/images/right.png);
+}
+
+QScrollBar::sub-line:horizontal {
+  width: 15px;
+  subcontrol-position: left;
+  subcontrol-origin: margin;
+  border-top-left-radius: 3px;
+  border-bottom-left-radius: 3px;
+  border-top: 1px solid gray;
+  border-bottom: 1px solid gray;
+  border-left: 1px solid gray;
+  image: url(themes/images/left.png);
+}
+
+QScrollBar::vertical {
+  width: 15px;
+  border-left: 1px solid gray;
+  border-right: 1px solid gray;
+  margin: 16px 0px 16px;
+}
+
+QScrollBar:handle::vertical {
+  min-height: 20px;
+}
+
+QScrollBar::add-line::vertical {
+  height: 15px;
+  subcontrol-position: bottom;
+  subcontrol-origin: margin;
+  border-bottom-left-radius: 3px;
+  border-bottom-right-radius: 3px;
+  border-bottom: 1px solid gray;
+  border-left: 1px solid gray;
+  border-right: 1px solid gray;
+  image: url(themes/images/down.png);
+}
+
+QScrollBar::sub-line::vertical {
+  height: 15px;
+  subcontrol-position: top;
+  subcontrol-origin: margin;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+  border-top: 1px solid gray;
+  border-left: 1px solid gray;
+  border-right: 1px solid gray;
+  image: url(themes/images/up.png);
+}
+
+QPushButton {
+  border: 1px solid gray;
+  border-radius: 3px;
+  padding: 1.5px 6px; /* 针对于组合框中的文本内容 */
+  min-width: 4em; /* 组合框的最小宽度 */
+  background: #EAEAEA
+}
+
+QPushButton:hover {
+  background: #BBE0EE;
+}
+
+QPushButton:pressed {
+  background: #CCEEFF;
+}
+
+QPushButton:disabled, QComboBox:disabled {
+  background: lightgray;
+}
+
+QComboBox::drop-down:disabled {
+  image: url(themes/images/arrow_down_disabled.png);
+}
+
+QAction {
+  border-radius: 3px;
+}
+
+QListView {
+  border: 1px solid gray;
+  border-radius: 3px;
+  padding: 1px 1px 1px 2px; /* 针对于组合框中的文本内容 */
+  outline: 0px; /* 去掉虚线 */
+}
+
+QComboBox QAbstractItemView {
+  border-radius: 0px;
+  padding: 0px;
+  selection-background-color: #40A0FF;
+}
+
+QToolBar {
+  background: #F5F5FF;
+  border: 1px solid lightgray;
+  border-radius: 3px;
+}
+
+QToolBar::handle {
+  background: lightgray;
+  width: 5px;
+}

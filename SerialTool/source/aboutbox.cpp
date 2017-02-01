@@ -24,11 +24,13 @@ AboutBox::AboutBox(QWidget *parent)
     setWindowTitle(QStringLiteral("关于SerialTool"));
     ui.label2->setText(
         "<b>SerialTool</b><br>"
-        "Version: " SOFTWARE_VERSION "<br>"
+        "Version: " SOFTWARE_VERSION "." BUILD_VERSION "<br>"
         "Email: 2269610337@qq.com<br>"
+        "Home Page: <a href=\"https://github.com/Le-Seul/SerialTool\">View Code On GitHub</a><br>"
         "Build Date: " __DATE__ "<br>" // 编译时间
         COPYRIGHT
     );
+    ui.label2->setOpenExternalLinks(true); // 允许访问链接
     ui.textBrowser->setText(
         "This program is free software; you can redistribute it and / or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.\n"
         "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the GNU General Public License for more details.\n"

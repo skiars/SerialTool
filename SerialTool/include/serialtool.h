@@ -26,7 +26,8 @@ public:
 private slots:
     void addData(int channel, double ms, double value);
     void setChannelVisible(int ch, bool on);
-    void horzScrollBarChanged(int value);
+    void horzScrollBarMoved(int value);
+    void horzScrollBarTriggered();
     void plotMouseMove();
     void setYRateLower(double d);
     void setYRateUpper(double d);
@@ -70,6 +71,7 @@ private:
     QActionGroup *tabActionGroup;
     int rxCount, txCount;
     QLabel *rxCntLabel, *txCntLabel, *portInfoLabel;
+    QByteArray asciiBuf;
 };
 
 #endif // SERIALTOOL_H

@@ -38,7 +38,7 @@ OptionsBox::OptionsBox(SerialTool *parent)
     }
     ui.lineEditRxColor->setText(rxColor);
     ui.lineEditTxColor->setText(txColor);
-    ui.lineEditPlotColor->setText(txColor);
+    ui.lineEditPlotColor->setText(bgColor);
     ui.lineEditAxisColor->setText(axColor);
 
     connect(ui.fontAnsiSetButton, SIGNAL(clicked()), this, SLOT(setTextFontAnsi()));

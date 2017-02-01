@@ -8,7 +8,7 @@ SerialTool::SerialTool(QWidget *parent)
     : QMainWindow(parent)
 {
     ui.setupUi(this);
-    setWindowTitle(SOFTWARE_NAME SOFTWARE_VERSION);
+    setWindowTitle(SOFTWARE_NAME " " SOFTWARE_VERSION);
     listViewInit();
 
     // 串口设置的控件移动到工具栏
@@ -47,9 +47,12 @@ SerialTool::SerialTool(QWidget *parent)
     ui.statusBar->addWidget(portInfoLabel);
     ui.statusBar->addWidget(rxCntLabel);
     ui.statusBar->addWidget(txCntLabel);
+
+    loadConfig(); // 加载配置
     
     // create connection between axes and scroll bars:
-    connect(ui.horizontalScrollBar, SIGNAL(sliderMoved(int)), this, SLOT(horzScrollBarChanged(int)));
+    connect(ui.horizontalScrollBar, SIGNAL(sliderMoved(int)), this, SLOT(horzScrollBarMoved(int)));
+    connect(ui.horizontalScrollBar, SIGNAL(actionTriggered(int)), this, SLOT(horzScrollBarTriggered()));
     connect(ui.customPlot, SIGNAL(mouseMove(QMouseEvent*)), this, SLOT(plotMouseMove()));
     connect(ui.channelList, SIGNAL(itemChanged(ChannelItem*)), this, SLOT(channelVisibleChanged(ChannelItem*)));
     connect(ui.portRunAction, SIGNAL(triggered()), this, SLOT(changeRunFlag()));
@@ -78,9 +81,7 @@ SerialTool::SerialTool(QWidget *parent)
     connect(ui.xRangeBox, SIGNAL(currentTextChanged(const QString &)), this, SLOT(setXRange(const QString &)));
     connect(ui.actionAbout, SIGNAL(triggered()), this, SLOT(about()));
     connect(ui.comboBox, SIGNAL(currentTextChanged(const QString &)), this, SLOT(onComboBoxChanged(const QString &)));
-
-    loadConfig(); // 加载配置
-
+    
     dataTimer.start(20);
     secTimer.start(1000);
 }
@@ -228,9 +229,10 @@ void SerialTool::loadConfig()
     config->beginGroup("comboBox");
     int count = config->value("Count").toInt();
     for (int i = 0; i < count; ++i) {
-        ui.comboBox->insertItem(0,
+        ui.comboBox->addItem(
             config->value("Item" + QString::number(i)).toString());
     }
+    ui.comboBox->setCurrentIndex(0);
     config->endGroup();
     config->endGroup();
 }
@@ -334,14 +336,23 @@ void SerialTool::saveFile()
     }
 }
 
-// 滑块移动触发
-void SerialTool::horzScrollBarChanged(int value)
+// 滚动条滑块移动触发
+void SerialTool::horzScrollBarMoved(int value)
 {
     if (ui.horizontalScrollBar->maximum() == value) {
         replotFlag = true;
     } else {
         replotFlag = false;
     }
+    ui.customPlot->xAxis->setRange(value / (100.0 / xRange) + xRange,
+        ui.customPlot->xAxis->range().size(), Qt::AlignRight);
+    ui.customPlot->replot();
+}
+
+// 滚动条按键触发
+void SerialTool::horzScrollBarTriggered()
+{
+    int value = ui.horizontalScrollBar->value();
     ui.customPlot->xAxis->setRange(value / (100.0 / xRange) + xRange,
         ui.customPlot->xAxis->range().size(), Qt::AlignRight);
     ui.customPlot->replot();
@@ -520,17 +531,26 @@ void SerialTool::scanPort()
     }
     // 需要同步或者comboBoxPortNum存在无效端口
     if (sync || !ui.comboBoxPortNum->itemText(i).isEmpty()) {
-        QString str = ui.comboBoxPortNum->currentText();
+        int len = 0;
+        QString longStr, str = ui.comboBoxPortNum->currentText();
         ui.comboBoxPortNum->clear();
         for (i = 0; i < vec.length(); ++i) {
-            ui.comboBoxPortNum->addItem(vec[i].portName()
-                + " (" + vec[i].description() + ")");
+            QString t = vec[i].portName() + " (" + vec[i].description() + ")";
+            ui.comboBoxPortNum->addItem(t);
+            if (t.length() > len) { // 统计最长字符串
+                len = t.length();
+                longStr = t;
+            }
         }
         if (!str.isEmpty()) {
             ui.comboBoxPortNum->setCurrentText(str);
         } else {
             ui.comboBoxPortNum->setCurrentIndex(0);
         }
+        // 自动控制下拉列表宽度
+        QFontMetrics fm(ui.comboBoxPortNum->font());
+        len = fm.boundingRect(longStr).width() + 9;
+        ui.comboBoxPortNum->view()->setMinimumWidth(len);
     }
 }
 
@@ -660,6 +680,27 @@ static void byteArrayToHex(QString &str, QByteArray &arr)
     }
 }
 
+// 这个函数可以避免中文接收的乱码
+static void byteArrayToAscii(QString &str, QByteArray &arr, QByteArray &buf)
+{
+    int cnt = 0;
+
+    buf += arr;
+    for (int i = buf.length() - 1; i >= 0 && (quint8)(buf[i]) > 128; --i) {
+        cnt++;
+    }
+    if (cnt & 1) { // 字符串最末尾的非ASCII字节数不为2的整数倍
+        char ch = buf[buf.length() - 1];
+        buf.remove(buf.length() - 1, 1);
+        str = QString::fromLocal8Bit(buf);
+        buf.clear();
+        buf.append(ch);
+    } else {
+        str = QString::fromLocal8Bit(buf);
+        buf.clear();
+    }
+}
+
 //读取接收到的数据  
 void SerialTool::readPortData()
 {
@@ -672,8 +713,8 @@ void SerialTool::readPortData()
     if (!buf.isEmpty()) {
         if (ui.tabWidget->currentIndex() == 0) { // 串口调试助手
             QString str;
-            if (ui.portReadAscii->isChecked()) {
-                str = QString::fromLocal8Bit(buf);
+            if (ui.portReadAscii->isChecked()) { // ASCII模式
+                byteArrayToAscii(str, buf, asciiBuf);
             } else {
                 byteArrayToHex(str, buf);
             }
@@ -726,6 +767,7 @@ void SerialTool::cleanData()
     switch (ui.tabWidget->currentIndex()) {
     case 0: // 串口调试助手
         ui.textEditRead->clear();
+        asciiBuf.clear();
         break;
     case 1: // 串口示波器
         for (int i = 0; i < CH_NUM; ++i) {

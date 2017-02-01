@@ -28,7 +28,7 @@
         <number>3</number>
        </property>
        <property name="topMargin">
-        <number>3</number>
+        <number>9</number>
        </property>
        <property name="rightMargin">
         <number>3</number>
@@ -42,21 +42,6 @@
           <string>选择字体</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_2">
-          <property name="leftMargin">
-           <number>3</number>
-          </property>
-          <property name="topMargin">
-           <number>3</number>
-          </property>
-          <property name="rightMargin">
-           <number>3</number>
-          </property>
-          <property name="bottomMargin">
-           <number>3</number>
-          </property>
-          <property name="horizontalSpacing">
-           <number>3</number>
-          </property>
           <item row="1" column="2">
            <widget class="QPushButton" name="fontMultiSetButton">
             <property name="text">
@@ -185,6 +170,15 @@
        <string>示波器</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_3">
+       <property name="leftMargin">
+        <number>3</number>
+       </property>
+       <property name="rightMargin">
+        <number>3</number>
+       </property>
+       <property name="bottomMargin">
+        <number>3</number>
+       </property>
        <item>
         <widget class="QGroupBox" name="groupBox_3">
          <property name="title">
