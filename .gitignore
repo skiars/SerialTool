@@ -246,3 +246,4 @@ ModelManifest.xml
 
 SerialTool/*.ini
 Win32/
+GeneratedFiles/
