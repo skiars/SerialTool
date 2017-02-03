@@ -1,21 +1,21 @@
-#include "optionsbox.h"
+ï»¿#include "optionsbox.h"
 #include <QFontDialog>
 #include <QColorDialog>
 
-OptionsBox::OptionsBox(SerialTool *parent)
+OptionsBox::OptionsBox(SerialTool *parent) : QDialog(parent)
 {
-    // ²»ÏÔÊ¾ÎÊºÅ
+    // ä¸æ˜¾ç¤ºé—®å·
     Qt::WindowFlags flags = Qt::Dialog;
     flags |= Qt::WindowCloseButtonHint;
     setWindowFlags(flags);
 
     ui.setupUi(this);
-    setFixedSize(400, 300); // ²»ÄÜÉìËõµÄ¶Ô»°¿ò
+    setFixedSize(400, 300); // ä¸èƒ½ä¼¸ç¼©çš„å¯¹è¯æ¡†
 
     serialTool = parent;
     
     QSettings *config = serialTool->getConfig();
-    // ×ÖÌåºÍÑÕÉ«ÉèÖÃ
+    // å­—ä½“å’Œé¢œè‰²è®¾ç½®
     config->beginGroup("Settings");
     fontFamily = config->value("FontFamily").toString();
     fontFamily.replace("+", ",");
@@ -57,13 +57,13 @@ OptionsBox::~OptionsBox()
 
 }
 
-// ±£´æÅäÖÃ
+// ä¿å­˜é…ç½®
 void OptionsBox::processOptions(QAbstractButton *button)
 {
     QString btnName = button->text();
     if (btnName == "OK" || btnName == "Apply") {
         QSettings *config = serialTool->getConfig();
-        // ×ÖÌåºÍÑÕÉ«ÉèÖÃ
+        // å­—ä½“å’Œé¢œè‰²è®¾ç½®
         config->beginGroup("Settings");
         fontFamily.replace(",", "+");
         config->setValue("FontFamily", QVariant(fontFamily));
@@ -78,8 +78,8 @@ void OptionsBox::processOptions(QAbstractButton *button)
         config->setValue("GridAntialiased", QVariant(ui.gridAntiBox->isChecked()));
         config->setValue("UseOpenGL", QVariant(ui.openGlBox->isChecked()));
         config->endGroup();
-        serialTool->saveConfig(); // ÏÈ±£´æÅäÖÃ
-        serialTool->loadConfig(); // ÅäÖÃÉúĞ§
+        serialTool->saveConfig(); // å…ˆä¿å­˜é…ç½®
+        serialTool->loadConfig(); // é…ç½®ç”Ÿæ•ˆ
     }
 }
 

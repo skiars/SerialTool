@@ -28,7 +28,7 @@ VS_VERSION_INFO VERSIONINFO
                 VALUE "LegalCopyright", COPYRIGHT
                 VALUE "OriginalFilename", "SerialTool.exe"
                 VALUE "ProductName", SOFTWARE_NAME
-                VALUE "ProductVersion", SOFTWARE_VERSION " " BUILD_VERSION
+                VALUE "ProductVersion", SOFTWARE_VERSION "." BUILD_VERSION
             END
         END
         BLOCK "VarFileInfo"

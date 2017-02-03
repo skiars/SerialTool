@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>选项</string>
+   <string>Options</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -21,7 +21,7 @@
      </property>
      <widget class="QWidget" name="tab1">
       <attribute name="title">
-       <string>字体</string>
+       <string>Tester</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <property name="leftMargin">
@@ -39,20 +39,20 @@
        <item>
         <widget class="QGroupBox" name="groupBox">
          <property name="title">
-          <string>选择字体</string>
+          <string>Font</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_2">
           <item row="1" column="2">
            <widget class="QPushButton" name="fontMultiSetButton">
             <property name="text">
-             <string>选择字体...</string>
+             <string>Fonts...</string>
             </property>
            </widget>
           </item>
           <item row="1" column="0">
            <widget class="QLabel" name="label_4">
             <property name="text">
-             <string>多字节字符：</string>
+             <string>Multi-Byte</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -62,12 +62,15 @@
           <item row="0" column="2">
            <widget class="QPushButton" name="fontAnsiSetButton">
             <property name="text">
-             <string>选择字体...</string>
+             <string>Fonts...</string>
             </property>
            </widget>
           </item>
           <item row="1" column="1">
            <widget class="QLineEdit" name="lineEditFontMulti">
+            <property name="text">
+             <string notr="true"/>
+            </property>
             <property name="readOnly">
              <bool>true</bool>
             </property>
@@ -75,6 +78,9 @@
           </item>
           <item row="0" column="1">
            <widget class="QLineEdit" name="lineEditFontAnsi">
+            <property name="text">
+             <string notr="true"/>
+            </property>
             <property name="readOnly">
              <bool>true</bool>
             </property>
@@ -83,7 +89,7 @@
           <item row="0" column="0">
            <widget class="QLabel" name="label">
             <property name="text">
-             <string>ANSI字符：</string>
+             <string>ASCII</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -96,18 +102,21 @@
        <item>
         <widget class="QGroupBox" name="groupBox_2">
          <property name="title">
-          <string>字体颜色</string>
+          <string>Text Color</string>
          </property>
          <layout class="QGridLayout" name="gridLayout">
           <item row="0" column="2">
            <widget class="QPushButton" name="rxColorButton">
             <property name="text">
-             <string>选择颜色...</string>
+             <string>Color...</string>
             </property>
            </widget>
           </item>
           <item row="0" column="1">
            <widget class="QLineEdit" name="lineEditRxColor">
+            <property name="text">
+             <string notr="true"/>
+            </property>
             <property name="readOnly">
              <bool>true</bool>
             </property>
@@ -116,7 +125,7 @@
           <item row="0" column="0">
            <widget class="QLabel" name="label_2">
             <property name="text">
-             <string>接收区颜色：</string>
+             <string>Rx Area</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -126,7 +135,7 @@
           <item row="1" column="0">
            <widget class="QLabel" name="label_3">
             <property name="text">
-             <string>发送区颜色：</string>
+             <string>Tx Area</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -135,6 +144,9 @@
           </item>
           <item row="1" column="1">
            <widget class="QLineEdit" name="lineEditTxColor">
+            <property name="text">
+             <string notr="true"/>
+            </property>
             <property name="readOnly">
              <bool>true</bool>
             </property>
@@ -143,7 +155,7 @@
           <item row="1" column="2">
            <widget class="QPushButton" name="txColorButton">
             <property name="text">
-             <string>选择颜色...</string>
+             <string>Color...</string>
             </property>
            </widget>
           </item>
@@ -167,7 +179,7 @@
      </widget>
      <widget class="QWidget" name="tab2">
       <attribute name="title">
-       <string>示波器</string>
+       <string>Plot</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_3">
        <property name="leftMargin">
@@ -182,13 +194,13 @@
        <item>
         <widget class="QGroupBox" name="groupBox_3">
          <property name="title">
-          <string>颜色和样式</string>
+          <string>Color</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_3">
           <item row="0" column="0">
            <widget class="QLabel" name="label_5">
             <property name="text">
-             <string>背景颜色：</string>
+             <string>Background</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -197,6 +209,9 @@
           </item>
           <item row="0" column="1">
            <widget class="QLineEdit" name="lineEditPlotColor">
+            <property name="text">
+             <string notr="true"/>
+            </property>
             <property name="readOnly">
              <bool>true</bool>
             </property>
@@ -205,14 +220,14 @@
           <item row="0" column="2">
            <widget class="QPushButton" name="plotBgColorButton">
             <property name="text">
-             <string>选择颜色...</string>
+             <string>Color...</string>
             </property>
            </widget>
           </item>
           <item row="1" column="0">
            <widget class="QLabel" name="label_7">
             <property name="text">
-             <string>网格颜色：</string>
+             <string>Grid</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -221,6 +236,9 @@
           </item>
           <item row="1" column="1">
            <widget class="QLineEdit" name="lineEditAxisColor">
+            <property name="text">
+             <string notr="true"/>
+            </property>
             <property name="readOnly">
              <bool>true</bool>
             </property>
@@ -229,7 +247,7 @@
           <item row="1" column="2">
            <widget class="QPushButton" name="axisColorButton">
             <property name="text">
-             <string>选择颜色</string>
+             <string>Color...</string>
             </property>
            </widget>
           </item>
@@ -239,30 +257,27 @@
        <item>
         <widget class="QGroupBox" name="groupBox_4">
          <property name="title">
-          <string>图形选项</string>
+          <string>Graphics Options</string>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_4">
           <item>
            <widget class="QCheckBox" name="plotAntiBox">
             <property name="text">
-             <string>波形绘制抗锯齿</string>
+             <string>Plot Antialias</string>
             </property>
            </widget>
           </item>
           <item>
            <widget class="QCheckBox" name="gridAntiBox">
             <property name="text">
-             <string>网格抗锯齿</string>
+             <string>Grid Antialias</string>
             </property>
            </widget>
           </item>
           <item>
            <widget class="QCheckBox" name="openGlBox">
-            <property name="toolTip">
-             <string>注意，开启该选项实际上会使CPU占用率变高</string>
-            </property>
             <property name="text">
-             <string>硬件加速(OpenGL)</string>
+             <string>Use OpenGL</string>
             </property>
            </widget>
           </item>

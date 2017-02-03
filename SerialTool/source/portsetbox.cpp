@@ -1,6 +1,6 @@
-#include "portsetbox.h"
+ï»¿#include "portsetbox.h"
 
-#define _size(x) sizeof(x) / sizeof(x[0])
+#define _size(x) (sizeof(x) / sizeof(x[0]))
 
 static const QSerialPort::DataBits DataBits[] = {
     QSerialPort::Data5,
@@ -29,17 +29,17 @@ static const QSerialPort::FlowControl FlowControl[] = {
     QSerialPort::SoftwareControl
 };
 
-PortSetBox::PortSetBox(QSerialPort *port, QWidget *parent)
+PortSetBox::PortSetBox(QSerialPort *port, QWidget *parent) : QDialog(parent)
 {
-    int i;
+    unsigned int i;
 
-    // ²»ÏÔÊ¾ÎÊºÅ
+    // ä¸æ˜¾ç¤ºé—®å·
     Qt::WindowFlags flags = Qt::Dialog;
     flags |= Qt::WindowCloseButtonHint;
     setWindowFlags(flags);
 
     ui.setupUi(this);
-    setFixedSize(200, 150); // ²»ÄÜÉìËõµÄ¶Ô»°¿ò
+    setFixedSize(200, 150); // ä¸èƒ½ä¼¸ç¼©çš„å¯¹è¯æ¡†
 
     serialPort = port;
 
