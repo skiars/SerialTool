@@ -50,6 +50,12 @@ public:
         gridLayout->addWidget(label, 0, 0, 1, 1);
 
         dataBitsBox = new QComboBox(PortSetBox);
+        dataBitsBox->insertItems(0, QStringList()
+         << QStringLiteral("5")
+         << QStringLiteral("6")
+         << QStringLiteral("7")
+         << QStringLiteral("8")
+        );
         dataBitsBox->setObjectName(QStringLiteral("dataBitsBox"));
 
         gridLayout->addWidget(dataBitsBox, 0, 1, 1, 1);
@@ -61,6 +67,13 @@ public:
         gridLayout->addWidget(label_2, 1, 0, 1, 1);
 
         paritBox = new QComboBox(PortSetBox);
+        paritBox->insertItems(0, QStringList()
+         << QStringLiteral("None")
+         << QStringLiteral("Even")
+         << QStringLiteral("Odd")
+         << QStringLiteral("Space")
+         << QStringLiteral("Mark")
+        );
         paritBox->setObjectName(QStringLiteral("paritBox"));
 
         gridLayout->addWidget(paritBox, 1, 1, 1, 1);
@@ -72,6 +85,11 @@ public:
         gridLayout->addWidget(label_3, 2, 0, 1, 1);
 
         stopBitsBox = new QComboBox(PortSetBox);
+        stopBitsBox->insertItems(0, QStringList()
+         << QStringLiteral("1")
+         << QStringLiteral("1.5")
+         << QStringLiteral("2")
+        );
         stopBitsBox->setObjectName(QStringLiteral("stopBitsBox"));
 
         gridLayout->addWidget(stopBitsBox, 2, 1, 1, 1);
@@ -83,6 +101,11 @@ public:
         gridLayout->addWidget(label_4, 3, 0, 1, 1);
 
         flowControlBox = new QComboBox(PortSetBox);
+        flowControlBox->insertItems(0, QStringList()
+         << QStringLiteral("None")
+         << QStringLiteral("RTS/CTS")
+         << QStringLiteral("XON/XOFF")
+        );
         flowControlBox->setObjectName(QStringLiteral("flowControlBox"));
 
         gridLayout->addWidget(flowControlBox, 3, 1, 1, 1);
@@ -109,38 +132,11 @@ public:
 
     void retranslateUi(QDialog *PortSetBox)
     {
-        PortSetBox->setWindowTitle(QApplication::translate("PortSetBox", "\347\253\257\345\217\243\345\217\202\346\225\260\350\256\276\347\275\256", 0));
-        label->setText(QApplication::translate("PortSetBox", "\346\225\260\346\215\256\344\275\215\357\274\232", 0));
-        dataBitsBox->clear();
-        dataBitsBox->insertItems(0, QStringList()
-         << QApplication::translate("PortSetBox", "5", 0)
-         << QApplication::translate("PortSetBox", "6", 0)
-         << QApplication::translate("PortSetBox", "7", 0)
-         << QApplication::translate("PortSetBox", "8", 0)
-        );
-        label_2->setText(QApplication::translate("PortSetBox", "\346\240\241\351\252\214\344\275\215\357\274\232", 0));
-        paritBox->clear();
-        paritBox->insertItems(0, QStringList()
-         << QApplication::translate("PortSetBox", "None", 0)
-         << QApplication::translate("PortSetBox", "Even", 0)
-         << QApplication::translate("PortSetBox", "Odd", 0)
-         << QApplication::translate("PortSetBox", "Space", 0)
-         << QApplication::translate("PortSetBox", "Mark", 0)
-        );
-        label_3->setText(QApplication::translate("PortSetBox", "\345\201\234\346\255\242\344\275\215\357\274\232", 0));
-        stopBitsBox->clear();
-        stopBitsBox->insertItems(0, QStringList()
-         << QApplication::translate("PortSetBox", "1", 0)
-         << QApplication::translate("PortSetBox", "1.5", 0)
-         << QApplication::translate("PortSetBox", "2", 0)
-        );
-        label_4->setText(QApplication::translate("PortSetBox", "\346\265\201\346\216\247\357\274\232", 0));
-        flowControlBox->clear();
-        flowControlBox->insertItems(0, QStringList()
-         << QApplication::translate("PortSetBox", "None", 0)
-         << QApplication::translate("PortSetBox", "RTS/CTS", 0)
-         << QApplication::translate("PortSetBox", "XON/XOFF", 0)
-        );
+        PortSetBox->setWindowTitle(QApplication::translate("PortSetBox", "Port Settings", 0));
+        label->setText(QApplication::translate("PortSetBox", "Data Bits", 0));
+        label_2->setText(QApplication::translate("PortSetBox", "Parity", 0));
+        label_3->setText(QApplication::translate("PortSetBox", "Stop Bits", 0));
+        label_4->setText(QApplication::translate("PortSetBox", "Flow Control", 0));
     } // retranslateUi
 
 };

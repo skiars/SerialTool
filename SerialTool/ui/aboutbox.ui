@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>About SerialTool</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="spacing">
@@ -62,7 +62,7 @@
 }</string>
      </property>
      <property name="title">
-      <string>GNU General Public License</string>
+      <string notr="true">GNU General Public License</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>

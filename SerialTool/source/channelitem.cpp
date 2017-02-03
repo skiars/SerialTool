@@ -9,7 +9,7 @@ ChannelItem::ChannelItem(QString string, QColor color, QWidget *parent) : QWidge
     colorBtn->setFixedSize(QSize(16, 16));
     colorBtn->setAutoRaise(true);
     QAction *action = new QAction(this);
-    action->setToolTip(QStringLiteral("修改线条颜色."));
+    action->setToolTip(tr("Change plot lines color"));
     colorBtn->setDefaultAction(action);
     setColor(color);
 

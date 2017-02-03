@@ -107,12 +107,14 @@ public:
 
         lineEditFontMulti = new QLineEdit(groupBox);
         lineEditFontMulti->setObjectName(QStringLiteral("lineEditFontMulti"));
+        lineEditFontMulti->setText(QStringLiteral(""));
         lineEditFontMulti->setReadOnly(true);
 
         gridLayout_2->addWidget(lineEditFontMulti, 1, 1, 1, 1);
 
         lineEditFontAnsi = new QLineEdit(groupBox);
         lineEditFontAnsi->setObjectName(QStringLiteral("lineEditFontAnsi"));
+        lineEditFontAnsi->setText(QStringLiteral(""));
         lineEditFontAnsi->setReadOnly(true);
 
         gridLayout_2->addWidget(lineEditFontAnsi, 0, 1, 1, 1);
@@ -137,6 +139,7 @@ public:
 
         lineEditRxColor = new QLineEdit(groupBox_2);
         lineEditRxColor->setObjectName(QStringLiteral("lineEditRxColor"));
+        lineEditRxColor->setText(QStringLiteral(""));
         lineEditRxColor->setReadOnly(true);
 
         gridLayout->addWidget(lineEditRxColor, 0, 1, 1, 1);
@@ -155,6 +158,7 @@ public:
 
         lineEditTxColor = new QLineEdit(groupBox_2);
         lineEditTxColor->setObjectName(QStringLiteral("lineEditTxColor"));
+        lineEditTxColor->setText(QStringLiteral(""));
         lineEditTxColor->setReadOnly(true);
 
         gridLayout->addWidget(lineEditTxColor, 1, 1, 1, 1);
@@ -189,6 +193,7 @@ public:
 
         lineEditPlotColor = new QLineEdit(groupBox_3);
         lineEditPlotColor->setObjectName(QStringLiteral("lineEditPlotColor"));
+        lineEditPlotColor->setText(QStringLiteral(""));
         lineEditPlotColor->setReadOnly(true);
 
         gridLayout_3->addWidget(lineEditPlotColor, 0, 1, 1, 1);
@@ -206,6 +211,7 @@ public:
 
         lineEditAxisColor = new QLineEdit(groupBox_3);
         lineEditAxisColor->setObjectName(QStringLiteral("lineEditAxisColor"));
+        lineEditAxisColor->setText(QStringLiteral(""));
         lineEditAxisColor->setReadOnly(true);
 
         gridLayout_3->addWidget(lineEditAxisColor, 1, 1, 1, 1);
@@ -268,31 +274,28 @@ public:
 
     void retranslateUi(QDialog *optionsBox)
     {
-        optionsBox->setWindowTitle(QApplication::translate("optionsBox", "\351\200\211\351\241\271", 0));
-        groupBox->setTitle(QApplication::translate("optionsBox", "\351\200\211\346\213\251\345\255\227\344\275\223", 0));
-        fontMultiSetButton->setText(QApplication::translate("optionsBox", "\351\200\211\346\213\251\345\255\227\344\275\223...", 0));
-        label_4->setText(QApplication::translate("optionsBox", "\345\244\232\345\255\227\350\212\202\345\255\227\347\254\246\357\274\232", 0));
-        fontAnsiSetButton->setText(QApplication::translate("optionsBox", "\351\200\211\346\213\251\345\255\227\344\275\223...", 0));
-        label->setText(QApplication::translate("optionsBox", "ANSI\345\255\227\347\254\246\357\274\232", 0));
-        groupBox_2->setTitle(QApplication::translate("optionsBox", "\345\255\227\344\275\223\351\242\234\350\211\262", 0));
-        rxColorButton->setText(QApplication::translate("optionsBox", "\351\200\211\346\213\251\351\242\234\350\211\262...", 0));
-        label_2->setText(QApplication::translate("optionsBox", "\346\216\245\346\224\266\345\214\272\351\242\234\350\211\262\357\274\232", 0));
-        label_3->setText(QApplication::translate("optionsBox", "\345\217\221\351\200\201\345\214\272\351\242\234\350\211\262\357\274\232", 0));
-        txColorButton->setText(QApplication::translate("optionsBox", "\351\200\211\346\213\251\351\242\234\350\211\262...", 0));
-        tabWidget->setTabText(tabWidget->indexOf(tab1), QApplication::translate("optionsBox", "\345\255\227\344\275\223", 0));
-        groupBox_3->setTitle(QApplication::translate("optionsBox", "\351\242\234\350\211\262\345\222\214\346\240\267\345\274\217", 0));
-        label_5->setText(QApplication::translate("optionsBox", "\350\203\214\346\231\257\351\242\234\350\211\262\357\274\232", 0));
-        plotBgColorButton->setText(QApplication::translate("optionsBox", "\351\200\211\346\213\251\351\242\234\350\211\262...", 0));
-        label_7->setText(QApplication::translate("optionsBox", "\347\275\221\346\240\274\351\242\234\350\211\262\357\274\232", 0));
-        axisColorButton->setText(QApplication::translate("optionsBox", "\351\200\211\346\213\251\351\242\234\350\211\262", 0));
-        groupBox_4->setTitle(QApplication::translate("optionsBox", "\345\233\276\345\275\242\351\200\211\351\241\271", 0));
-        plotAntiBox->setText(QApplication::translate("optionsBox", "\346\263\242\345\275\242\347\273\230\345\210\266\346\212\227\351\224\257\351\275\277", 0));
-        gridAntiBox->setText(QApplication::translate("optionsBox", "\347\275\221\346\240\274\346\212\227\351\224\257\351\275\277", 0));
-#ifndef QT_NO_TOOLTIP
-        openGlBox->setToolTip(QApplication::translate("optionsBox", "\346\263\250\346\204\217\357\274\214\345\274\200\345\220\257\350\257\245\351\200\211\351\241\271\345\256\236\351\231\205\344\270\212\344\274\232\344\275\277CPU\345\215\240\347\224\250\347\216\207\345\217\230\351\253\230", 0));
-#endif // QT_NO_TOOLTIP
-        openGlBox->setText(QApplication::translate("optionsBox", "\347\241\254\344\273\266\345\212\240\351\200\237(OpenGL)", 0));
-        tabWidget->setTabText(tabWidget->indexOf(tab2), QApplication::translate("optionsBox", "\347\244\272\346\263\242\345\231\250", 0));
+        optionsBox->setWindowTitle(QApplication::translate("optionsBox", "Options", 0));
+        groupBox->setTitle(QApplication::translate("optionsBox", "Font", 0));
+        fontMultiSetButton->setText(QApplication::translate("optionsBox", "Fonts...", 0));
+        label_4->setText(QApplication::translate("optionsBox", "Multi-Byte", 0));
+        fontAnsiSetButton->setText(QApplication::translate("optionsBox", "Fonts...", 0));
+        label->setText(QApplication::translate("optionsBox", "ASCII", 0));
+        groupBox_2->setTitle(QApplication::translate("optionsBox", "Text Color", 0));
+        rxColorButton->setText(QApplication::translate("optionsBox", "Color...", 0));
+        label_2->setText(QApplication::translate("optionsBox", "Rx Area", 0));
+        label_3->setText(QApplication::translate("optionsBox", "Tx Area", 0));
+        txColorButton->setText(QApplication::translate("optionsBox", "Color...", 0));
+        tabWidget->setTabText(tabWidget->indexOf(tab1), QApplication::translate("optionsBox", "Tester", 0));
+        groupBox_3->setTitle(QApplication::translate("optionsBox", "Color", 0));
+        label_5->setText(QApplication::translate("optionsBox", "Background", 0));
+        plotBgColorButton->setText(QApplication::translate("optionsBox", "Color...", 0));
+        label_7->setText(QApplication::translate("optionsBox", "Grid", 0));
+        axisColorButton->setText(QApplication::translate("optionsBox", "Color...", 0));
+        groupBox_4->setTitle(QApplication::translate("optionsBox", "Graphics Options", 0));
+        plotAntiBox->setText(QApplication::translate("optionsBox", "Plot Antialias", 0));
+        gridAntiBox->setText(QApplication::translate("optionsBox", "Grid Antialias", 0));
+        openGlBox->setText(QApplication::translate("optionsBox", "Use OpenGL", 0));
+        tabWidget->setTabText(tabWidget->indexOf(tab2), QApplication::translate("optionsBox", "Plot", 0));
     } // retranslateUi
 
 };

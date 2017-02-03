@@ -9,7 +9,7 @@
 #define _STR_(s)           #s
 #define __STR(s)          _STR_(s)
 
-#define BUILD_VERSION     _STR_(364eM)
+#define BUILD_VERSION     _STR_(4a1cM)
 #define SOFTWARE_VERSION  __STR(MAIN_VERSION)
 
 #endif

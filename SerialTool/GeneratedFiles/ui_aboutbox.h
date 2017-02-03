@@ -76,6 +76,7 @@ public:
 "  subcontrol-position: middle;\n"
 "  left: 0px;\n"
 "}"));
+        groupBox->setTitle(QStringLiteral("GNU General Public License"));
         groupBox->setAlignment(Qt::AlignCenter);
         verticalLayout_2 = new QVBoxLayout(groupBox);
         verticalLayout_2->setObjectName(QStringLiteral("verticalLayout_2"));
@@ -103,10 +104,9 @@ public:
 
     void retranslateUi(QDialog *AboutBox)
     {
-        AboutBox->setWindowTitle(QApplication::translate("AboutBox", "Dialog", 0));
+        AboutBox->setWindowTitle(QApplication::translate("AboutBox", "About SerialTool", 0));
         label1->setText(QString());
         label2->setText(QString());
-        groupBox->setTitle(QApplication::translate("AboutBox", "GNU General Public License", 0));
     } // retranslateUi
 
 };

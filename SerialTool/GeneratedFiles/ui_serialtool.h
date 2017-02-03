@@ -40,12 +40,12 @@
 
 QT_BEGIN_NAMESPACE
 
-class Ui_SerialToolClass
+class Ui_SerialTool
 {
 public:
     QAction *actionSave;
     QAction *actionOption;
-    QAction *openPortAction;
+    QAction *portSwitchAction;
     QAction *portRunAction;
     QAction *clearAction;
     QAction *portSetAction;
@@ -71,17 +71,20 @@ public:
     QWidget *widget;
     QVBoxLayout *verticalLayout_4;
     QGroupBox *groupBox;
-    QGridLayout *gridLayout_2;
-    QCheckBox *checkBox_2;
-    QRadioButton *portReadHex;
+    QVBoxLayout *verticalLayout_5;
+    QHBoxLayout *horizontalLayout_3;
     QRadioButton *portReadAscii;
+    QRadioButton *portReadHex;
+    QCheckBox *checkBox_2;
     QGroupBox *groupBox_2;
-    QGridLayout *gridLayout;
-    QRadioButton *portWriteHex;
-    QCheckBox *resendBox;
-    QLabel *label_3;
-    QSpinBox *spinBoxStepTime;
+    QVBoxLayout *verticalLayout_6;
+    QHBoxLayout *horizontalLayout_4;
     QRadioButton *portWriteAscii;
+    QRadioButton *portWriteHex;
+    QHBoxLayout *horizontalLayout_6;
+    QCheckBox *resendBox;
+    QSpinBox *spinBoxStepTime;
+    QLabel *label_3;
     QGridLayout *gridLayout_3;
     QPushButton *sendButton;
     QTextEdit *textEditWrite;
@@ -110,73 +113,73 @@ public:
     QToolBar *toolBar1;
     QStatusBar *statusBar;
 
-    void setupUi(QMainWindow *SerialToolClass)
+    void setupUi(QMainWindow *SerialTool)
     {
-        if (SerialToolClass->objectName().isEmpty())
-            SerialToolClass->setObjectName(QStringLiteral("SerialToolClass"));
-        SerialToolClass->resize(600, 426);
+        if (SerialTool->objectName().isEmpty())
+            SerialTool->setObjectName(QStringLiteral("SerialTool"));
+        SerialTool->resize(600, 426);
         QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
-        sizePolicy.setHeightForWidth(SerialToolClass->sizePolicy().hasHeightForWidth());
-        SerialToolClass->setSizePolicy(sizePolicy);
+        sizePolicy.setHeightForWidth(SerialTool->sizePolicy().hasHeightForWidth());
+        SerialTool->setSizePolicy(sizePolicy);
         QIcon icon;
         icon.addFile(QStringLiteral(":/SerialTool/images/icon.ico"), QSize(), QIcon::Normal, QIcon::Off);
-        SerialToolClass->setWindowIcon(icon);
-        actionSave = new QAction(SerialToolClass);
+        SerialTool->setWindowIcon(icon);
+        actionSave = new QAction(SerialTool);
         actionSave->setObjectName(QStringLiteral("actionSave"));
         QIcon icon1;
         icon1.addFile(QStringLiteral(":/SerialTool/images/save.ico"), QSize(), QIcon::Normal, QIcon::Off);
         actionSave->setIcon(icon1);
-        actionOption = new QAction(SerialToolClass);
+        actionOption = new QAction(SerialTool);
         actionOption->setObjectName(QStringLiteral("actionOption"));
         QIcon icon2;
         icon2.addFile(QStringLiteral(":/SerialTool/images/config.ico"), QSize(), QIcon::Normal, QIcon::Off);
         actionOption->setIcon(icon2);
-        openPortAction = new QAction(SerialToolClass);
-        openPortAction->setObjectName(QStringLiteral("openPortAction"));
+        portSwitchAction = new QAction(SerialTool);
+        portSwitchAction->setObjectName(QStringLiteral("portSwitchAction"));
         QIcon icon3;
         icon3.addFile(QStringLiteral(":/SerialTool/images/connect.png"), QSize(), QIcon::Normal, QIcon::Off);
-        openPortAction->setIcon(icon3);
-        portRunAction = new QAction(SerialToolClass);
+        portSwitchAction->setIcon(icon3);
+        portRunAction = new QAction(SerialTool);
         portRunAction->setObjectName(QStringLiteral("portRunAction"));
         portRunAction->setEnabled(false);
         QIcon icon4;
         icon4.addFile(QStringLiteral(":/SerialTool/images/pause.ico"), QSize(), QIcon::Normal, QIcon::Off);
         icon4.addFile(QStringLiteral(":/SerialTool/images/pause.png"), QSize(), QIcon::Active, QIcon::Off);
         portRunAction->setIcon(icon4);
-        clearAction = new QAction(SerialToolClass);
+        clearAction = new QAction(SerialTool);
         clearAction->setObjectName(QStringLiteral("clearAction"));
         QIcon icon5;
         icon5.addFile(QStringLiteral(":/SerialTool/images/clear.png"), QSize(), QIcon::Normal, QIcon::Off);
         clearAction->setIcon(icon5);
-        portSetAction = new QAction(SerialToolClass);
+        portSetAction = new QAction(SerialTool);
         portSetAction->setObjectName(QStringLiteral("portSetAction"));
         QIcon icon6;
         icon6.addFile(QStringLiteral(":/SerialTool/images/port config.png"), QSize(), QIcon::Normal, QIcon::Off);
         portSetAction->setIcon(icon6);
-        actionClose = new QAction(SerialToolClass);
+        actionClose = new QAction(SerialTool);
         actionClose->setObjectName(QStringLiteral("actionClose"));
         QIcon icon7;
         icon7.addFile(QStringLiteral(":/SerialTool/images/exit.ico"), QSize(), QIcon::Normal, QIcon::Off);
         actionClose->setIcon(icon7);
-        actionVisibleToolbar = new QAction(SerialToolClass);
+        actionVisibleToolbar = new QAction(SerialTool);
         actionVisibleToolbar->setObjectName(QStringLiteral("actionVisibleToolbar"));
         actionVisibleToolbar->setCheckable(true);
         actionVisibleToolbar->setChecked(true);
-        actionVisibleTab0 = new QAction(SerialToolClass);
+        actionVisibleTab0 = new QAction(SerialTool);
         actionVisibleTab0->setObjectName(QStringLiteral("actionVisibleTab0"));
         actionVisibleTab0->setCheckable(true);
-        actionVisibleTab1 = new QAction(SerialToolClass);
+        actionVisibleTab1 = new QAction(SerialTool);
         actionVisibleTab1->setObjectName(QStringLiteral("actionVisibleTab1"));
         actionVisibleTab1->setCheckable(true);
-        actionVisibleStatusBar = new QAction(SerialToolClass);
+        actionVisibleStatusBar = new QAction(SerialTool);
         actionVisibleStatusBar->setObjectName(QStringLiteral("actionVisibleStatusBar"));
         actionVisibleStatusBar->setCheckable(true);
         actionVisibleStatusBar->setChecked(true);
-        actionAbout = new QAction(SerialToolClass);
+        actionAbout = new QAction(SerialTool);
         actionAbout->setObjectName(QStringLiteral("actionAbout"));
-        centralWidget = new QWidget(SerialToolClass);
+        centralWidget = new QWidget(SerialTool);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         QSizePolicy sizePolicy1(QSizePolicy::Expanding, QSizePolicy::Expanding);
         sizePolicy1.setHorizontalStretch(0);
@@ -228,12 +231,23 @@ public:
         horizontalLayout->addWidget(label_2);
 
         comboBoxBaudRate = new QComboBox(portConfigWidget);
+        comboBoxBaudRate->insertItems(0, QStringList()
+         << QStringLiteral("1200")
+         << QStringLiteral("2400")
+         << QStringLiteral("4800")
+         << QStringLiteral("9600")
+         << QStringLiteral("19200")
+         << QStringLiteral("38400")
+         << QStringLiteral("57600")
+         << QStringLiteral("115200")
+        );
         comboBoxBaudRate->setObjectName(QStringLiteral("comboBoxBaudRate"));
         QSizePolicy sizePolicy4(QSizePolicy::Fixed, QSizePolicy::Fixed);
         sizePolicy4.setHorizontalStretch(0);
         sizePolicy4.setVerticalStretch(0);
         sizePolicy4.setHeightForWidth(comboBoxBaudRate->sizePolicy().hasHeightForWidth());
         comboBoxBaudRate->setSizePolicy(sizePolicy4);
+        comboBoxBaudRate->setCurrentText(QStringLiteral("1200"));
 
         horizontalLayout->addWidget(comboBoxBaudRate);
 
@@ -273,28 +287,35 @@ public:
         groupBox->setObjectName(QStringLiteral("groupBox"));
         sizePolicy3.setHeightForWidth(groupBox->sizePolicy().hasHeightForWidth());
         groupBox->setSizePolicy(sizePolicy3);
-        gridLayout_2 = new QGridLayout(groupBox);
-        gridLayout_2->setSpacing(6);
-        gridLayout_2->setContentsMargins(11, 11, 11, 11);
-        gridLayout_2->setObjectName(QStringLiteral("gridLayout_2"));
-        gridLayout_2->setVerticalSpacing(5);
-        gridLayout_2->setContentsMargins(-1, -1, -1, 4);
+        verticalLayout_5 = new QVBoxLayout(groupBox);
+        verticalLayout_5->setSpacing(2);
+        verticalLayout_5->setContentsMargins(11, 11, 11, 11);
+        verticalLayout_5->setObjectName(QStringLiteral("verticalLayout_5"));
+        verticalLayout_5->setContentsMargins(4, -1, 4, 4);
+        horizontalLayout_3 = new QHBoxLayout();
+        horizontalLayout_3->setSpacing(6);
+        horizontalLayout_3->setObjectName(QStringLiteral("horizontalLayout_3"));
+        portReadAscii = new QRadioButton(groupBox);
+        portReadAscii->setObjectName(QStringLiteral("portReadAscii"));
+        portReadAscii->setText(QStringLiteral("ASCII"));
+        portReadAscii->setChecked(true);
+
+        horizontalLayout_3->addWidget(portReadAscii);
+
+        portReadHex = new QRadioButton(groupBox);
+        portReadHex->setObjectName(QStringLiteral("portReadHex"));
+        portReadHex->setText(QStringLiteral("Hex"));
+
+        horizontalLayout_3->addWidget(portReadHex);
+
+
+        verticalLayout_5->addLayout(horizontalLayout_3);
+
         checkBox_2 = new QCheckBox(groupBox);
         checkBox_2->setObjectName(QStringLiteral("checkBox_2"));
         checkBox_2->setEnabled(false);
 
-        gridLayout_2->addWidget(checkBox_2, 1, 0, 1, 1);
-
-        portReadHex = new QRadioButton(groupBox);
-        portReadHex->setObjectName(QStringLiteral("portReadHex"));
-
-        gridLayout_2->addWidget(portReadHex, 0, 1, 1, 1);
-
-        portReadAscii = new QRadioButton(groupBox);
-        portReadAscii->setObjectName(QStringLiteral("portReadAscii"));
-        portReadAscii->setChecked(true);
-
-        gridLayout_2->addWidget(portReadAscii, 0, 0, 1, 1);
+        verticalLayout_5->addWidget(checkBox_2);
 
 
         verticalLayout_4->addWidget(groupBox);
@@ -303,26 +324,37 @@ public:
         groupBox_2->setObjectName(QStringLiteral("groupBox_2"));
         sizePolicy3.setHeightForWidth(groupBox_2->sizePolicy().hasHeightForWidth());
         groupBox_2->setSizePolicy(sizePolicy3);
-        gridLayout = new QGridLayout(groupBox_2);
-        gridLayout->setSpacing(6);
-        gridLayout->setContentsMargins(11, 11, 11, 11);
-        gridLayout->setObjectName(QStringLiteral("gridLayout"));
-        gridLayout->setVerticalSpacing(5);
-        gridLayout->setContentsMargins(-1, -1, 4, 4);
+        verticalLayout_6 = new QVBoxLayout(groupBox_2);
+        verticalLayout_6->setSpacing(2);
+        verticalLayout_6->setContentsMargins(11, 11, 11, 11);
+        verticalLayout_6->setObjectName(QStringLiteral("verticalLayout_6"));
+        verticalLayout_6->setContentsMargins(4, -1, 4, 4);
+        horizontalLayout_4 = new QHBoxLayout();
+        horizontalLayout_4->setSpacing(6);
+        horizontalLayout_4->setObjectName(QStringLiteral("horizontalLayout_4"));
+        portWriteAscii = new QRadioButton(groupBox_2);
+        portWriteAscii->setObjectName(QStringLiteral("portWriteAscii"));
+        portWriteAscii->setText(QStringLiteral("ASCII"));
+        portWriteAscii->setChecked(true);
+
+        horizontalLayout_4->addWidget(portWriteAscii);
+
         portWriteHex = new QRadioButton(groupBox_2);
         portWriteHex->setObjectName(QStringLiteral("portWriteHex"));
+        portWriteHex->setText(QStringLiteral("Hex"));
 
-        gridLayout->addWidget(portWriteHex, 1, 1, 1, 1);
+        horizontalLayout_4->addWidget(portWriteHex);
 
+
+        verticalLayout_6->addLayout(horizontalLayout_4);
+
+        horizontalLayout_6 = new QHBoxLayout();
+        horizontalLayout_6->setSpacing(2);
+        horizontalLayout_6->setObjectName(QStringLiteral("horizontalLayout_6"));
         resendBox = new QCheckBox(groupBox_2);
         resendBox->setObjectName(QStringLiteral("resendBox"));
 
-        gridLayout->addWidget(resendBox, 2, 0, 1, 1);
-
-        label_3 = new QLabel(groupBox_2);
-        label_3->setObjectName(QStringLiteral("label_3"));
-
-        gridLayout->addWidget(label_3, 2, 3, 1, 1);
+        horizontalLayout_6->addWidget(resendBox);
 
         spinBoxStepTime = new QSpinBox(groupBox_2);
         spinBoxStepTime->setObjectName(QStringLiteral("spinBoxStepTime"));
@@ -330,13 +362,15 @@ public:
         spinBoxStepTime->setMaximum(120000);
         spinBoxStepTime->setValue(1000);
 
-        gridLayout->addWidget(spinBoxStepTime, 2, 1, 1, 1);
+        horizontalLayout_6->addWidget(spinBoxStepTime);
 
-        portWriteAscii = new QRadioButton(groupBox_2);
-        portWriteAscii->setObjectName(QStringLiteral("portWriteAscii"));
-        portWriteAscii->setChecked(true);
+        label_3 = new QLabel(groupBox_2);
+        label_3->setObjectName(QStringLiteral("label_3"));
 
-        gridLayout->addWidget(portWriteAscii, 1, 0, 1, 1);
+        horizontalLayout_6->addWidget(label_3);
+
+
+        verticalLayout_6->addLayout(horizontalLayout_6);
 
 
         verticalLayout_4->addWidget(groupBox_2);
@@ -452,7 +486,23 @@ public:
         verticalLayout_9->addWidget(label_6);
 
         xRangeBox = new QComboBox(tab);
+        xRangeBox->insertItems(0, QStringList()
+         << QStringLiteral("10")
+         << QStringLiteral("20")
+         << QStringLiteral("25")
+         << QStringLiteral("50")
+         << QStringLiteral("100")
+         << QStringLiteral("200")
+         << QStringLiteral("250")
+         << QStringLiteral("500")
+         << QStringLiteral("1000")
+         << QStringLiteral("2000")
+         << QStringLiteral("2500")
+         << QStringLiteral("5000")
+         << QStringLiteral("10000")
+        );
         xRangeBox->setObjectName(QStringLiteral("xRangeBox"));
+        xRangeBox->setCurrentText(QStringLiteral("10"));
         xRangeBox->setMaxVisibleItems(20);
 
         verticalLayout_9->addWidget(xRangeBox);
@@ -474,8 +524,8 @@ public:
 
         verticalLayout_2->addWidget(tabWidget);
 
-        SerialToolClass->setCentralWidget(centralWidget);
-        menuBar = new QMenuBar(SerialToolClass);
+        SerialTool->setCentralWidget(centralWidget);
+        menuBar = new QMenuBar(SerialTool);
         menuBar->setObjectName(QStringLiteral("menuBar"));
         menuBar->setGeometry(QRect(0, 0, 600, 23));
         menu = new QMenu(menuBar);
@@ -488,14 +538,14 @@ public:
         menu_4->setObjectName(QStringLiteral("menu_4"));
         menu_5 = new QMenu(menuBar);
         menu_5->setObjectName(QStringLiteral("menu_5"));
-        SerialToolClass->setMenuBar(menuBar);
-        toolBar1 = new QToolBar(SerialToolClass);
+        SerialTool->setMenuBar(menuBar);
+        toolBar1 = new QToolBar(SerialTool);
         toolBar1->setObjectName(QStringLiteral("toolBar1"));
         toolBar1->setAllowedAreas(Qt::BottomToolBarArea|Qt::TopToolBarArea);
-        SerialToolClass->addToolBar(Qt::TopToolBarArea, toolBar1);
-        statusBar = new QStatusBar(SerialToolClass);
+        SerialTool->addToolBar(Qt::TopToolBarArea, toolBar1);
+        statusBar = new QStatusBar(SerialTool);
         statusBar->setObjectName(QStringLiteral("statusBar"));
-        SerialToolClass->setStatusBar(statusBar);
+        SerialTool->setStatusBar(statusBar);
 
         menuBar->addAction(menu->menuAction());
         menuBar->addAction(menu_3->menuAction());
@@ -506,7 +556,7 @@ public:
         menu->addSeparator();
         menu->addAction(actionClose);
         menu_2->addAction(actionOption);
-        menu_3->addAction(openPortAction);
+        menu_3->addAction(portSwitchAction);
         menu_3->addAction(portRunAction);
         menu_3->addAction(clearAction);
         menu_3->addSeparator();
@@ -519,115 +569,73 @@ public:
         menu_5->addAction(actionAbout);
         toolBar1->addAction(portSetAction);
         toolBar1->addSeparator();
-        toolBar1->addAction(openPortAction);
+        toolBar1->addAction(portSwitchAction);
         toolBar1->addAction(portRunAction);
         toolBar1->addAction(clearAction);
         toolBar1->addSeparator();
         toolBar1->addAction(actionOption);
 
-        retranslateUi(SerialToolClass);
+        retranslateUi(SerialTool);
 
         tabWidget->setCurrentIndex(0);
 
 
-        QMetaObject::connectSlotsByName(SerialToolClass);
+        QMetaObject::connectSlotsByName(SerialTool);
     } // setupUi
 
-    void retranslateUi(QMainWindow *SerialToolClass)
+    void retranslateUi(QMainWindow *SerialTool)
     {
-        SerialToolClass->setWindowTitle(QApplication::translate("SerialToolClass", "SerialTool", 0));
-        actionSave->setText(QApplication::translate("SerialToolClass", "\344\277\235\345\255\230", 0));
-        actionSave->setShortcut(QApplication::translate("SerialToolClass", "Ctrl+S", 0));
-        actionOption->setText(QApplication::translate("SerialToolClass", "\351\200\211\351\241\271", 0));
-        openPortAction->setText(QApplication::translate("SerialToolClass", "\346\211\223\345\274\200\347\253\257\345\217\243", 0));
-        openPortAction->setShortcut(QApplication::translate("SerialToolClass", "Alt+S", 0));
-        portRunAction->setText(QApplication::translate("SerialToolClass", "\346\232\202\345\201\234\345\217\221\351\200\201/\346\216\245\346\224\266", 0));
-        portRunAction->setShortcut(QApplication::translate("SerialToolClass", "Alt+R", 0));
-        clearAction->setText(QApplication::translate("SerialToolClass", "\346\270\205\347\251\272\346\225\260\346\215\256", 0));
-        clearAction->setShortcut(QApplication::translate("SerialToolClass", "Alt+C", 0));
-        portSetAction->setText(QApplication::translate("SerialToolClass", "\347\253\257\345\217\243\345\217\202\346\225\260\350\256\276\347\275\256", 0));
+        SerialTool->setWindowTitle(QApplication::translate("SerialTool", "SerialTool", 0));
+        actionSave->setText(QApplication::translate("SerialTool", "Save", 0));
+        actionSave->setShortcut(QApplication::translate("SerialTool", "Ctrl+S", 0));
+        actionOption->setText(QApplication::translate("SerialTool", "Options", 0));
+        portSwitchAction->setText(QApplication::translate("SerialTool", "Open Port", 0));
+        portSwitchAction->setShortcut(QApplication::translate("SerialTool", "Alt+S", 0));
+        portRunAction->setText(QApplication::translate("SerialTool", "Pause Tx/Rx", 0));
+        portRunAction->setShortcut(QApplication::translate("SerialTool", "Alt+R", 0));
+        clearAction->setText(QApplication::translate("SerialTool", "Clear Buffer", 0));
+        clearAction->setShortcut(QApplication::translate("SerialTool", "Alt+C", 0));
+        portSetAction->setText(QApplication::translate("SerialTool", "Port Settings", 0));
+        actionClose->setText(QApplication::translate("SerialTool", "Close", 0));
+        actionVisibleToolbar->setText(QApplication::translate("SerialTool", "Tool Bar", 0));
+        actionVisibleTab0->setText(QApplication::translate("SerialTool", "Tester", 0));
 #ifndef QT_NO_TOOLTIP
-        portSetAction->setToolTip(QApplication::translate("SerialToolClass", "\347\253\257\345\217\243\350\256\276\347\275\256", 0));
+        actionVisibleTab0->setToolTip(QApplication::translate("SerialTool", "Tester", 0));
 #endif // QT_NO_TOOLTIP
-        actionClose->setText(QApplication::translate("SerialToolClass", "\351\200\200\345\207\272", 0));
-        actionVisibleToolbar->setText(QApplication::translate("SerialToolClass", "\345\267\245\345\205\267\346\240\217", 0));
-        actionVisibleTab0->setText(QApplication::translate("SerialToolClass", "\344\270\262\345\217\243\350\260\203\350\257\225\345\212\251\346\211\213", 0));
+        actionVisibleTab1->setText(QApplication::translate("SerialTool", "Plot", 0));
+        actionVisibleStatusBar->setText(QApplication::translate("SerialTool", "Status Bar", 0));
+        actionAbout->setText(QApplication::translate("SerialTool", "About", 0));
+        actionAbout->setShortcut(QApplication::translate("SerialTool", "F1", 0));
+        label->setText(QApplication::translate("SerialTool", "Port", 0));
+        label_2->setText(QApplication::translate("SerialTool", "Baud Rate", 0));
+        groupBox->setTitle(QApplication::translate("SerialTool", "Rx Settings", 0));
+        checkBox_2->setText(QApplication::translate("SerialTool", "Auto Linefeed", 0));
+        groupBox_2->setTitle(QApplication::translate("SerialTool", "Tx Settings", 0));
+        resendBox->setText(QApplication::translate("SerialTool", "Resend", 0));
+        label_3->setText(QApplication::translate("SerialTool", "ms", 0));
 #ifndef QT_NO_TOOLTIP
-        actionVisibleTab0->setToolTip(QApplication::translate("SerialToolClass", "\346\230\276\347\244\272\344\270\262\345\217\243\350\260\203\350\257\225\345\212\251\346\211\213", 0));
+        sendButton->setToolTip(QApplication::translate("SerialTool", "Ctrl+Enter", 0));
 #endif // QT_NO_TOOLTIP
-        actionVisibleTab1->setText(QApplication::translate("SerialToolClass", "\344\270\262\345\217\243\347\244\272\346\263\242\345\231\250", 0));
-#ifndef QT_NO_TOOLTIP
-        actionVisibleTab1->setToolTip(QApplication::translate("SerialToolClass", "\344\270\262\345\217\243\347\244\272\346\263\242\345\231\250", 0));
-#endif // QT_NO_TOOLTIP
-        actionVisibleStatusBar->setText(QApplication::translate("SerialToolClass", "\347\212\266\346\200\201\346\240\217", 0));
-        actionAbout->setText(QApplication::translate("SerialToolClass", "\345\205\263\344\272\216", 0));
-        actionAbout->setShortcut(QApplication::translate("SerialToolClass", "F1", 0));
-        label->setText(QApplication::translate("SerialToolClass", "\347\253\257\345\217\243\357\274\232", 0));
-        label_2->setText(QApplication::translate("SerialToolClass", "\346\263\242\347\211\271\347\216\207\357\274\232", 0));
-        comboBoxBaudRate->clear();
-        comboBoxBaudRate->insertItems(0, QStringList()
-         << QApplication::translate("SerialToolClass", "1200", 0)
-         << QApplication::translate("SerialToolClass", "2400", 0)
-         << QApplication::translate("SerialToolClass", "4800", 0)
-         << QApplication::translate("SerialToolClass", "9600", 0)
-         << QApplication::translate("SerialToolClass", "19200", 0)
-         << QApplication::translate("SerialToolClass", "38400", 0)
-         << QApplication::translate("SerialToolClass", "57600", 0)
-         << QApplication::translate("SerialToolClass", "115200", 0)
-        );
-        comboBoxBaudRate->setCurrentText(QApplication::translate("SerialToolClass", "1200", 0));
-        groupBox->setTitle(QApplication::translate("SerialToolClass", "\346\216\245\346\224\266\350\256\276\347\275\256", 0));
-        checkBox_2->setText(QApplication::translate("SerialToolClass", "\350\207\252\345\212\250\346\215\242\350\241\214", 0));
-        portReadHex->setText(QApplication::translate("SerialToolClass", "Hex", 0));
-        portReadAscii->setText(QApplication::translate("SerialToolClass", "ASCII", 0));
-        groupBox_2->setTitle(QApplication::translate("SerialToolClass", "\345\217\221\351\200\201\350\256\276\347\275\256", 0));
-        portWriteHex->setText(QApplication::translate("SerialToolClass", "Hex", 0));
-        resendBox->setText(QApplication::translate("SerialToolClass", "\351\207\215\345\244\215\345\217\221\351\200\201", 0));
-        label_3->setText(QApplication::translate("SerialToolClass", "ms", 0));
-        portWriteAscii->setText(QApplication::translate("SerialToolClass", "ASCII", 0));
-#ifndef QT_NO_TOOLTIP
-        sendButton->setToolTip(QApplication::translate("SerialToolClass", "Ctrl + Enter", 0));
-#endif // QT_NO_TOOLTIP
-        sendButton->setText(QApplication::translate("SerialToolClass", "\345\217\221\351\200\201", 0));
-        sendButton->setShortcut(QApplication::translate("SerialToolClass", "Ctrl+Return", 0));
-        tabWidget->setTabText(tabWidget->indexOf(tab_2), QApplication::translate("SerialToolClass", "\344\270\262\345\217\243\350\260\203\350\257\225\345\212\251\346\211\213", 0));
-        label_4->setText(QApplication::translate("SerialToolClass", "Y\350\275\264\344\270\212\351\231\220\357\274\232", 0));
-        label_5->setText(QApplication::translate("SerialToolClass", "Y\350\275\264\344\270\213\351\231\220\357\274\232", 0));
-        label_6->setText(QApplication::translate("SerialToolClass", "X\350\275\264\351\207\207\346\240\267\346\225\260\357\274\232", 0));
-        xRangeBox->clear();
-        xRangeBox->insertItems(0, QStringList()
-         << QApplication::translate("SerialToolClass", "10", 0)
-         << QApplication::translate("SerialToolClass", "20", 0)
-         << QApplication::translate("SerialToolClass", "25", 0)
-         << QApplication::translate("SerialToolClass", "50", 0)
-         << QApplication::translate("SerialToolClass", "100", 0)
-         << QApplication::translate("SerialToolClass", "200", 0)
-         << QApplication::translate("SerialToolClass", "250", 0)
-         << QApplication::translate("SerialToolClass", "500", 0)
-         << QApplication::translate("SerialToolClass", "1000", 0)
-         << QApplication::translate("SerialToolClass", "2000", 0)
-         << QApplication::translate("SerialToolClass", "2500", 0)
-         << QApplication::translate("SerialToolClass", "5000", 0)
-         << QApplication::translate("SerialToolClass", "10000", 0)
-        );
-        xRangeBox->setCurrentText(QApplication::translate("SerialToolClass", "10", 0));
-#ifndef QT_NO_TOOLTIP
-        holdRxOscBox->setToolTip(QApplication::translate("SerialToolClass", "\344\270\262\345\217\243\347\244\272\346\263\242\345\231\250\345\234\250\345\205\266\344\273\226\351\200\211\351\241\271\345\215\241\344\270\213\344\271\237\344\274\232\346\216\245\346\224\266\346\225\260\346\215\256", 0));
-#endif // QT_NO_TOOLTIP
-        holdRxOscBox->setText(QApplication::translate("SerialToolClass", "\344\277\235\346\214\201\346\216\245\346\224\266", 0));
-        tabWidget->setTabText(tabWidget->indexOf(tab), QApplication::translate("SerialToolClass", "\344\270\262\345\217\243\347\244\272\346\263\242\345\231\250", 0));
-        menu->setTitle(QApplication::translate("SerialToolClass", "\346\226\207\344\273\266", 0));
-        menu_2->setTitle(QApplication::translate("SerialToolClass", "\350\256\276\347\275\256", 0));
-        menu_3->setTitle(QApplication::translate("SerialToolClass", "\347\274\226\350\276\221", 0));
-        menu_4->setTitle(QApplication::translate("SerialToolClass", "\350\247\206\345\233\276", 0));
-        menu_5->setTitle(QApplication::translate("SerialToolClass", "\345\270\256\345\212\251", 0));
-        toolBar1->setWindowTitle(QApplication::translate("SerialToolClass", "\345\267\245\345\205\267\346\240\217", 0));
+        sendButton->setText(QApplication::translate("SerialTool", "Send", 0));
+        sendButton->setShortcut(QApplication::translate("SerialTool", "Ctrl+Return", 0));
+        tabWidget->setTabText(tabWidget->indexOf(tab_2), QApplication::translate("SerialTool", "Tester", 0));
+        label_4->setText(QApplication::translate("SerialTool", "Y Axis Upper", 0));
+        label_5->setText(QApplication::translate("SerialTool", "Y Axis Lower", 0));
+        label_6->setText(QApplication::translate("SerialTool", "X Axis Points", 0));
+        holdRxOscBox->setText(QApplication::translate("SerialTool", "Hold receive", 0));
+        tabWidget->setTabText(tabWidget->indexOf(tab), QApplication::translate("SerialTool", "Plot", 0));
+        menu->setTitle(QApplication::translate("SerialTool", "File", 0));
+        menu_2->setTitle(QApplication::translate("SerialTool", "Tools", 0));
+        menu_3->setTitle(QApplication::translate("SerialTool", "Edit", 0));
+        menu_4->setTitle(QApplication::translate("SerialTool", "View", 0));
+        menu_5->setTitle(QApplication::translate("SerialTool", "Help", 0));
+        toolBar1->setWindowTitle(QApplication::translate("SerialTool", "Tool Bar", 0));
     } // retranslateUi
 
 };
 
 namespace Ui {
-    class SerialToolClass: public Ui_SerialToolClass {};
+    class SerialTool: public Ui_SerialTool {};
 } // namespace Ui
 
 QT_END_NAMESPACE

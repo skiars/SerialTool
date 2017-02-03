@@ -1,39 +1,39 @@
-#include "aboutbox.h"
+ï»¿#include "aboutbox.h"
+#include <QFile>
 #include "version.h"
 
-AboutBox::AboutBox(QWidget *parent)
+AboutBox::AboutBox(QWidget *parent) : QDialog(parent)
 {
-    // ²»ÏÔÊ¾ÎÊºÅ
+    // ä¸æ˜¾ç¤ºé—®å·
     Qt::WindowFlags flags = Qt::Dialog;
     flags |= Qt::WindowCloseButtonHint;
     setWindowFlags(flags);
     ui.setupUi(this);
-    setFixedSize(400, 400); // ²»ÄÜÉìËõµÄ¶Ô»°¿ò
+    setFixedSize(400, 400); // ä¸èƒ½ä¼¸ç¼©çš„å¯¹è¯æ¡†
 
     QPalette pal(palette());
-    pal.setColor(QPalette::Background, Qt::white); //ÉèÖÃ±³¾°É«
+    pal.setColor(QPalette::Background, Qt::white); //è®¾ç½®èƒŒæ™¯è‰²
     setAutoFillBackground(true);
     setPalette(pal);
 
-    ui.buttonBox->setCenterButtons(true); // °´Å¥¾ÓÖĞ
-    ui.textBrowser->setFrameStyle(QFrame::NoFrame); // ÎŞ±ß¿ò
+    ui.buttonBox->setCenterButtons(true); // æŒ‰é’®å±…ä¸­
+    ui.textBrowser->setFrameStyle(QFrame::NoFrame); // æ— è¾¹æ¡†
 
     QPixmap pix(":/SerialTool/images/icon.ico");
     pix = pix.scaledToWidth(64, Qt::SmoothTransformation);
     ui.label1->setPixmap(pix);
-    setWindowTitle(QStringLiteral("¹ØÓÚSerialTool"));
     ui.label2->setText(
         "<b>SerialTool</b><br>"
         "Version: " SOFTWARE_VERSION "." BUILD_VERSION "<br>"
         "Email: 2269610337@qq.com<br>"
         "Home Page: <a href=\"https://github.com/Le-Seul/SerialTool\">View Code On GitHub</a><br>"
-        "Build Date: " __DATE__ "<br>" // ±àÒëÊ±¼ä
+        "Build Date: " __DATE__ "<br>" // ç¼–è¯‘æ—¶é—´
         COPYRIGHT
     );
-    ui.label2->setOpenExternalLinks(true); // ÔÊĞí·ÃÎÊÁ´½Ó
-    ui.textBrowser->setText(
-        "This program is free software; you can redistribute it and / or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.\n"
-        "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the GNU General Public License for more details.\n"
-        "You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.\n"
-    );
+    ui.label2->setOpenExternalLinks(true); // å…è®¸è®¿é—®é“¾æ¥
+    QFile lic(":/license/license.html");
+    lic.open(QFile::ReadOnly);
+    ui.textBrowser->setHtml(lic.readAll());
+    ui.textBrowser->setOpenExternalLinks(true); // å…è®¸è®¿é—®é“¾æ¥
+    lic.close();
 }

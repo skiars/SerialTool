@@ -1,4 +1,4 @@
-#ifndef __SERIALTOOL_H
+Ôªø#ifndef __SERIALTOOL_H
 #define __SERIALTOOL_H
 
 #include <QtWidgets/QMainWindow>
@@ -21,7 +21,8 @@ public:
     void loadConfig();
     void saveConfig();
     QSettings *getConfig() { return config; }
-    
+    void setLanguage(const QString &string);
+    void setStyleSheet(const QString &string);
 
 private slots:
     void addData(int channel, double ms, double value);
@@ -39,7 +40,9 @@ private slots:
     void changeRunFlag();
     void scanPort();
     void onSecTimerTimeout();
-    void onOpenPortActionTriggered();
+    void openPort();
+    void closePort();
+    void onPortSwitchActionTriggered();
     void openSetPortInfoBox();
     void setPortBaudRate(const QString &string);
     void onSendButtonClicked();
@@ -58,11 +61,11 @@ protected:
     void closeEvent(QCloseEvent *event);
 
 private:
-    Ui::SerialToolClass ui;
+    Ui_SerialTool ui;
     QString docPath;
     QTimer dataTimer;
-    QTimer resendTimer; // ÷ÿ∑¢ ±º‰
-    QTimer secTimer;   // √Î∂® ±∆˜
+    QTimer resendTimer; // ÈáçÂèëÊó∂Èó¥
+    QTimer secTimer;   // ÁßíÂÆöÊó∂Âô®
     QSerialPort *serialPort;
     QSettings *config;
     double count[CH_NUM], xRange;
@@ -72,6 +75,7 @@ private:
     int rxCount, txCount;
     QLabel *rxCntLabel, *txCntLabel, *portInfoLabel;
     QByteArray asciiBuf;
+    QTranslator appTranslator, qtTranslator;
 };
 
 #endif // SERIALTOOL_H

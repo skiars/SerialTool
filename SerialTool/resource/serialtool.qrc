@@ -11,4 +11,7 @@
         <file>images/save.ico</file>
         <file>images/start.ico</file>
     </qresource>
+    <qresource prefix="/license">
+        <file>license.html</file>
+    </qresource>
 </RCC>

@@ -1,0 +1,69 @@
+#-------------------------------------------------
+#
+# Project created by QtCreator 2017-02-01T17:03:23
+#
+#-------------------------------------------------
+
+QT       += core opengl widgets printsupport serialport gui
+
+TARGET = SerialTool
+TEMPLATE = app
+
+# The following define makes your compiler emit warnings if you use
+# any feature of Qt which as been marked as deprecated (the exact warnings
+# depend on your compiler). Please consult the documentation of the
+# deprecated API in order to know how to port your code away from it.
+DEFINES += QT_DEPRECATED_WARNINGS
+
+# You can also make your code fail to compile if you use deprecated APIs.
+# In order to do so, uncomment the following line.
+# You can also select to disable deprecated APIs only up to a certain version of Qt.
+#DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
+
+#DEFINES += QCUSTOMPLOT_USE_OPENGL
+
+QMAKE_CFLAGS +=
+
+RC_ICONS = resource\images\icon.ico
+
+INCLUDEPATH += include
+
+SOURCES += \
+    source/aboutbox.cpp \
+    source/channelitem.cpp \
+    source/main.cpp \
+    source/optionsbox.cpp \
+    source/portsetbox.cpp \
+    source/qcustomplot.cpp \
+    source/serialtool.cpp
+
+HEADERS  += \
+    include/aboutbox.h \
+    include/channelitem.h \
+    include/optionsbox.h \
+    include/portsetbox.h \
+    include/qcustomplot.h \
+    include/serialtool.h \
+    include/version.h \
+    resource/serialtool.rc
+
+DISTFILES += \
+    resource/images/clear.png \
+    resource/images/close.png \
+    resource/images/connect.png \
+    resource/images/port config.png \
+    resource/images/config.ico \
+    resource/images/exit.ico \
+    resource/images/icon.ico \
+    resource/images/pause.ico \
+    resource/images/save.ico \
+    resource/images/start.ico
+
+RESOURCES += \
+    resource/serialtool.qrc
+
+FORMS += \
+    ui/aboutbox.ui \
+    ui/optionsbox.ui \
+    ui/portsetbox.ui \
+    ui/serialtool.ui

@@ -1,4 +1,4 @@
-#include "serialtool.h"
+ï»¿#include "serialtool.h"
 #include "portsetbox.h"
 #include "optionsbox.h"
 #include "aboutbox.h"
@@ -11,15 +11,20 @@ SerialTool::SerialTool(QWidget *parent)
     setWindowTitle(SOFTWARE_NAME " " SOFTWARE_VERSION);
     listViewInit();
 
-    // ´®¿ÚÉèÖÃµÄ¿Ø¼şÒÆ¶¯µ½¹¤¾ßÀ¸
+    qApp->installTranslator(&appTranslator);
+    qApp->installTranslator(&qtTranslator);
+    setLanguage("zh_CN");
+    setStyleSheet("default");
+
+    // ä¸²å£è®¾ç½®çš„æ§ä»¶ç§»åŠ¨åˆ°å·¥å…·æ 
     ui.toolBar1->insertWidget(ui.portSetAction, ui.portConfigWidget);
 
-    // »¥³â¶¯×÷
+    // äº’æ–¥åŠ¨ä½œ
     tabActionGroup = new QActionGroup(this);
     tabActionGroup->addAction(ui.actionVisibleTab0);
     tabActionGroup->addAction(ui.actionVisibleTab1);
 
-    // ÍÏ¶¯Ê±²»¿¹¾â³İ
+    // æ‹–åŠ¨æ—¶ä¸æŠ—é”¯é½¿
     ui.customPlot->setNoAntialiasingOnDrag(true);
     //ui.customPlot->setNotAntialiasedElement(QCP::aePlottables);
 
@@ -33,11 +38,11 @@ SerialTool::SerialTool(QWidget *parent)
     ui.customPlot->axisRect()->setupFullAxesBox(true);
     ui.customPlot->setInteractions(QCP::iRangeDrag);
 
-    scanPort(); // É¨Ãè¶Ë¿Ú
+    scanPort(); // æ‰«æç«¯å£
 
     rxCount = 0;
     txCount = 0;
-    // ×´Ì¬À¸ÉèÖÃ
+    // çŠ¶æ€æ è®¾ç½®
     rxCntLabel = new QLabel("Rx: 0Bytes", this);
     txCntLabel = new QLabel("Tx: 0Bytes", this);
     portInfoLabel = new QLabel("", this);
@@ -48,7 +53,7 @@ SerialTool::SerialTool(QWidget *parent)
     ui.statusBar->addWidget(rxCntLabel);
     ui.statusBar->addWidget(txCntLabel);
 
-    loadConfig(); // ¼ÓÔØÅäÖÃ
+    loadConfig(); // åŠ è½½é…ç½®
     
     // create connection between axes and scroll bars:
     connect(ui.horizontalScrollBar, SIGNAL(sliderMoved(int)), this, SLOT(horzScrollBarMoved(int)));
@@ -56,8 +61,7 @@ SerialTool::SerialTool(QWidget *parent)
     connect(ui.customPlot, SIGNAL(mouseMove(QMouseEvent*)), this, SLOT(plotMouseMove()));
     connect(ui.channelList, SIGNAL(itemChanged(ChannelItem*)), this, SLOT(channelVisibleChanged(ChannelItem*)));
     connect(ui.portRunAction, SIGNAL(triggered()), this, SLOT(changeRunFlag()));
-    connect(ui.openPortAction, SIGNAL(triggered()), this, SLOT(onOpenPortActionTriggered()));
-    connect(serialPort, SIGNAL(errorOccurred(QSerialPort::SerialPortError)), this, SLOT(onOpenPortActionTriggered()));
+    connect(ui.portSwitchAction, SIGNAL(triggered()), this, SLOT(onPortSwitchActionTriggered()));
     connect(serialPort, &QSerialPort::readyRead, this, &SerialTool::readPortData);
     connect(ui.sendButton, &QPushButton::clicked, this, &SerialTool::onSendButtonClicked);
     connect(ui.clearAction, SIGNAL(triggered()), this, SLOT(cleanData()));
@@ -91,35 +95,53 @@ SerialTool::~SerialTool()
     
 }
 
-// ¹Ø±ÕÊÂ¼ş
+// å…³é—­äº‹ä»¶
 void SerialTool::closeEvent(QCloseEvent *event)
 {
     saveConfig();
 }
 
-// ¶ÁÈ¡ÉèÖÃ
+// åŠ è½½è¯­è¨€
+void SerialTool::setLanguage(const QString &string)
+{
+    appTranslator.load("language/" + string + ".qm");
+    qtTranslator.load("language/qt_" + string + ".qm");
+    ui.retranslateUi(this);
+}
+
+// åŠ è½½æ ·å¼è¡¨
+void SerialTool::setStyleSheet(const QString &string)
+{
+    // æ ·å¼è¡¨
+    QFile qss("themes/" + string + ".css");
+    qss.open(QFile::ReadOnly);
+    qApp->setStyleSheet(qss.readAll());
+    qss.close();
+}
+
+// è¯»å–è®¾ç½®
 void SerialTool::loadConfig()
 {
     config = new QSettings("config.ini", QSettings::IniFormat);
 
-    // ÅäÖÃ²¨ÌØÂÊ
+    // é…ç½®æ³¢ç‰¹ç‡
     config->beginGroup("SerialPort");
     serialPort->setBaudRate(config->value("BaudRate").toInt());
     ui.comboBoxBaudRate->setCurrentText(QString::number(serialPort->baudRate()));
     config->endGroup();
 
-    // ´ò¿ªÒ³ÃæÅäÖÃ
+    // æ‰“å¼€é¡µé¢é…ç½®
     config->beginGroup("Workspace");
     ui.tabWidget->setCurrentIndex(config->value("TabIndex").toInt());
     tabIndexChanged(ui.tabWidget->currentIndex());
     ui.toolBar1->setVisible(config->value("ToolBarVisible").toBool());
     ui.actionVisibleToolbar->setChecked(ui.toolBar1->isVisible());
     ui.statusBar->setVisible(config->value("StatusBarVisible").toBool());
-    // ÕâÀïÈç¹ûÖ±½ÓËÙ¶ÁÈ¡ui.statusBar->isVisible()»áÊÇfalse,Ô­Òò²»Ã÷
+    // è¿™é‡Œå¦‚æœç›´æ¥é€Ÿè¯»å–ui.statusBar->isVisible()ä¼šæ˜¯false,åŸå› ä¸æ˜
     ui.actionVisibleStatusBar->setChecked(config->value("StatusBarVisible").toBool());
     config->endGroup();
 
-    // ´®¿Úµ÷ÊÔ¹¤¾ßÅäÖÃ
+    // ä¸²å£è°ƒè¯•å·¥å…·é…ç½®
     config->beginGroup("TestTool");
     if (config->value("ReceiveMode") == "Hex") {
         ui.portReadHex->setChecked(true);
@@ -136,11 +158,11 @@ void SerialTool::loadConfig()
     } else {
         ui.spinBoxStepTime->setValue(config->value("RepeatInterval").toInt());
     }
-    ui.resendBox->setChecked(config->value("ResendMode").toBool()); // ÖØ¸´·¢ËÍ
+    ui.resendBox->setChecked(config->value("ResendMode").toBool()); // é‡å¤å‘é€
     onResendBoxChanged(ui.resendBox->isChecked());
     config->endGroup();
 
-    // ´®¿ÚÊ¾²¨Æ÷
+    // ä¸²å£ç¤ºæ³¢å™¨
     config->beginGroup("Oscillograph");
     ui.yRateUpperBox->setValue(config->value("YAxisUpper").toReal());
     ui.yRateLowerBox->setValue(config->value("YAxisLower").toReal());
@@ -158,14 +180,14 @@ void SerialTool::loadConfig()
     setXRange(ui.xRangeBox->currentText());
     config->endGroup();
 
-    // ÏµÍ³ÉèÖÃ
+    // ç³»ç»Ÿè®¾ç½®
     config->beginGroup("Settings");
 
     QString fonts(
         "font-family:" + config->value("FontFamily").toString().replace("+", ",") + ";\n"
         + "font:" + config->value("FontStyle").toString() + " "
         + config->value("FontSize").toString() + "px;\n");
-    // ×¢Òâ£¬Ê¹ÓÃQTextEdit::setTextColor()²»ÄÜĞŞ¸ÄÈ«¾ÖÑÕÉ«
+    // æ³¨æ„ï¼Œä½¿ç”¨QTextEdit::setTextColor()ä¸èƒ½ä¿®æ”¹å…¨å±€é¢œè‰²
     ui.textEditRead->setStyleSheet(fonts + "color:" +
         config->value("ReceiveTextColor").toString());
     ui.textEditWrite->setStyleSheet(fonts + "color:" +
@@ -180,21 +202,21 @@ void SerialTool::loadConfig()
     ui.customPlot->xAxis->setSubTickPen(pen);
     ui.customPlot->xAxis->setTickLabelColor(color);
     ui.customPlot->xAxis->setLabelColor(color);
-    ui.customPlot->xAxis->grid()->setZeroLinePen(pen); // Áãµã»­±Ê
+    ui.customPlot->xAxis->grid()->setZeroLinePen(pen); // é›¶ç‚¹ç”»ç¬”
     ui.customPlot->yAxis->setBasePen(pen);
     ui.customPlot->yAxis->setTickPen(pen);
     ui.customPlot->yAxis->grid()->setPen(pen);
     ui.customPlot->yAxis->setSubTickPen(pen);
     ui.customPlot->yAxis->setTickLabelColor(color);
     ui.customPlot->yAxis->setLabelColor(color);
-    ui.customPlot->yAxis->grid()->setZeroLinePen(pen); // Áãµã»­±Ê
+    ui.customPlot->yAxis->grid()->setZeroLinePen(pen); // é›¶ç‚¹ç”»ç¬”
     ui.customPlot->xAxis2->setBasePen(pen);
     ui.customPlot->xAxis2->setTickPen(pen);
     ui.customPlot->xAxis2->setSubTickPen(pen);
     ui.customPlot->yAxis2->setBasePen(pen);
     ui.customPlot->yAxis2->setTickPen(pen);
     ui.customPlot->yAxis2->setSubTickPen(pen);
-    // OpenGl¿ª¹Ø
+    // OpenGlå¼€å…³
     if (config->value("UseOpenGL").toBool()) {
         ui.customPlot->setOpenGl(true, 16);
         if (ui.customPlot->openGl() == false) {
@@ -203,13 +225,13 @@ void SerialTool::loadConfig()
     } else {
         ui.customPlot->setOpenGl(false);
     }
-    // »æÖÆÊ±²¨ĞÎ¿¹¾â³İ, Ö»ÓĞÔÚOpenG¹Ø±ÕÊ±ÓĞĞ§
+    // ç»˜åˆ¶æ—¶æ³¢å½¢æŠ—é”¯é½¿, åªæœ‰åœ¨OpenGå…³é—­æ—¶æœ‰æ•ˆ
     if (config->value("PlotAntialiased").toBool()) {
         ui.customPlot->setNotAntialiasedElement(QCP::aePlottables, false);
     } else {
         ui.customPlot->setNotAntialiasedElement(QCP::aePlottables, true);
     }
-    // »æÖÆÊ±Íø¸ñ¿¹¾â³İ, Ö»ÓĞÔÚOpenG¹Ø±ÕÊ±ÓĞĞ§
+    // ç»˜åˆ¶æ—¶ç½‘æ ¼æŠ—é”¯é½¿, åªæœ‰åœ¨OpenGå…³é—­æ—¶æœ‰æ•ˆ
     if (config->value("GridAntialiased").toBool()) {
         ui.customPlot->setAntialiasedElement(QCP::aeGrid, true);
         ui.customPlot->setAntialiasedElement(QCP::aeAxes, true);
@@ -219,12 +241,12 @@ void SerialTool::loadConfig()
     }
     config->endGroup();
 
-    // Â·¾­
+    // è·¯ç»
     config->beginGroup("Path");
     docPath = config->value("DocumentPath").toString();
     config->endGroup();
 
-    // ¿Ø¼şÊı¾İ
+    // æ§ä»¶æ•°æ®
     config->beginGroup("WidgetData");
     config->beginGroup("comboBox");
     int count = config->value("Count").toInt();
@@ -237,16 +259,16 @@ void SerialTool::loadConfig()
     config->endGroup();
 }
 
-// ±£´æÅäÖÃ
+// ä¿å­˜é…ç½®
 void SerialTool::saveConfig()
 {
-    // ±£´æ²¨ÌØÂÊ
+    // ä¿å­˜æ³¢ç‰¹ç‡
     config->beginGroup("SerialPort");
     config->setValue("BaudRate",
         QVariant(ui.comboBoxBaudRate->currentText()));
     config->endGroup();
     
-    // ´ò¿ªÒ³ÃæÅäÖÃ
+    // æ‰“å¼€é¡µé¢é…ç½®
     config->beginGroup("Workspace");
     config->setValue("TabIndex",
         QVariant(QString::number(ui.tabWidget->currentIndex())));
@@ -254,7 +276,7 @@ void SerialTool::saveConfig()
     config->setValue("StatusBarVisible", QVariant(ui.statusBar->isVisible()));
     config->endGroup();
 
-    // ´®¿Úµ÷ÊÔ¹¤¾ßÅäÖÃ
+    // ä¸²å£è°ƒè¯•å·¥å…·é…ç½®
     config->beginGroup("TestTool");
     if (ui.portReadHex->isChecked()) {
         config->setValue("ReceiveMode", QVariant("Hex"));
@@ -272,7 +294,7 @@ void SerialTool::saveConfig()
         QVariant(QString::number(ui.resendBox->isChecked())));
     config->endGroup();
 
-    // ´®¿ÚÊ¾²¨Æ÷
+    // ä¸²å£ç¤ºæ³¢å™¨
     config->beginGroup("Oscillograph");
     config->setValue("YAxisUpper",
         QVariant(QString::number(ui.yRateUpperBox->value())));
@@ -290,12 +312,12 @@ void SerialTool::saveConfig()
     }
     config->endGroup();
 
-    // Â·¾­
+    // è·¯ç»
     config->beginGroup("Path");
     config->setValue("DocumentPath", QVariant(docPath));
     config->endGroup();
 
-    // ¿Ø¼şÊı¾İ
+    // æ§ä»¶æ•°æ®
     config->beginGroup("WidgetData");
     config->beginGroup("comboBox");
     int count = ui.comboBox->count();
@@ -314,7 +336,7 @@ void SerialTool::setOptions()
     option.exec();
 }
 
-// ±£´æÎÄ¼ş
+// ä¿å­˜æ–‡ä»¶
 void SerialTool::saveFile()
 {
     QString filter;
@@ -336,7 +358,7 @@ void SerialTool::saveFile()
     }
 }
 
-// ¹ö¶¯Ìõ»¬¿éÒÆ¶¯´¥·¢
+// æ»šåŠ¨æ¡æ»‘å—ç§»åŠ¨è§¦å‘
 void SerialTool::horzScrollBarMoved(int value)
 {
     if (ui.horizontalScrollBar->maximum() == value) {
@@ -349,7 +371,7 @@ void SerialTool::horzScrollBarMoved(int value)
     ui.customPlot->replot();
 }
 
-// ¹ö¶¯Ìõ°´¼ü´¥·¢
+// æ»šåŠ¨æ¡æŒ‰é”®è§¦å‘
 void SerialTool::horzScrollBarTriggered()
 {
     int value = ui.horizontalScrollBar->value();
@@ -358,7 +380,7 @@ void SerialTool::horzScrollBarTriggered()
     ui.customPlot->replot();
 }
 
-// Êó±êÍÏ¶¯
+// é¼ æ ‡æ‹–åŠ¨
 void SerialTool::plotMouseMove()
 {
     double upper = ui.customPlot->xAxis->range().upper;
@@ -423,7 +445,7 @@ void SerialTool::tabActionGroupTriggered(QAction *action)
     
 }
 
-// Ìí¼ÓÊı¾İ
+// æ·»åŠ æ•°æ®
 void SerialTool::addData(int channel, double key, double value)
 {
     ui.customPlot->graph(channel)->addData(key, value);
@@ -448,13 +470,12 @@ void SerialTool::channelStyleChanged(ChannelItem *item)
 
 void SerialTool::realtimeDataSlot()
 {
-    // ÏÔÊ¾¸üĞÂ
+    // æ˜¾ç¤ºæ›´æ–°
     if (runFlag) {
         double key = count[0];
         for (int i = 0; i < CH_NUM; ++i) {
             key = key > count[i] ? key : count[i];
         }
-        Qt::AlignmentFlag align;
         if (key > xRange) {
             ui.horizontalScrollBar->setRange(0, (int)((key - xRange) * (100.0 / xRange)));
             if (replotFlag) {
@@ -472,12 +493,12 @@ void SerialTool::changeRunFlag()
         runFlag = false;
         QIcon icon(":/SerialTool/images/start.ico");
         ui.portRunAction->setIcon(icon);
-        ui.portRunAction->setText(QStringLiteral("¼ÌĞø·¢ËÍ/½ÓÊÕ"));
+        ui.portRunAction->setText(tr("Start Tx/Rx"));
     } else {
         runFlag = true;
         QIcon icon(":/SerialTool/images/pause.ico");
         ui.portRunAction->setIcon(icon);
-        ui.portRunAction->setText(QStringLiteral("ÔİÍ£·¢ËÍ/½ÓÊÕ"));
+        ui.portRunAction->setText(tr("Pause Tx/Rx"));
     }
 }
 
@@ -490,10 +511,16 @@ void SerialTool::onSecTimerTimeout()
         "None", "RTS/CTS", "XON/XOFF", "Unknown"
     };
 
-    if (!serialPort->isOpen()) { // ´®¿Ú¹Ø±ÕÊ±É¨Ãè¿ÉÓÃ¶Ë¿Ú
-        scanPort();
+    if (serialPort->isOpen()) {
+        // æ£€æŸ¥ç«¯å£æ˜¯å¦æœ‰é”™è¯¯
+        if (serialPort->error() != QSerialPort::NoError) {
+            closePort();
+            scanPort();
+        }
+    } else {
+        scanPort(); // ä¸²å£å…³é—­æ—¶æ‰«æå¯ç”¨ç«¯å£
     }
-    // ¸üĞÂÏÔÊ¾ĞÅÏ¢
+    // æ›´æ–°æ˜¾ç¤ºä¿¡æ¯
     QString str;
     str = ui.comboBoxPortNum->currentText().section(" ", 0, 0) + " ";
     if (serialPort->isOpen()) {
@@ -502,10 +529,10 @@ void SerialTool::onSecTimerTimeout()
             + parity[serialPort->parity()] + ", "
             + QString::number(serialPort->stopBits()) + ", "
             + flowControl[serialPort->flowControl()];
-        portInfoLabel->setStyleSheet("color:green");
+        portInfoLabel->setStyleSheet("color:green; font-family: Microsoft YaHei UI;");
     } else {
         str += "CLOSED";
-        portInfoLabel->setStyleSheet("color:red");
+        portInfoLabel->setStyleSheet("color:red; font-family: Microsoft YaHei UI;");
     }
     portInfoLabel->setText(str);
     str = "Rx: " + QString::number(rxCount) + "Bytes";
@@ -514,22 +541,21 @@ void SerialTool::onSecTimerTimeout()
     txCntLabel->setText(str);
 }
 
-// É¨Ãè¶Ë¿Ú
+// æ‰«æç«¯å£
 void SerialTool::scanPort()
 {
     int i = 0;
     bool sync = false;
     QVector<QSerialPortInfo> vec;
-    //²éÕÒ¿ÉÓÃµÄ´®¿Ú
-    foreach(const QSerialPortInfo &info, QSerialPortInfo::availablePorts())
-    {
-        // ¶Ë¿ÚÃû²»ÔÚÆ¥ÅäËµÃ÷¶Ë¿ÚÁĞ±í±ä¸ü
+    //æŸ¥æ‰¾å¯ç”¨çš„ä¸²å£
+    foreach(const QSerialPortInfo &info, QSerialPortInfo::availablePorts()) {
+        // ç«¯å£åä¸åœ¨åŒ¹é…è¯´æ˜ç«¯å£åˆ—è¡¨å˜æ›´
         if (ui.comboBoxPortNum->itemText(i++).indexOf(info.portName())) {
             sync = true;
         }
         vec.append(info);
     }
-    // ĞèÒªÍ¬²½»òÕßcomboBoxPortNum´æÔÚÎŞĞ§¶Ë¿Ú
+    // éœ€è¦åŒæ­¥æˆ–è€…comboBoxPortNumå­˜åœ¨æ— æ•ˆç«¯å£
     if (sync || !ui.comboBoxPortNum->itemText(i).isEmpty()) {
         int len = 0;
         QString longStr, str = ui.comboBoxPortNum->currentText();
@@ -537,7 +563,7 @@ void SerialTool::scanPort()
         for (i = 0; i < vec.length(); ++i) {
             QString t = vec[i].portName() + " (" + vec[i].description() + ")";
             ui.comboBoxPortNum->addItem(t);
-            if (t.length() > len) { // Í³¼Æ×î³¤×Ö·û´®
+            if (t.length() > len) { // ç»Ÿè®¡æœ€é•¿å­—ç¬¦ä¸²
                 len = t.length();
                 longStr = t;
             }
@@ -547,48 +573,60 @@ void SerialTool::scanPort()
         } else {
             ui.comboBoxPortNum->setCurrentIndex(0);
         }
-        // ×Ô¶¯¿ØÖÆÏÂÀ­ÁĞ±í¿í¶È
+        // è‡ªåŠ¨æ§åˆ¶ä¸‹æ‹‰åˆ—è¡¨å®½åº¦
         QFontMetrics fm(ui.comboBoxPortNum->font());
         len = fm.boundingRect(longStr).width() + 9;
         ui.comboBoxPortNum->view()->setMinimumWidth(len);
     }
 }
 
-// ´ò¿ª´®¿Ú²Ûº¯Êı
-void SerialTool::onOpenPortActionTriggered()
-{ 
-    if (serialPort->isOpen() == true) {
-        serialPort->close(); // ¹Ø±Õ´®¿Ú
-        QIcon icon(":/SerialTool/images/connect.png");
-        ui.openPortAction->setIcon(icon);
-        ui.openPortAction->setText(QStringLiteral("´ò¿ª¶Ë¿Ú"));
-        ui.comboBoxPortNum->setEnabled(true); // ÔÊĞí¸ü¸Ä´®¿Ú
-        ui.sendButton->setEnabled(false);
-        ui.portRunAction->setEnabled(false);
+void SerialTool::openPort()
+{
+    QString name = ui.comboBoxPortNum->currentText().section(' ', 0, 0);
+    serialPort->setPortName(name);
+    if (serialPort->open(QIODevice::ReadWrite)) {
+        QIcon icon(":/SerialTool/images/close.png");
+        ui.portSwitchAction->setIcon(icon);
+        ui.portSwitchAction->setText(tr("Close Port"));
+        ui.comboBoxPortNum->setEnabled(false); // ç¦æ­¢æ›´æ”¹ä¸²å£
+        ui.sendButton->setEnabled(true);
+        ui.portRunAction->setEnabled(true);
     } else {
-        QString name = ui.comboBoxPortNum->currentText().section(' ', 0, 0);
-        serialPort->setPortName(name);
-        if (serialPort->open(QIODevice::ReadWrite)) {
-            QIcon icon(":/SerialTool/images/close.png");
-            ui.openPortAction->setIcon(icon);
-            ui.openPortAction->setText(QStringLiteral("¹Ø±Õ¶Ë¿Ú"));
-            ui.comboBoxPortNum->setEnabled(false); // ½ûÖ¹¸ü¸Ä´®¿Ú
-            ui.sendButton->setEnabled(true);
-            ui.portRunAction->setEnabled(true);
-        } else {
-            QMessageBox err(QMessageBox::Critical, 
-                QStringLiteral("Error"),
-                QStringLiteral("ÎŞ·¨´ò¿ª¶Ë¿Ú£¡\n¶Ë¿Ú¿ÉÄÜ±»Õ¼ÓÃ»òÕßÅäÖÃ´íÎó£¡"),
-                QMessageBox::Cancel, this);
-            err.exec();
-        }
+        QMessageBox err(QMessageBox::Critical,
+            tr("Error"),
+            tr("Can not open the port!\n"
+                "Port may be occupied or configured incorrectly!"),
+            QMessageBox::Cancel, this);
+        err.exec();
     }
 }
 
+void SerialTool::closePort()
+{
+    serialPort->close(); // å…³é—­ä¸²å£
+    QIcon icon(":/SerialTool/images/connect.png");
+    ui.portSwitchAction->setIcon(icon);
+    ui.portSwitchAction->setText(tr("Open Port"));
+    ui.comboBoxPortNum->setEnabled(true); // å…è®¸æ›´æ”¹ä¸²å£
+    ui.sendButton->setEnabled(false);
+    ui.portRunAction->setEnabled(false);
+}
+
+// æ‰“å¼€ä¸²å£æ§½å‡½æ•°
+void SerialTool::onPortSwitchActionTriggered()
+{ 
+    if (serialPort->isOpen() == true) { // ç°åœ¨éœ€è¦å…³é—­ç«¯å£
+        closePort();
+    } else { // ç«¯å£å…³é—­æ—¶æ‰“å¼€ç«¯å£
+        openPort();
+    }
+}
+
+// æ‰“å¼€ä¸²å£è®¾ç½®å¯¹è¯æ¡†
 void SerialTool::openSetPortInfoBox()
 {
-    PortSetBox port(serialPort);
-    port.exec();
+    PortSetBox portSet(serialPort);
+    portSet.exec();
 }
 
 void SerialTool::setPortBaudRate(const QString &string)
@@ -598,29 +636,31 @@ void SerialTool::setPortBaudRate(const QString &string)
 
 void SerialTool::onSendButtonClicked()
 {
-    if (!runFlag) { // Èç¹ûÓÃ»§°´ÏÂ·¢ËÍ°´Å¥ÔòÍË³öÔİÍ£Ä£Ê½
+    if (!runFlag) { // å¦‚æœç”¨æˆ·æŒ‰ä¸‹å‘é€æŒ‰é’®åˆ™é€€å‡ºæš‚åœæ¨¡å¼
         changeRunFlag();
     }
-    writePortData();
+    if (!ui.textEditWrite->toPlainText().isEmpty()) {
+        writePortData();
 
-    // ÏÂÀ­ÁĞ±íÉ¾³ı¶àÓàÏî
-    while (ui.comboBox->count() >= 20) {
-        ui.comboBox->removeItem(19);
+        // å†å²è®°å½•ä¸‹æ‹‰åˆ—è¡¨åˆ é™¤å¤šä½™é¡¹
+        while (ui.comboBox->count() >= 20) {
+            ui.comboBox->removeItem(19);
+        }
+        // æ•°æ®å†™å…¥å†å²è®°å½•ä¸‹æ‹‰åˆ—è¡¨
+        QString str = ui.textEditWrite->toPlainText();
+        int i = ui.comboBox->findText(str);
+        if (i != -1) { // å­˜åœ¨çš„é¡¹å…ˆåˆ é™¤
+            ui.comboBox->removeItem(i);
+        }
+        ui.comboBox->insertItem(0, str); // æ•°æ®æ·»åŠ åˆ°ç¬¬0ä¸ªå…ƒç´ 
+        ui.comboBox->setCurrentIndex(0);
     }
-    // Êı¾İĞ´ÈëÀúÊ·¼ÇÂ¼ÏÂÀ­ÁĞ±í
-    QString str = ui.textEditWrite->toPlainText();
-    int i = ui.comboBox->findText(str);
-    if (i != -1) { // ´æÔÚµÄÏîÏÈÉ¾³ı
-        ui.comboBox->removeItem(i);
-    }
-    ui.comboBox->insertItem(0, str); // Êı¾İÌí¼Óµ½µÚ0¸öÔªËØ
-    ui.comboBox->setCurrentIndex(0);
 }
 
-// Êı¾İÖ¡ÀàÈİ:
+// æ•°æ®å¸§ç±»å®¹:
 // byte[0]: 'C'
 // byte[1]: 'H'
-// byte[2]: Í¨µÀ
+// byte[2]: é€šé“
 // byte[3]: float[0]
 // byte[4]: float[1]
 // byte[5]: float[2]
@@ -629,7 +669,7 @@ static bool serialPortGetByte(char &ch, float &value, char byte)
 {
     static quint8 buffer[5], pos = 0, last = '\0';
     
-    // ²¶»ñÖ¡Í·×´Ì¬»ú
+    // æ•è·å¸§å¤´çŠ¶æ€æœº
     switch (last) {
     case 0:
         last = byte == 'C' ? 'C' : 0;
@@ -665,12 +705,12 @@ static bool serialPortGetByte(char &ch, float &value, char byte)
 
 static void byteArrayToHex(QString &str, QByteArray &arr)
 {
-    unsigned int len = arr.length();
+    int len = arr.length();
     str.resize(len * 3);
     for (int i = 0; i < len; ++i) {
         int j;
-        quint8 outChar = arr[i], t;   //Ã¿×Ö½ÚÌî³äÒ»´Î£¬Ö±µ½½áÊø
-                                      //Ê®Áù½øÖÆµÄ×ª»»
+        quint8 outChar = arr[i], t;   //æ¯å­—èŠ‚å¡«å……ä¸€æ¬¡ï¼Œç›´åˆ°ç»“æŸ
+                                      //åå…­è¿›åˆ¶çš„è½¬æ¢
         j = i * 3;
         t = (outChar >> 4);
         str[j] = t + (t < 10 ? '0' : 'A' - 10);
@@ -680,7 +720,7 @@ static void byteArrayToHex(QString &str, QByteArray &arr)
     }
 }
 
-// Õâ¸öº¯Êı¿ÉÒÔ±ÜÃâÖĞÎÄ½ÓÊÕµÄÂÒÂë
+// è¿™ä¸ªå‡½æ•°å¯ä»¥é¿å…ä¸­æ–‡æ¥æ”¶çš„ä¹±ç 
 static void byteArrayToAscii(QString &str, QByteArray &arr, QByteArray &buf)
 {
     int cnt = 0;
@@ -689,7 +729,7 @@ static void byteArrayToAscii(QString &str, QByteArray &arr, QByteArray &buf)
     for (int i = buf.length() - 1; i >= 0 && (quint8)(buf[i]) > 128; --i) {
         cnt++;
     }
-    if (cnt & 1) { // ×Ö·û´®×îÄ©Î²µÄ·ÇASCII×Ö½ÚÊı²»Îª2µÄÕûÊı±¶
+    if (cnt & 1) { // å­—ç¬¦ä¸²æœ€æœ«å°¾çš„éASCIIå­—èŠ‚æ•°ä¸ä¸º2çš„æ•´æ•°å€
         char ch = buf[buf.length() - 1];
         buf.remove(buf.length() - 1, 1);
         str = QString::fromLocal8Bit(buf);
@@ -701,26 +741,26 @@ static void byteArrayToAscii(QString &str, QByteArray &arr, QByteArray &buf)
     }
 }
 
-//¶ÁÈ¡½ÓÊÕµ½µÄÊı¾İ  
+//è¯»å–æ¥æ”¶åˆ°çš„æ•°æ®  
 void SerialTool::readPortData()
 {
-    // ¶ÁÈ¡´®¿ÚÊı¾İ
+    // è¯»å–ä¸²å£æ•°æ®
     if (!runFlag) {
         return;
     }
-    QByteArray buf = serialPort->readAll(); // ¶ÁÈ¡´®¿ÚÊı¾İ
-    rxCount += buf.length(); // ½ÓÊÕ¼ÆÊı
+    QByteArray buf = serialPort->readAll(); // è¯»å–ä¸²å£æ•°æ®
+    rxCount += buf.length(); // æ¥æ”¶è®¡æ•°
     if (!buf.isEmpty()) {
-        if (ui.tabWidget->currentIndex() == 0) { // ´®¿Úµ÷ÊÔÖúÊÖ
+        if (ui.tabWidget->currentIndex() == 0) { // ä¸²å£è°ƒè¯•åŠ©æ‰‹
             QString str;
-            if (ui.portReadAscii->isChecked()) { // ASCIIÄ£Ê½
+            if (ui.portReadAscii->isChecked()) { // ASCIIæ¨¡å¼
                 byteArrayToAscii(str, buf, asciiBuf);
             } else {
                 byteArrayToHex(str, buf);
             }
-            // ÏÂÃæµÄ´úÂëÖØĞÂÊµÏÖÁËQTextEdit::append()µÄ¹¦ÄÜ
-            // Ó¦ÎªQTextEdit::append()×ÜÊÇ»á×Ô´ø»»ĞĞ
-            // ´úÂë²Î¿¼×Ô http://stackoverflow.com/questions/13559990/how-to-append-text-to-qplaintextedit-without-adding-newline-and-keep-scroll-at
+            // ä¸‹é¢çš„ä»£ç é‡æ–°å®ç°äº†QTextEdit::append()çš„åŠŸèƒ½
+            // åº”ä¸ºQTextEdit::append()æ€»æ˜¯ä¼šè‡ªå¸¦æ¢è¡Œ
+            // ä»£ç å‚è€ƒè‡ª http://stackoverflow.com/questions/13559990/how-to-append-text-to-qplaintextedit-without-adding-newline-and-keep-scroll-at
             QScrollBar *pScrolBar = ui.textEditRead->verticalScrollBar();
             bool bool_at_bottom = (pScrolBar->value() == pScrolBar->maximum());
             QTextCursor text_cursor = ui.textEditRead->textCursor();
@@ -730,14 +770,14 @@ void SerialTool::readPortData()
                 pScrolBar->setValue(pScrolBar->maximum());
             }
         }
-        // ´®¿ÚÊ¾²¨Æ÷½ÓÊÕÊı¾İ
+        // ä¸²å£ç¤ºæ³¢å™¨æ¥æ”¶æ•°æ®
         if (ui.tabWidget->currentIndex() == 1 || ui.holdRxOscBox->isChecked()) {
             for (int i = 0; i < buf.length(); ++i) {
                 char ch;
                 float value;
                 if (serialPortGetByte(ch, value, buf.data()[i]) == true) {
-                    addData(ch, count[ch], value);
-                    count[ch] += 1.0; // ¼ÆÊı
+                    addData(ch, count[(int)ch], value);
+                    count[(int)ch] += 1.0; // è®¡æ•°
                 }
             }
         }
@@ -745,7 +785,7 @@ void SerialTool::readPortData()
     buf.clear();
 }
 
-// Ïò´®¿Ú·¢ËÍÊı¾İ
+// å‘ä¸²å£å‘é€æ•°æ®
 void SerialTool::writePortData()
 {
     if (runFlag) {
@@ -757,7 +797,7 @@ void SerialTool::writePortData()
             arr = QByteArray::fromHex(
                 ui.textEditWrite->toPlainText().toLatin1());
         }
-        txCount += arr.length(); // ·¢ËÍ¼ÆÊı
+        txCount += arr.length(); // å‘é€è®¡æ•°
         serialPort->write(arr.data(), arr.length());
     }
 }
@@ -765,11 +805,11 @@ void SerialTool::writePortData()
 void SerialTool::cleanData()
 {
     switch (ui.tabWidget->currentIndex()) {
-    case 0: // ´®¿Úµ÷ÊÔÖúÊÖ
+    case 0: // ä¸²å£è°ƒè¯•åŠ©æ‰‹
         ui.textEditRead->clear();
         asciiBuf.clear();
         break;
-    case 1: // ´®¿ÚÊ¾²¨Æ÷
+    case 1: // ä¸²å£ç¤ºæ³¢å™¨
         for (int i = 0; i < CH_NUM; ++i) {
             ui.customPlot->graph(i)->data()->clear();
             ui.horizontalScrollBar->setValue(0);
@@ -780,7 +820,7 @@ void SerialTool::cleanData()
         }
         break;
     }
-    // ¼ÆÊıÇåÁã
+    // è®¡æ•°æ¸…é›¶
     rxCount = 0;
     txCount = 0;
 }
@@ -794,7 +834,7 @@ void SerialTool::onResendBoxChanged(int status)
     }
 }
 
-//  ÖØ¸´·¢ËÍÊ±¼äĞŞ¸Ä
+//  é‡å¤å‘é€æ—¶é—´ä¿®æ”¹
 void SerialTool::resendTimeChange(int msc)
 {
     resendTimer.setInterval(msc);
@@ -802,7 +842,7 @@ void SerialTool::resendTimeChange(int msc)
 
 void SerialTool::listViewInit()
 {
-    ui.channelList->setModelColumn(2); // Á½ÁĞ
+    ui.channelList->setModelColumn(2); // ä¸¤åˆ—
     for (int i = 0; i < CH_NUM; ++i) {
         QListWidgetItem *item = new QListWidgetItem;
         ui.channelList->addItem(item);
