@@ -67,7 +67,6 @@ public:
     QVBoxLayout *verticalLayout_4;
     QCheckBox *plotAntiBox;
     QCheckBox *gridAntiBox;
-    QCheckBox *openGlBox;
     QSpacerItem *verticalSpacer_2;
     QDialogButtonBox *buttonBox;
 
@@ -238,11 +237,6 @@ public:
 
         verticalLayout_4->addWidget(gridAntiBox);
 
-        openGlBox = new QCheckBox(groupBox_4);
-        openGlBox->setObjectName(QStringLiteral("openGlBox"));
-
-        verticalLayout_4->addWidget(openGlBox);
-
 
         verticalLayout_3->addWidget(groupBox_4);
 
@@ -266,7 +260,7 @@ public:
         QObject::connect(buttonBox, SIGNAL(accepted()), optionsBox, SLOT(accept()));
         QObject::connect(buttonBox, SIGNAL(rejected()), optionsBox, SLOT(reject()));
 
-        tabWidget->setCurrentIndex(0);
+        tabWidget->setCurrentIndex(1);
 
 
         QMetaObject::connectSlotsByName(optionsBox);
@@ -294,7 +288,6 @@ public:
         groupBox_4->setTitle(QApplication::translate("optionsBox", "Graphics Options", 0));
         plotAntiBox->setText(QApplication::translate("optionsBox", "Plot Antialias", 0));
         gridAntiBox->setText(QApplication::translate("optionsBox", "Grid Antialias", 0));
-        openGlBox->setText(QApplication::translate("optionsBox", "Use OpenGL", 0));
         tabWidget->setTabText(tabWidget->indexOf(tab2), QApplication::translate("optionsBox", "Plot", 0));
     } // retranslateUi
 
