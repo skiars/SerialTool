@@ -245,3 +245,4 @@ ModelManifest.xml
 .fake/
 
 SerialTool/*.ini
+Win32/
