@@ -48,34 +48,39 @@
 <context>
     <name>SerialTool</name>
     <message>
-        <location filename="../source/serialtool.cpp" line="496"/>
+        <location filename="../source/serialtool.cpp" line="488"/>
         <source>Start Tx/Rx</source>
         <translation>开始发送/接收</translation>
     </message>
     <message>
         <location filename="../ui/serialtool.ui" line="763"/>
-        <location filename="../source/serialtool.cpp" line="501"/>
+        <location filename="../source/serialtool.cpp" line="493"/>
         <source>Pause Tx/Rx</source>
         <translation>暂停发送/接收</translation>
     </message>
     <message>
         <location filename="../ui/serialtool.ui" line="747"/>
-        <location filename="../source/serialtool.cpp" line="608"/>
+        <location filename="../source/serialtool.cpp" line="601"/>
         <source>Open Port</source>
         <translation>打开端口</translation>
     </message>
     <message>
-        <location filename="../source/serialtool.cpp" line="589"/>
+        <location filename="../source/serialtool.cpp" line="336"/>
+        <source>Portable Network Graphic Format (*.png);;Bitmap (*.bmp);;Portable Document Format (*.pdf)</source>
+        <translation>图像文件存储格式 (*.png);;位图文件 (*.bmp);;便携式文档格式 (*.pdf)</translation>
+    </message>
+    <message>
+        <location filename="../source/serialtool.cpp" line="582"/>
         <source>Close Port</source>
         <translation>关闭端口</translation>
     </message>
     <message>
-        <location filename="../source/serialtool.cpp" line="595"/>
+        <location filename="../source/serialtool.cpp" line="588"/>
         <source>Error</source>
         <translation>错误</translation>
     </message>
     <message>
-        <location filename="../source/serialtool.cpp" line="596"/>
+        <location filename="../source/serialtool.cpp" line="589"/>
         <source>Can not open the port!
 Port may be occupied or configured incorrectly!</source>
         <translation>无法打开端口！
@@ -351,11 +356,6 @@ Port may be occupied or configured incorrectly!</source>
         <location filename="../ui/optionsbox.ui" line="273"/>
         <source>Grid Antialias</source>
         <translation>网格抗锯齿</translation>
-    </message>
-    <message>
-        <location filename="../ui/optionsbox.ui" line="280"/>
-        <source>Use OpenGL</source>
-        <translation>使用OpenGL</translation>
     </message>
 </context>
 </TS>

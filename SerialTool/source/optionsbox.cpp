@@ -27,8 +27,6 @@ OptionsBox::OptionsBox(SerialTool *parent) : QDialog(parent)
     axColor = config->value("AxisColor").toString();
     ui.plotAntiBox->setChecked(config->value("PlotAntialiased").toBool());
     ui.gridAntiBox->setChecked(config->value("GridAntialiased").toBool());
-    ui.openGlBox->setChecked(config->value("UseOpenGL").toBool());
-    openGlChanged(config->value("UseOpenGL").toBool());
     config->endGroup();
 
     if (!fontFamily.isEmpty()) {
@@ -49,7 +47,6 @@ OptionsBox::OptionsBox(SerialTool *parent) : QDialog(parent)
         this, SLOT(processOptions(QAbstractButton *)));
     connect(ui.plotBgColorButton, SIGNAL(clicked()), this, SLOT(setPlotBackgroundColor()));
     connect(ui.axisColorButton, SIGNAL(clicked()), this, SLOT(setAxisColor()));
-    connect(ui.openGlBox, SIGNAL(stateChanged(int)), this, SLOT(openGlChanged(int)));
 }
 
 OptionsBox::~OptionsBox()
@@ -76,7 +73,6 @@ void OptionsBox::processOptions(QAbstractButton *button)
         config->setValue("AxisColor", QVariant(axColor));
         config->setValue("PlotAntialiased", QVariant(ui.plotAntiBox->isChecked()));
         config->setValue("GridAntialiased", QVariant(ui.gridAntiBox->isChecked()));
-        config->setValue("UseOpenGL", QVariant(ui.openGlBox->isChecked()));
         config->endGroup();
         serialTool->saveConfig(); // 先保存配置
         serialTool->loadConfig(); // 配置生效
@@ -148,15 +144,4 @@ void OptionsBox::setAxisColor()
     QColor color = QColorDialog::getColor(QColor(axColor), this);
     axColor = color.name();
     ui.lineEditAxisColor->setText(axColor);
-}
-
-void OptionsBox::openGlChanged(int status)
-{
-    if (status) {
-        ui.plotAntiBox->setEnabled(false);
-        ui.gridAntiBox->setEnabled(false);
-    } else {
-        ui.plotAntiBox->setEnabled(true);
-        ui.gridAntiBox->setEnabled(true);
-    }
 }

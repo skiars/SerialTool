@@ -1,5 +1,6 @@
-* {
-  font-family: 'Microsoft YaHei UI', '微软雅黑';
+﻿* {
+  font-family: 'Microsoft YaHei UI', '微软雅黑', '宋体';
+  outline: none; /* 去掉虚线 */
 }
 
 QMainWindow {
@@ -263,7 +264,6 @@ QListView {
   border: 1px solid gray;
   border-radius: 3px;
   padding: 1px 1px 1px 2px; /* 针对于组合框中的文本内容 */
-  outline: 0px; /* 去掉虚线 */
 }
 
 QComboBox QAbstractItemView {

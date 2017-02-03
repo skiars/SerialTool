@@ -20,7 +20,6 @@ private slots:
     void setTxFontColor();
     void setPlotBackgroundColor();
     void setAxisColor();
-    void openGlChanged(int status);
 
 private:
     Ui_optionsBox ui;

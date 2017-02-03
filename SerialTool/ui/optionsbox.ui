@@ -17,7 +17,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tab1">
       <attribute name="title">
@@ -274,13 +274,6 @@
             </property>
            </widget>
           </item>
-          <item>
-           <widget class="QCheckBox" name="openGlBox">
-            <property name="text">
-             <string>Use OpenGL</string>
-            </property>
-           </widget>
-          </item>
          </layout>
         </widget>
        </item>
@@ -313,9 +306,7 @@
    </item>
   </layout>
  </widget>
- <resources>
-  <include location="../resource/serialtool.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>buttonBox</sender>

@@ -216,22 +216,14 @@ void SerialTool::loadConfig()
     ui.customPlot->yAxis2->setBasePen(pen);
     ui.customPlot->yAxis2->setTickPen(pen);
     ui.customPlot->yAxis2->setSubTickPen(pen);
-    // OpenGl开关
-    if (config->value("UseOpenGL").toBool()) {
-        ui.customPlot->setOpenGl(true, 16);
-        if (ui.customPlot->openGl() == false) {
-            config->setValue("UseOpenGL", QVariant(false));
-        }
-    } else {
-        ui.customPlot->setOpenGl(false);
-    }
-    // 绘制时波形抗锯齿, 只有在OpenG关闭时有效
+
+    // 绘制时波形抗锯齿
     if (config->value("PlotAntialiased").toBool()) {
         ui.customPlot->setNotAntialiasedElement(QCP::aePlottables, false);
     } else {
         ui.customPlot->setNotAntialiasedElement(QCP::aePlottables, true);
     }
-    // 绘制时网格抗锯齿, 只有在OpenG关闭时有效
+    // 绘制时网格抗锯齿
     if (config->value("GridAntialiased").toBool()) {
         ui.customPlot->setAntialiasedElement(QCP::aeGrid, true);
         ui.customPlot->setAntialiasedElement(QCP::aeAxes, true);
@@ -341,19 +333,19 @@ void SerialTool::saveFile()
 {
     QString filter;
     QString fname = QFileDialog::getSaveFileName(this, "Save", docPath,
-        "*.png;;*.bmp;;*.jpg;;*.pdf", &filter,
+        tr("Portable Network Graphic Format (*.png);;"
+            "Bitmap (*.bmp);;"
+           "Portable Document Format (*.pdf)"), &filter,
         QFileDialog::HideNameFilterDetails);
     if (fname.isNull()) {
         return;
     }
     docPath = QFileInfo(fname).path();
-    if (filter == "*.png") {
+    if (filter.indexOf("(*.png)", 0)) {
         ui.customPlot->savePng(fname);
-    } else if (filter == "*.bmp") {
+    } else if (filter.indexOf("(*.bmp)", 0)) {
         ui.customPlot->saveBmp(fname);
-    } else if (filter == "*.jpg") {
-        ui.customPlot->saveJpg(fname);
-    } else if (filter == "*.pdf") {
+    } else if (filter.indexOf("(*.pdf)", 0)) {
         ui.customPlot->savePdf(fname);
     }
 }
