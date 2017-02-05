@@ -74,8 +74,7 @@ void OptionsBox::processOptions(QAbstractButton *button)
         config->setValue("PlotAntialiased", QVariant(ui.plotAntiBox->isChecked()));
         config->setValue("GridAntialiased", QVariant(ui.gridAntiBox->isChecked()));
         config->endGroup();
-        serialTool->saveConfig(); // 先保存配置
-        serialTool->loadConfig(); // 配置生效
+        serialTool->loadSettings(); // 配置生效
     }
 }
 

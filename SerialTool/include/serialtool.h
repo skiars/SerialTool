@@ -18,7 +18,7 @@ public:
     SerialTool(QWidget *parent = Q_NULLPTR);
     ~SerialTool();
 
-    void loadConfig();
+    void loadSettings();
     void saveConfig();
     QSettings *getConfig() { return config; }
     void setLanguage(const QString &string);
@@ -57,7 +57,8 @@ private slots:
     void about();
     void onComboBoxChanged(const QString &string);
 
-protected:
+private:
+    void loadConfig();
     void closeEvent(QCloseEvent *event);
 
 private:
