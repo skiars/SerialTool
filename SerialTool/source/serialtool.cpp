@@ -7,14 +7,11 @@
 SerialTool::SerialTool(QWidget *parent)
     : QMainWindow(parent)
 {
-    ui.setupUi(this);
-    setWindowTitle(SOFTWARE_NAME " " SOFTWARE_VERSION);
-    listViewInit();
+    config = new QSettings("config.ini", QSettings::IniFormat);
 
-    qApp->installTranslator(&appTranslator);
-    qApp->installTranslator(&qtTranslator);
-    setLanguage("zh_CN");
-    setStyleSheet("default");
+    ui.setupUi(this);
+    setWindowTitle(SOFTWARE_NAME " V" SOFTWARE_VERSION);
+    listViewInit();
 
     // 串口设置的控件移动到工具栏
     ui.toolBar1->insertWidget(ui.portSetAction, ui.portConfigWidget);
@@ -24,9 +21,14 @@ SerialTool::SerialTool(QWidget *parent)
     tabActionGroup->addAction(ui.actionVisibleTab0);
     tabActionGroup->addAction(ui.actionVisibleTab1);
 
+    // 对界面的初始化借宿之后再设置语言和样式表
+    qApp->installTranslator(&appTranslator);
+    qApp->installTranslator(&qtTranslator);
+    setLanguage("zh_CN");
+    setStyleSheet("default");
+
     // 拖动时不抗锯齿
     ui.customPlot->setNoAntialiasingOnDrag(true);
-    //ui.customPlot->setNotAntialiasedElement(QCP::aePlottables);
 
     for (int i = 0; i < CH_NUM; ++i) {
         count[i] = 0.0;
@@ -84,7 +86,7 @@ SerialTool::SerialTool(QWidget *parent)
     connect(ui.yRateUpperBox, SIGNAL(valueChanged(double)), this, SLOT(setYRateUpper(double)));
     connect(ui.xRangeBox, SIGNAL(currentTextChanged(const QString &)), this, SLOT(setXRange(const QString &)));
     connect(ui.actionAbout, SIGNAL(triggered()), this, SLOT(about()));
-    connect(ui.comboBox, SIGNAL(currentTextChanged(const QString &)), this, SLOT(onComboBoxChanged(const QString &)));
+    connect(ui.comboBox, SIGNAL(activated(const QString &)), this, SLOT(onComboBoxChanged(const QString &)));
     
     dataTimer.start(20);
     secTimer.start(1000);
@@ -119,10 +121,82 @@ void SerialTool::setStyleSheet(const QString &string)
     qss.close();
 }
 
-// 读取设置
+// 读取系统设置
+void SerialTool::loadSettings()
+{
+    // 系统设置
+    config->beginGroup("Settings");
+
+    QString fonts(
+        "font-family:'" + config->value("FontFamily").toString().replace("+", "','") + "';"
+        + "font:" + config->value("FontStyle").toString() + " "
+        + config->value("FontSize").toString() + "pt;");
+    // 注意，使用QTextEdit::setTextColor()不能修改全局颜色
+    ui.textEditRead->setStyleSheet(fonts + "color:" +
+        config->value("ReceiveTextColor").toString());
+    ui.textEditWrite->setStyleSheet(fonts + "color:" +
+        config->value("TransmitTextColor").toString());
+    ui.customPlot->setBackground(QBrush(QColor(
+        config->value("PlotBackground").toString())));
+    QColor color = QColor(config->value("AxisColor").toString());
+    QPen pen(color);
+    ui.customPlot->xAxis->setBasePen(pen);
+    ui.customPlot->xAxis->setTickPen(pen);
+    ui.customPlot->xAxis->grid()->setPen(pen);
+    ui.customPlot->xAxis->setSubTickPen(pen);
+    ui.customPlot->xAxis->setTickLabelColor(color);
+    ui.customPlot->xAxis->setLabelColor(color);
+    ui.customPlot->xAxis->grid()->setZeroLinePen(pen); // 零点画笔
+    ui.customPlot->yAxis->setBasePen(pen);
+    ui.customPlot->yAxis->setTickPen(pen);
+    ui.customPlot->yAxis->grid()->setPen(pen);
+    ui.customPlot->yAxis->setSubTickPen(pen);
+    ui.customPlot->yAxis->setTickLabelColor(color);
+    ui.customPlot->yAxis->setLabelColor(color);
+    ui.customPlot->yAxis->grid()->setZeroLinePen(pen); // 零点画笔
+    ui.customPlot->xAxis2->setBasePen(pen);
+    ui.customPlot->xAxis2->setTickPen(pen);
+    ui.customPlot->xAxis2->setSubTickPen(pen);
+    ui.customPlot->yAxis2->setBasePen(pen);
+    ui.customPlot->yAxis2->setTickPen(pen);
+    ui.customPlot->yAxis2->setSubTickPen(pen);
+
+    // 绘制时波形抗锯齿
+    if (config->value("PlotAntialiased").toBool()) {
+        ui.customPlot->setNotAntialiasedElement(QCP::aePlottables, false);
+    } else {
+        ui.customPlot->setNotAntialiasedElement(QCP::aePlottables, true);
+    }
+    // 绘制时网格抗锯齿
+    if (config->value("GridAntialiased").toBool()) {
+        ui.customPlot->setAntialiasedElement(QCP::aeGrid, true);
+        ui.customPlot->setAntialiasedElement(QCP::aeAxes, true);
+    } else {
+        ui.customPlot->setAntialiasedElement(QCP::aeGrid, false);
+        ui.customPlot->setAntialiasedElement(QCP::aeAxes, false);
+    }
+    config->endGroup();
+}
+
+// 控件数据初始化, 在构造函数中初始化各种控件的初始值
 void SerialTool::loadConfig()
 {
-    config = new QSettings("config.ini", QSettings::IniFormat);
+    // 路经
+    config->beginGroup("Path");
+    docPath = config->value("DocumentPath").toString();
+    config->endGroup();
+
+    // 控件数据
+    config->beginGroup("WidgetData");
+    config->beginGroup("comboBox");
+    int count = config->value("Count").toInt();
+    for (int i = 0; i < count; ++i) {
+        ui.comboBox->addItem(
+            config->value("Item" + QString::number(i)).toString());
+    }
+    ui.comboBox->setCurrentIndex(0);
+    config->endGroup();
+    config->endGroup();
 
     // 配置波特率
     config->beginGroup("SerialPort");
@@ -180,75 +254,8 @@ void SerialTool::loadConfig()
     setXRange(ui.xRangeBox->currentText());
     config->endGroup();
 
-    // 系统设置
-    config->beginGroup("Settings");
-
-    QString fonts(
-        "font-family:" + config->value("FontFamily").toString().replace("+", ",") + ";\n"
-        + "font:" + config->value("FontStyle").toString() + " "
-        + config->value("FontSize").toString() + "px;\n");
-    // 注意，使用QTextEdit::setTextColor()不能修改全局颜色
-    ui.textEditRead->setStyleSheet(fonts + "color:" +
-        config->value("ReceiveTextColor").toString());
-    ui.textEditWrite->setStyleSheet(fonts + "color:" +
-        config->value("TransmitTextColor").toString());
-    ui.customPlot->setBackground(QBrush(QColor(
-        config->value("PlotBackground").toString())));
-    QColor color = QColor(config->value("AxisColor").toString());
-    QPen pen(color);
-    ui.customPlot->xAxis->setBasePen(pen);
-    ui.customPlot->xAxis->setTickPen(pen);
-    ui.customPlot->xAxis->grid()->setPen(pen);
-    ui.customPlot->xAxis->setSubTickPen(pen);
-    ui.customPlot->xAxis->setTickLabelColor(color);
-    ui.customPlot->xAxis->setLabelColor(color);
-    ui.customPlot->xAxis->grid()->setZeroLinePen(pen); // 零点画笔
-    ui.customPlot->yAxis->setBasePen(pen);
-    ui.customPlot->yAxis->setTickPen(pen);
-    ui.customPlot->yAxis->grid()->setPen(pen);
-    ui.customPlot->yAxis->setSubTickPen(pen);
-    ui.customPlot->yAxis->setTickLabelColor(color);
-    ui.customPlot->yAxis->setLabelColor(color);
-    ui.customPlot->yAxis->grid()->setZeroLinePen(pen); // 零点画笔
-    ui.customPlot->xAxis2->setBasePen(pen);
-    ui.customPlot->xAxis2->setTickPen(pen);
-    ui.customPlot->xAxis2->setSubTickPen(pen);
-    ui.customPlot->yAxis2->setBasePen(pen);
-    ui.customPlot->yAxis2->setTickPen(pen);
-    ui.customPlot->yAxis2->setSubTickPen(pen);
-
-    // 绘制时波形抗锯齿
-    if (config->value("PlotAntialiased").toBool()) {
-        ui.customPlot->setNotAntialiasedElement(QCP::aePlottables, false);
-    } else {
-        ui.customPlot->setNotAntialiasedElement(QCP::aePlottables, true);
-    }
-    // 绘制时网格抗锯齿
-    if (config->value("GridAntialiased").toBool()) {
-        ui.customPlot->setAntialiasedElement(QCP::aeGrid, true);
-        ui.customPlot->setAntialiasedElement(QCP::aeAxes, true);
-    } else {
-        ui.customPlot->setAntialiasedElement(QCP::aeGrid, false);
-        ui.customPlot->setAntialiasedElement(QCP::aeAxes, false);
-    }
-    config->endGroup();
-
-    // 路经
-    config->beginGroup("Path");
-    docPath = config->value("DocumentPath").toString();
-    config->endGroup();
-
-    // 控件数据
-    config->beginGroup("WidgetData");
-    config->beginGroup("comboBox");
-    int count = config->value("Count").toInt();
-    for (int i = 0; i < count; ++i) {
-        ui.comboBox->addItem(
-            config->value("Item" + QString::number(i)).toString());
-    }
-    ui.comboBox->setCurrentIndex(0);
-    config->endGroup();
-    config->endGroup();
+    // 最后读取系统设置
+    loadSettings();
 }
 
 // 保存配置
