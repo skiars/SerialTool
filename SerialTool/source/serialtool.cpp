@@ -139,7 +139,7 @@ void SerialTool::loadSettings()
     ui.textEditRx->setFonts(fonts, fontSize,
         QColor(config->value("ReceiveTextColor").toString()), fontStyle);
     ui.textEditTx->setFonts(fonts, fontSize,
-        QColor(config->value("ReceiveTextColor").toString()), fontStyle);
+        QColor(config->value("TransmitTextColor").toString()), fontStyle);
 
     ui.customPlot->setBackground(QBrush(QColor(
         config->value("PlotBackground").toString())));
