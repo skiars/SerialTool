@@ -35,7 +35,8 @@ SOURCES += \
     source/optionsbox.cpp \
     source/portsetbox.cpp \
     source/qcustomplot.cpp \
-    source/serialtool.cpp
+    source/serialtool.cpp\
+    source/textedit.cpp
 
 HEADERS  += \
     include/aboutbox.h \
@@ -44,8 +45,8 @@ HEADERS  += \
     include/portsetbox.h \
     include/qcustomplot.h \
     include/serialtool.h \
-    include/version.h \
-    resource/serialtool.rc
+    include/textedit.h \
+    include/version.h
 
 DISTFILES += \
     resource/images/clear.png \
@@ -67,3 +68,5 @@ FORMS += \
     ui/optionsbox.ui \
     ui/portsetbox.ui \
     ui/serialtool.ui
+
+LIBS += -lqscintilla2

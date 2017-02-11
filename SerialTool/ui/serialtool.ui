@@ -210,9 +210,12 @@
          <number>2</number>
         </property>
         <item>
-         <widget class="QTextEdit" name="textEditRead">
-          <property name="readOnly">
-           <bool>true</bool>
+         <widget class="TextEdit" name="textEditRx" native="true">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
           </property>
          </widget>
         </item>
@@ -288,12 +291,12 @@
                  </layout>
                 </item>
                 <item>
-                 <widget class="QCheckBox" name="checkBox_2">
+                 <widget class="QCheckBox" name="wrapLineBox">
                   <property name="enabled">
-                   <bool>false</bool>
+                   <bool>true</bool>
                   </property>
                   <property name="text">
-                   <string>Auto Linefeed</string>
+                   <string>Wrap Line</string>
                   </property>
                  </widget>
                 </item>
@@ -387,7 +390,10 @@
           </item>
           <item>
            <layout class="QGridLayout" name="gridLayout_3">
-            <item row="1" column="1">
+            <item row="2" column="0">
+             <widget class="QComboBox" name="comboBox"/>
+            </item>
+            <item row="2" column="1">
              <widget class="QPushButton" name="sendButton">
               <property name="enabled">
                <bool>false</bool>
@@ -410,17 +416,7 @@
              </widget>
             </item>
             <item row="0" column="0" colspan="2">
-             <widget class="QTextEdit" name="textEditWrite">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Ignored">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="0">
-             <widget class="QComboBox" name="comboBox"/>
+             <widget class="TextEdit" name="textEditTx" native="true"/>
             </item>
            </layout>
           </item>
@@ -852,6 +848,12 @@
    <class>QCustomPlot</class>
    <extends>QWidget</extends>
    <header>qcustomplot.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>TextEdit</class>
+   <extends>QWidget</extends>
+   <header>textedit.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

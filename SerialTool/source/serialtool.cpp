@@ -55,13 +55,17 @@ SerialTool::SerialTool(QWidget *parent)
     ui.statusBar->addWidget(rxCntLabel);
     ui.statusBar->addWidget(txCntLabel);
 
+    ui.textEditRx->setReadOnly(true);
+
+    // 发送区自动换行
+    ui.textEditTx->setWrap(1);
+
     loadConfig(); // 加载配置
     
     // create connection between axes and scroll bars:
     connect(ui.horizontalScrollBar, SIGNAL(sliderMoved(int)), this, SLOT(horzScrollBarMoved(int)));
     connect(ui.horizontalScrollBar, SIGNAL(actionTriggered(int)), this, SLOT(horzScrollBarTriggered()));
     connect(ui.customPlot, SIGNAL(mouseMove(QMouseEvent*)), this, SLOT(plotMouseMove()));
-    connect(ui.channelList, SIGNAL(itemChanged(ChannelItem*)), this, SLOT(channelVisibleChanged(ChannelItem*)));
     connect(ui.portRunAction, SIGNAL(triggered()), this, SLOT(changeRunFlag()));
     connect(ui.portSwitchAction, SIGNAL(triggered()), this, SLOT(onPortSwitchActionTriggered()));
     connect(serialPort, &QSerialPort::readyRead, this, &SerialTool::readPortData);
@@ -87,6 +91,7 @@ SerialTool::SerialTool(QWidget *parent)
     connect(ui.xRangeBox, SIGNAL(currentTextChanged(const QString &)), this, SLOT(setXRange(const QString &)));
     connect(ui.actionAbout, SIGNAL(triggered()), this, SLOT(about()));
     connect(ui.comboBox, SIGNAL(activated(const QString &)), this, SLOT(onComboBoxChanged(const QString &)));
+    connect(ui.wrapLineBox, SIGNAL(stateChanged(int)), this, SLOT(onWrapBoxChanged(int)));
     
     dataTimer.start(20);
     secTimer.start(1000);
@@ -127,15 +132,15 @@ void SerialTool::loadSettings()
     // 系统设置
     config->beginGroup("Settings");
 
-    QString fonts(
-        "font-family:'" + config->value("FontFamily").toString().replace("+", "','") + "';"
-        + "font:" + config->value("FontStyle").toString() + " "
-        + config->value("FontSize").toString() + "pt;");
-    // 注意，使用QTextEdit::setTextColor()不能修改全局颜色
-    ui.textEditRead->setStyleSheet(fonts + "color:" +
-        config->value("ReceiveTextColor").toString());
-    ui.textEditWrite->setStyleSheet(fonts + "color:" +
-        config->value("TransmitTextColor").toString());
+    QString fonts("'" 
+        + config->value("FontFamily").toString().replace("+", "','") + "'");
+    QString fontStyle(config->value("FontStyle").toString());
+    int fontSize = config->value("FontSize").toInt();
+    ui.textEditRx->setFonts(fonts, fontSize,
+        QColor(config->value("ReceiveTextColor").toString()), fontStyle);
+    ui.textEditTx->setFonts(fonts, fontSize,
+        QColor(config->value("ReceiveTextColor").toString()), fontStyle);
+
     ui.customPlot->setBackground(QBrush(QColor(
         config->value("PlotBackground").toString())));
     QColor color = QColor(config->value("AxisColor").toString());
@@ -227,13 +232,15 @@ void SerialTool::loadConfig()
     } else {
         ui.portWriteAscii->setChecked(true);
     }
-    if (config->value("RepeatInterval").toInt() == 0) {
+    if (config->value("RepeatInterval").toInt() == 0) { // 自动重发时间
         ui.spinBoxStepTime->setValue(1000);
     } else {
         ui.spinBoxStepTime->setValue(config->value("RepeatInterval").toInt());
     }
     ui.resendBox->setChecked(config->value("ResendMode").toBool()); // 重复发送
     onResendBoxChanged(ui.resendBox->isChecked());
+    ui.wrapLineBox->setChecked(config->value("RxAreaWrapLine").toBool()); // 接收区自动换行
+    onWrapBoxChanged(ui.wrapLineBox->isChecked());
     config->endGroup();
 
     // 串口示波器
@@ -290,7 +297,9 @@ void SerialTool::saveConfig()
     config->setValue("RepeatInterval",
         QVariant(QString::number(ui.spinBoxStepTime->value())));
     config->setValue("ResendMode",
-        QVariant(QString::number(ui.resendBox->isChecked())));
+        QVariant(ui.resendBox->isChecked())); // 自动重发
+    config->setValue("RxAreaWrapLine",
+        QVariant(ui.wrapLineBox->isChecked())); // 接收区自动换行
     config->endGroup();
 
     // 串口示波器
@@ -638,7 +647,8 @@ void SerialTool::onSendButtonClicked()
     if (!runFlag) { // 如果用户按下发送按钮则退出暂停模式
         changeRunFlag();
     }
-    if (!ui.textEditWrite->toPlainText().isEmpty()) {
+    QString str = ui.textEditTx->text();
+    if (!str.isEmpty()) {
         writePortData();
 
         // 历史记录下拉列表删除多余项
@@ -646,7 +656,6 @@ void SerialTool::onSendButtonClicked()
             ui.comboBox->removeItem(19);
         }
         // 数据写入历史记录下拉列表
-        QString str = ui.textEditWrite->toPlainText();
         int i = ui.comboBox->findText(str);
         if (i != -1) { // 存在的项先删除
             ui.comboBox->removeItem(i);
@@ -702,20 +711,25 @@ static bool serialPortGetByte(char &ch, float &value, char byte)
     return false;
 }
 
-static void byteArrayToHex(QString &str, QByteArray &arr)
+static void byteArrayToHex(QString &str, QByteArray &arr, int countOfLine)
 {
+    static int count;
     int len = arr.length();
-    str.resize(len * 3);
-    for (int i = 0; i < len; ++i) {
-        int j;
+    str.resize(len * 3 + (len + count) / countOfLine);
+    for (int i = 0, j = 0; i < len; ++i) {
         quint8 outChar = arr[i], t;   //每字节填充一次，直到结束
-                                      //十六进制的转换
-        j = i * 3;
+        //十六进制的转换
         t = (outChar >> 4);
-        str[j] = t + (t < 10 ? '0' : 'A' - 10);
+        str[j++] = t + (t < 10 ? '0' : 'A' - 10);
         t = outChar & 0x0F;
-        str[j + 1] = t + (t < 10 ? '0' : 'A' - 10);
-        str[j + 2] = ' ';
+        str[j++] = t + (t < 10 ? '0' : 'A' - 10);
+        str[j++] = ' ';
+        if (count >= countOfLine - 1) {
+            count = 0;
+            str[j++] = '\n';
+        } else {
+            ++count;
+        }
     }
 }
 
@@ -755,19 +769,9 @@ void SerialTool::readPortData()
             if (ui.portReadAscii->isChecked()) { // ASCII模式
                 byteArrayToAscii(str, buf, asciiBuf);
             } else {
-                byteArrayToHex(str, buf);
+                byteArrayToHex(str, buf, 16);
             }
-            // 下面的代码重新实现了QTextEdit::append()的功能
-            // 应为QTextEdit::append()总是会自带换行
-            // 代码参考自 http://stackoverflow.com/questions/13559990/how-to-append-text-to-qplaintextedit-without-adding-newline-and-keep-scroll-at
-            QScrollBar *pScrolBar = ui.textEditRead->verticalScrollBar();
-            bool bool_at_bottom = (pScrolBar->value() == pScrolBar->maximum());
-            QTextCursor text_cursor = ui.textEditRead->textCursor();
-            text_cursor.movePosition(QTextCursor::End);
-            text_cursor.insertText(str);
-            if (bool_at_bottom) {
-                pScrolBar->setValue(pScrolBar->maximum());
-            }
+            ui.textEditRx->append(str);
         }
         // 串口示波器接收数据
         if (ui.tabWidget->currentIndex() == 1 || ui.holdRxOscBox->isChecked()) {
@@ -787,14 +791,13 @@ void SerialTool::readPortData()
 // 向串口发送数据
 void SerialTool::writePortData()
 {
-    if (runFlag) {
+    if (runFlag && serialPort->isOpen()) {
         QByteArray arr;
         if (ui.portWriteAscii->isChecked() == true) {
             QTextCodec *code = QTextCodec::codecForName("GB-2312");
-            arr = code->fromUnicode(ui.textEditWrite->toPlainText());
+            arr = code->fromUnicode(ui.textEditTx->text());
         } else {
-            arr = QByteArray::fromHex(
-                ui.textEditWrite->toPlainText().toLatin1());
+            arr = QByteArray::fromHex(ui.textEditTx->text().toLatin1());
         }
         txCount += arr.length(); // 发送计数
         serialPort->write(arr.data(), arr.length());
@@ -805,7 +808,7 @@ void SerialTool::cleanData()
 {
     switch (ui.tabWidget->currentIndex()) {
     case 0: // 串口调试助手
-        ui.textEditRead->clear();
+        ui.textEditRx->clear();
         asciiBuf.clear();
         break;
     case 1: // 串口示波器
@@ -861,6 +864,10 @@ void SerialTool::about()
 
 void SerialTool::onComboBoxChanged(const QString &string)
 {
-    ui.textEditWrite->setText(string);
-    ui.textEditWrite->moveCursor(QTextCursor::End);
+    ui.textEditTx->setText(string);
+}
+
+void SerialTool::onWrapBoxChanged(int status)
+{
+    ui.textEditRx->setWrap(status);
 }
