@@ -8,8 +8,8 @@ TextEdit::TextEdit(QWidget *parent) : QsciScintilla(parent)
     connect(this, &QsciScintilla::textChanged, this, &TextEdit::setHScrollBarWidth);
     connect(verticalScrollBar(), &QScrollBar::rangeChanged, this, &TextEdit::onVScrollBarRangeChanged);
     connect(verticalScrollBar(), &QScrollBar::valueChanged, this, &TextEdit::onVScrollBarValueChanged);
-    connect(horizontalScrollBar(), &QScrollBar::rangeChanged, this, &TextEdit::onHScrollBarRangeChanged);
-    connect(horizontalScrollBar(), &QScrollBar::valueChanged, this, &TextEdit::onHScrollBarValueChanged);
+    //connect(horizontalScrollBar(), &QScrollBar::rangeChanged, this, &TextEdit::onHScrollBarRangeChanged);
+    //connect(horizontalScrollBar(), &QScrollBar::valueChanged, this, &TextEdit::onHScrollBarValueChanged);
 }
 
 void TextEdit::setText(const QString &text)
@@ -89,14 +89,14 @@ void TextEdit::setHScrollBarWidth()
     if (text().isEmpty()) {
         SendScintilla(SCI_SETSCROLLWIDTH, 1);
     }
-    if (hScrollEnd && vScrollEnd) {
+    if (scrollEnd && isWrap) {
         SendScintilla(SCI_GOTOPOS, SendScintilla(SCI_GETLENGTH));
     }
 }
 
 void TextEdit::onVScrollBarRangeChanged()
 {
-    if (vScrollEnd) {
+    if (scrollEnd) {
         QScrollBar *scrollBar = verticalScrollBar();
         scrollBar->setValue(scrollBar->maximum());
     }
@@ -106,35 +106,18 @@ void TextEdit::onVScrollBarValueChanged()
 {
     QScrollBar *scrollBar = verticalScrollBar();
     if (scrollBar->value() != scrollBar->maximum()) {
-        vScrollEnd = false;
+        scrollEnd = false;
     } else {
-        vScrollEnd = true;
-    }
-}
-
-void TextEdit::onHScrollBarRangeChanged()
-{
-    if (hScrollEnd) {
-        QScrollBar *scrollBar = horizontalScrollBar();
-        scrollBar->setValue(scrollBar->maximum());
-    }
-}
-
-void TextEdit::onHScrollBarValueChanged()
-{
-    QScrollBar *scrollBar = horizontalScrollBar();
-    if (scrollBar->value() != scrollBar->maximum()) {
-        hScrollEnd = false;
-    } else {
-        hScrollEnd = true;
+        scrollEnd = true;
     }
 }
 
 void TextEdit::setWrap(bool wrap)
 {
     if (wrap) {
-        setWrapMode(WrapWhitespace);
+        QsciScintilla::setWrapMode(WrapWhitespace);
     } else {
-        setWrapMode(WrapNone);
+        QsciScintilla::setWrapMode(WrapNone);
     }
+    isWrap = wrap;
 }

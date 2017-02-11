@@ -23,16 +23,14 @@ private slots:
     void setHScrollBarWidth();
     void onVScrollBarRangeChanged();
     void onVScrollBarValueChanged();
-    void onHScrollBarRangeChanged();
-    void onHScrollBarValueChanged();
 
 private:
     QString fontFamily;
     QFont lineNumFont;
     int fontSize;
     int lineCount = 1;
-    bool hScrollEnd = true;
-    bool vScrollEnd = true;
+    bool isWrap = false;
+    bool scrollEnd = true;
 };
 
 #endif
