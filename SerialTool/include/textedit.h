@@ -20,7 +20,8 @@ private:
     void setMarginsWidth();
 
 private slots:
-    void setHScrollBarWidth();
+    void onTextChanged();
+    void onLinesChanged();
     void onVScrollBarRangeChanged();
     void onVScrollBarValueChanged();
 

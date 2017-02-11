@@ -5,11 +5,10 @@ TextEdit::TextEdit(QWidget *parent) : QsciScintilla(parent)
 {
     SendScintilla(SCI_SETCODEPAGE, SC_CP_UTF8);
     SendScintilla(SCI_SETLAYOUTCACHE, SC_CACHE_DOCUMENT);
-    connect(this, &QsciScintilla::textChanged, this, &TextEdit::setHScrollBarWidth);
+    connect(this, &QsciScintilla::textChanged, this, &TextEdit::onTextChanged);
     connect(verticalScrollBar(), &QScrollBar::rangeChanged, this, &TextEdit::onVScrollBarRangeChanged);
     connect(verticalScrollBar(), &QScrollBar::valueChanged, this, &TextEdit::onVScrollBarValueChanged);
-    //connect(horizontalScrollBar(), &QScrollBar::rangeChanged, this, &TextEdit::onHScrollBarRangeChanged);
-    //connect(horizontalScrollBar(), &QScrollBar::valueChanged, this, &TextEdit::onHScrollBarValueChanged);
+    connect(this, &QsciScintilla::linesChanged, this, &TextEdit::onLinesChanged);
 }
 
 void TextEdit::setText(const QString &text)
@@ -22,14 +21,7 @@ void TextEdit::append(const QString &text)
 {
     bool posEnd = SendScintilla(SCI_GETLENGTH) == SendScintilla(SCI_GETCURRENTPOS);
     QsciScintilla::append(text);
-    // 设置页边宽度
-    static int order = 1;
-    lineCount = SendScintilla(QsciScintillaBase::SCI_GETLINECOUNT);
-    if (lineCount >= order * 10) {
-        order *= 10;
-        setMarginsWidth();
-    }
-    // 将光标移动到最后
+    // 如果光标之前就在末尾时将光标移动到最后
     if (posEnd) {
         long pos = SendScintilla(SCI_GETLENGTH);
         SendScintilla(SCI_SETANCHOR, pos);
@@ -84,13 +76,39 @@ void TextEdit::setMarginsWidth()
     SendScintilla(SCI_SETMARGINWIDTHN, 1, len);
 }
 
-void TextEdit::setHScrollBarWidth()
+void TextEdit::onTextChanged()
 {
     if (text().isEmpty()) {
         SendScintilla(SCI_SETSCROLLWIDTH, 1);
     }
+    // 如果使用了自动换行功能并且滚动条在底部则把滚动条重新移动到底部
     if (scrollEnd && isWrap) {
-        SendScintilla(SCI_GOTOPOS, SendScintilla(SCI_GETLENGTH));
+        int lineEnd = lineCount - 1; // 末行
+        int lineLen = SendScintilla(SCI_LINELENGTH, lineEnd);
+        SendScintilla(SCI_LINESCROLL, lineLen, lineEnd);
+    }
+}
+
+// 计算一个十进制数字的位数
+static int countOrder(int value)
+{
+    int order = 0;
+    for (int i = 1; i <= value; i *= 10) {
+        ++order;
+    }
+    return order;
+}
+
+void TextEdit::onLinesChanged()
+{
+    int temp;
+    static int order = 0;
+
+    lineCount = SendScintilla(SCI_GETLINECOUNT);
+    temp = countOrder(lineCount);
+    if (temp != order) {
+        order = temp;
+        setMarginsWidth();
     }
 }
 

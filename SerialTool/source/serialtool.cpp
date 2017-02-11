@@ -58,7 +58,7 @@ SerialTool::SerialTool(QWidget *parent)
     ui.textEditRx->setReadOnly(true);
 
     // 发送区自动换行
-    ui.textEditTx->setWrap(1);
+    ui.textEditTx->setWrap(true);
 
     loadConfig(); // 加载配置
     

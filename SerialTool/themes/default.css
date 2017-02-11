@@ -8,7 +8,7 @@ QMainWindow {
   background: white;
 }
 
-QComboBox, QSpinBox, QDoubleSpinBox, QTextEdit, QListWidget, QLineEdit {
+QComboBox, QSpinBox, QDoubleSpinBox, QListWidget, QLineEdit {
   background: white;
   border: 1px solid gray;
   border-radius: 3px;
@@ -21,6 +21,10 @@ QFrame#textEditRx, QFrame#textEditTx {
   border: 1px solid gray;
   border-radius: 3px;
   padding: 1px;
+}
+
+QFrame#textEditRx:focus, QFrame#textEditTx:focus {
+  border: 1px solid darkslategray;
 }
 
 QListWidget {
@@ -117,14 +121,6 @@ QTabBar::tab:selected {
 
 QTabBar::tab:!selected {
   margin-top: 2px; /* make non-selected tabs look smaller */
-}
-
-QTextEdit {
-  background: #F8F8F8
-}
-
-QTextEdit:focus {
-  border: 1px solid darkslategray;
 }
 
 QGroupBox{
