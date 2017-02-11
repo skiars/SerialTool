@@ -1,5 +1,6 @@
 ﻿* {
   font-family: 'Microsoft YaHei UI', '微软雅黑', '宋体';
+  font-size: 12px;
   outline: none; /* 去掉虚线 */
 }
 
@@ -13,6 +14,13 @@ QComboBox, QSpinBox, QDoubleSpinBox, QTextEdit, QListWidget, QLineEdit {
   border-radius: 3px;
   padding: 1px 2px 1px 2px; /* 针对于组合框中的文本内容 */
   min-width: 3em; /* 组合框的最小宽度 */
+}
+
+/* 定义串口接收数据显示控件的样式 */
+QFrame#textEditRx, QFrame#textEditTx {
+  border: 1px solid gray;
+  border-radius: 3px;
+  padding: 1px;
 }
 
 QListWidget {

@@ -56,6 +56,7 @@ private slots:
     void listViewInit();
     void about();
     void onComboBoxChanged(const QString &string);
+    void onWrapBoxChanged(int status);
 
 private:
     void loadConfig();
