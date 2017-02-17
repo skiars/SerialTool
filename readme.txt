@@ -1,2 +1,4 @@
-1. ÏÂÎ»»úÊ¾Àı´úÂëÔÚ.\SerialTool\slaveÄ¿Â¼ÏÂ£¬¸ÃÄ¿Â¼ÏÂµÄ´úÂëÎÄ¼ş²»×ñÑ­GPLĞí¿ÉÖ¤£¬ÓÃ»§¿ÉÒÔËæÒâÊ¹ÓÃÕâĞ©´úÂë¡£
-2. ±¾Èí¼şÊ¹ÓÃµÄQt°æ±¾ÊÇQt5.6£¬²¨ĞÎ»æÖÆÊ¹ÓÃQCustomPlot²å¼ş£¬ÎÄ±¾±à¼­Æ÷Ê¹ÓÃQScintilla²å¼şQScintillaÏÂÔØÁ´½ÓÎª: https://riverbankcomputing.com/software/qscintilla/download, QScintillaÎÄµµµØÖ·Îª: http://pyqt.sourceforge.net/Docs/QScintilla2
+1. ä¸‹ä½æœºç¤ºä¾‹ä»£ç åœ¨.\SerialTool\slaveç›®å½•ä¸‹ï¼Œè¯¥ç›®å½•ä¸‹çš„ä»£ç æ–‡ä»¶ä¸éµå¾ªGPLè®¸å¯è¯ï¼Œç”¨æˆ·å¯ä»¥éšæ„ä½¿ç”¨è¿™äº›ä»£ç ã€‚
+2. æœ¬è½¯ä»¶ä½¿ç”¨çš„Qtç‰ˆæœ¬æ˜¯Qt5.6ï¼Œæ³¢å½¢ç»˜åˆ¶ä½¿ç”¨QCustomPlotæ’ä»¶ï¼Œ
+   æ–‡æœ¬ç¼–è¾‘å™¨ä½¿ç”¨QScintillaæ’ä»¶QScintillaä¸‹è½½é“¾æ¥ä¸º: https://riverbankcomputing.com/software/qscintilla/download,
+   QScintillaæ–‡æ¡£åœ°å€ä¸º: http://pyqt.sourceforge.net/Docs/QScintilla2
