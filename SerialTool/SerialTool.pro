@@ -36,7 +36,9 @@ SOURCES += \
     source/portsetbox.cpp \
     source/qcustomplot.cpp \
     source/serialtool.cpp\
-    source/textedit.cpp
+    source/textedit.cpp \
+    source/wavedecode.cpp \
+    source/oscilloscope.cpp
 
 HEADERS  += \
     include/aboutbox.h \
@@ -46,7 +48,9 @@ HEADERS  += \
     include/qcustomplot.h \
     include/serialtool.h \
     include/textedit.h \
-    include/version.h
+    include/version.h \
+    include/wavedecode.h \
+    include/oscilloscope.h
 
 DISTFILES += \
     resource/images/clear.png \
@@ -67,6 +71,7 @@ FORMS += \
     ui/aboutbox.ui \
     ui/optionsbox.ui \
     ui/portsetbox.ui \
-    ui/serialtool.ui
+    ui/serialtool.ui \
+    ui/oscilloscope.ui
 
 LIBS += -lqscintilla2

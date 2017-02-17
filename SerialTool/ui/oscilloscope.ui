@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Oscilloscope</class>
+ <widget class="QWidget" name="Oscilloscope">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>484</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <layout class="QHBoxLayout" name="horizontalLayout_2">
+   <property name="spacing">
+    <number>2</number>
+   </property>
+   <property name="leftMargin">
+    <number>2</number>
+   </property>
+   <property name="topMargin">
+    <number>2</number>
+   </property>
+   <property name="rightMargin">
+    <number>2</number>
+   </property>
+   <property name="bottomMargin">
+    <number>2</number>
+   </property>
+   <item>
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="QCustomPlot" name="customPlot" native="true">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>200</width>
+         <height>100</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QScrollBar" name="horizontalScrollBar">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="pageStep">
+        <number>100</number>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QVBoxLayout" name="verticalLayout_2">
+     <item>
+      <widget class="QListWidget" name="channelList">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Ignored" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Y Range</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QDoubleSpinBox" name="yRangeBox">
+       <property name="minimum">
+        <double>0.010000000000000</double>
+       </property>
+       <property name="maximum">
+        <double>100000.000000000000000</double>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>Y Offset</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QDoubleSpinBox" name="yOffsetBox">
+       <property name="minimum">
+        <double>-100000.000000000000000</double>
+       </property>
+       <property name="maximum">
+        <double>100000.000000000000000</double>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_3">
+       <property name="text">
+        <string>X Points</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="xRangeBox">
+       <property name="editable">
+        <bool>true</bool>
+       </property>
+       <property name="currentText">
+        <string notr="true">10</string>
+       </property>
+       <property name="maxVisibleItems">
+        <number>20</number>
+       </property>
+       <item>
+        <property name="text">
+         <string notr="true">10</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string notr="true">20</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string notr="true">25</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string notr="true">50</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string notr="true">100</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string notr="true">200</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string notr="true">250</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string notr="true">500</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string notr="true">1000</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string notr="true">2000</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string notr="true">2500</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string notr="true">5000</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string notr="true">10000</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="holdReceiveBox">
+       <property name="text">
+        <string>Hold Receive</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QCustomPlot</class>
+   <extends>QWidget</extends>
+   <header>qcustomplot.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

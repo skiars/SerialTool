@@ -103,6 +103,18 @@
     <ClCompile Include="GeneratedFiles\Release\moc_textedit.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="source\wavedecode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\oscilloscope.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_oscilloscope.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_oscilloscope.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="ui\aboutbox.ui">
@@ -138,6 +150,12 @@
     <CustomBuild Include="include\textedit.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
+    <CustomBuild Include="include\oscilloscope.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="ui\oscilloscope.ui">
+      <Filter>Form Files</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource\serialtool.rc">
@@ -150,6 +168,12 @@
     </ClInclude>
     <ClInclude Include="include\version.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wavedecode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_oscilloscope.h">
+      <Filter>Generated Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

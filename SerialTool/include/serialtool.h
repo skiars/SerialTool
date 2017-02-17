@@ -8,8 +8,6 @@
 #include <QMessageBox>
 #include "channelitem.h"
 
-#define CH_NUM 16
-
 class SerialTool : public QMainWindow
 {
     Q_OBJECT
@@ -25,18 +23,8 @@ public:
     void setStyleSheet(const QString &string);
 
 private slots:
-    void addData(int channel, double ms, double value);
-    void setChannelVisible(int ch, bool on);
-    void horzScrollBarMoved(int value);
-    void horzScrollBarTriggered();
-    void plotMouseMove();
-    void setYRateLower(double d);
-    void setYRateUpper(double d);
-    void setXRange(const QString &str);
-    void channelStyleChanged(ChannelItem *item);
     void tabIndexChanged(int index);
     void tabActionGroupTriggered(QAction *action);
-    void realtimeDataSlot();
     void changeRunFlag();
     void scanPort();
     void onSecTimerTimeout();
@@ -53,7 +41,6 @@ private slots:
     void cleanData();
     void setOptions();
     void saveFile();
-    void listViewInit();
     void about();
     void onComboBoxChanged(const QString &string);
     void onWrapBoxChanged(int status);
@@ -65,14 +52,11 @@ private:
 private:
     Ui_SerialTool ui;
     QString docPath;
-    QTimer dataTimer;
     QTimer resendTimer; // 重发时间
     QTimer secTimer;   // 秒定时器
     QSerialPort *serialPort;
     QSettings *config;
-    double count[CH_NUM], xRange;
     bool runFlag = true;
-    bool replotFlag = true;
     QActionGroup *tabActionGroup;
     int rxCount, txCount;
     QLabel *rxCntLabel, *txCntLabel, *portInfoLabel;

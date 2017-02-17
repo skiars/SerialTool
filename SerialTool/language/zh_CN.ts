@@ -18,6 +18,29 @@
     </message>
 </context>
 <context>
+    <name>Oscilloscope</name>
+    <message>
+        <location filename="../ui/oscilloscope.ui" line="80"/>
+        <source>Y Range</source>
+        <translation>Y轴范围</translation>
+    </message>
+    <message>
+        <location filename="../ui/oscilloscope.ui" line="97"/>
+        <source>Y Offset</source>
+        <translation>Y轴偏置</translation>
+    </message>
+    <message>
+        <location filename="../ui/oscilloscope.ui" line="114"/>
+        <source>X Points</source>
+        <translation>X轴点数</translation>
+    </message>
+    <message>
+        <location filename="../ui/oscilloscope.ui" line="199"/>
+        <source>Hold Receive</source>
+        <translation>保持接收</translation>
+    </message>
+</context>
+<context>
     <name>PortSetBox</name>
     <message>
         <location filename="../ui/portsetbox.ui" line="14"/>
@@ -48,39 +71,39 @@
 <context>
     <name>SerialTool</name>
     <message>
-        <location filename="../source/serialtool.cpp" line="496"/>
+        <location filename="../source/serialtool.cpp" line="335"/>
         <source>Start Tx/Rx</source>
         <translation>开始发送/接收</translation>
     </message>
     <message>
-        <location filename="../ui/serialtool.ui" line="759"/>
-        <location filename="../source/serialtool.cpp" line="501"/>
+        <location filename="../ui/serialtool.ui" line="573"/>
+        <location filename="../source/serialtool.cpp" line="341"/>
         <source>Pause Tx/Rx</source>
         <translation>暂停发送/接收</translation>
     </message>
     <message>
-        <location filename="../ui/serialtool.ui" line="743"/>
-        <location filename="../source/serialtool.cpp" line="609"/>
+        <location filename="../ui/serialtool.ui" line="557"/>
+        <location filename="../source/serialtool.cpp" line="453"/>
         <source>Open Port</source>
         <translation>打开端口</translation>
     </message>
     <message>
-        <location filename="../source/serialtool.cpp" line="344"/>
+        <location filename="../source/serialtool.cpp" line="293"/>
         <source>Portable Network Graphic Format (*.png);;Bitmap (*.bmp);;Portable Document Format (*.pdf)</source>
         <translation>图像文件存储格式 (*.png);;位图文件 (*.bmp);;便携式文档格式 (*.pdf)</translation>
     </message>
     <message>
-        <location filename="../source/serialtool.cpp" line="590"/>
+        <location filename="../source/serialtool.cpp" line="431"/>
         <source>Close Port</source>
         <translation>关闭端口</translation>
     </message>
     <message>
-        <location filename="../source/serialtool.cpp" line="596"/>
+        <location filename="../source/serialtool.cpp" line="440"/>
         <source>Error</source>
         <translation>错误</translation>
     </message>
     <message>
-        <location filename="../source/serialtool.cpp" line="597"/>
+        <location filename="../source/serialtool.cpp" line="441"/>
         <source>Can not open the port!
 Port may be occupied or configured incorrectly!</source>
         <translation>无法打开端口！
@@ -98,8 +121,8 @@ Port may be occupied or configured incorrectly!</source>
     </message>
     <message>
         <location filename="../ui/serialtool.ui" line="194"/>
-        <location filename="../ui/serialtool.ui" line="811"/>
-        <location filename="../ui/serialtool.ui" line="814"/>
+        <location filename="../ui/serialtool.ui" line="625"/>
+        <location filename="../ui/serialtool.ui" line="628"/>
         <source>Tester</source>
         <translation>调试助手</translation>
     </message>
@@ -134,104 +157,84 @@ Port may be occupied or configured incorrectly!</source>
         <translation>Ctrl+Return</translation>
     </message>
     <message>
-        <location filename="../ui/serialtool.ui" line="429"/>
-        <location filename="../ui/serialtool.ui" line="822"/>
+        <location filename="../ui/serialtool.ui" line="436"/>
+        <location filename="../ui/serialtool.ui" line="636"/>
         <source>Plot</source>
         <translation>波形绘制</translation>
     </message>
     <message>
-        <location filename="../ui/serialtool.ui" line="498"/>
-        <source>Y Axis Upper</source>
-        <translation>X轴上限</translation>
-    </message>
-    <message>
-        <location filename="../ui/serialtool.ui" line="515"/>
-        <source>Y Axis Lower</source>
-        <translation>Y轴下限</translation>
-    </message>
-    <message>
-        <location filename="../ui/serialtool.ui" line="529"/>
-        <source>X Axis Points</source>
-        <translation>X轴点数</translation>
-    </message>
-    <message>
-        <location filename="../ui/serialtool.ui" line="611"/>
-        <source>Hold receive</source>
-        <translation>保持接收</translation>
-    </message>
-    <message>
-        <location filename="../ui/serialtool.ui" line="650"/>
+        <location filename="../ui/serialtool.ui" line="464"/>
         <source>File</source>
         <translation>文件</translation>
     </message>
     <message>
-        <location filename="../ui/serialtool.ui" line="658"/>
+        <location filename="../ui/serialtool.ui" line="472"/>
         <source>Tools</source>
         <translation>工具</translation>
     </message>
     <message>
-        <location filename="../ui/serialtool.ui" line="664"/>
+        <location filename="../ui/serialtool.ui" line="478"/>
         <source>Edit</source>
         <translation>编辑</translation>
     </message>
     <message>
-        <location filename="../ui/serialtool.ui" line="674"/>
+        <location filename="../ui/serialtool.ui" line="488"/>
         <source>View</source>
         <translation>视图</translation>
     </message>
     <message>
-        <location filename="../ui/serialtool.ui" line="684"/>
+        <location filename="../ui/serialtool.ui" line="498"/>
         <source>Help</source>
         <translation>帮助</translation>
     </message>
     <message>
-        <location filename="../ui/serialtool.ui" line="722"/>
+        <location filename="../ui/serialtool.ui" line="536"/>
         <source>Save</source>
         <translation>保存</translation>
     </message>
     <message>
-        <location filename="../ui/serialtool.ui" line="725"/>
+        <location filename="../ui/serialtool.ui" line="539"/>
         <source>Ctrl+S</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ui/serialtool.ui" line="734"/>
+        <location filename="../ui/serialtool.ui" line="548"/>
         <source>Options</source>
         <translation>选项</translation>
     </message>
     <message>
-        <location filename="../ui/serialtool.ui" line="746"/>
+        <location filename="../ui/serialtool.ui" line="560"/>
         <source>Alt+S</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ui/serialtool.ui" line="762"/>
+        <location filename="../ui/serialtool.ui" line="576"/>
         <source>Alt+R</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ui/serialtool.ui" line="771"/>
+        <location filename="../ui/serialtool.ui" line="585"/>
         <source>Clear Buffer</source>
         <translation>清空缓冲</translation>
     </message>
     <message>
-        <location filename="../ui/serialtool.ui" line="774"/>
+        <location filename="../ui/serialtool.ui" line="588"/>
         <source>Alt+C</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ui/serialtool.ui" line="783"/>
+        <location filename="../ui/serialtool.ui" line="597"/>
         <source>Port Settings</source>
         <translation>端口设置</translation>
     </message>
     <message>
-        <location filename="../ui/serialtool.ui" line="792"/>
+        <location filename="../ui/serialtool.ui" line="606"/>
         <source>Close</source>
         <translation>关闭</translation>
     </message>
     <message>
-        <location filename="../ui/serialtool.ui" line="696"/>
-        <location filename="../ui/serialtool.ui" line="803"/>
+        <location filename="../ui/serialtool.ui" line="510"/>
+        <location filename="../ui/serialtool.ui" line="617"/>
         <source>Tool Bar</source>
         <translation>工具栏</translation>
     </message>
@@ -246,17 +249,17 @@ Port may be occupied or configured incorrectly!</source>
         <translation>Ctrl+Enter</translation>
     </message>
     <message>
-        <location filename="../ui/serialtool.ui" line="833"/>
+        <location filename="../ui/serialtool.ui" line="647"/>
         <source>Status Bar</source>
         <translation>状态栏</translation>
     </message>
     <message>
-        <location filename="../ui/serialtool.ui" line="838"/>
+        <location filename="../ui/serialtool.ui" line="652"/>
         <source>About</source>
         <translation>关于</translation>
     </message>
     <message>
-        <location filename="../ui/serialtool.ui" line="841"/>
+        <location filename="../ui/serialtool.ui" line="655"/>
         <source>F1</source>
         <translation></translation>
     </message>

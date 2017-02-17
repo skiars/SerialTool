@@ -431,213 +431,20 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="tab">
+      <widget class="QWidget" name="tab_3">
        <attribute name="title">
         <string>Plot</string>
        </attribute>
-       <layout class="QHBoxLayout" name="horizontalLayout_2">
-        <property name="spacing">
-         <number>2</number>
+       <widget class="Oscilloscope" name="oscPlot" native="true">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>592</width>
+          <height>297</height>
+         </rect>
         </property>
-        <property name="leftMargin">
-         <number>2</number>
-        </property>
-        <property name="topMargin">
-         <number>2</number>
-        </property>
-        <property name="rightMargin">
-         <number>2</number>
-        </property>
-        <property name="bottomMargin">
-         <number>2</number>
-        </property>
-        <item>
-         <layout class="QVBoxLayout" name="verticalLayout">
-          <item>
-           <widget class="QCustomPlot" name="customPlot" native="true">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>200</width>
-              <height>100</height>
-             </size>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QScrollBar" name="horizontalScrollBar">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="pageStep">
-             <number>100</number>
-            </property>
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <layout class="QVBoxLayout" name="verticalLayout_9">
-          <item>
-           <widget class="QListWidget" name="channelList">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Ignored" vsizetype="Expanding">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="label_4">
-            <property name="text">
-             <string>Y Axis Upper</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QDoubleSpinBox" name="yRateUpperBox">
-            <property name="minimum">
-             <double>-100000.000000000000000</double>
-            </property>
-            <property name="maximum">
-             <double>100000.000000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="label_5">
-            <property name="text">
-             <string>Y Axis Lower</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QDoubleSpinBox" name="yRateLowerBox">
-            <property name="minimum">
-             <double>-100000.000000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="label_6">
-            <property name="text">
-             <string>X Axis Points</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QComboBox" name="xRangeBox">
-            <property name="currentText">
-             <string notr="true">10</string>
-            </property>
-            <property name="maxVisibleItems">
-             <number>20</number>
-            </property>
-            <item>
-             <property name="text">
-              <string notr="true">10</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string notr="true">20</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string notr="true">25</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string notr="true">50</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string notr="true">100</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string notr="true">200</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string notr="true">250</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string notr="true">500</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string notr="true">1000</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string notr="true">2000</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string notr="true">2500</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string notr="true">5000</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string notr="true">10000</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-          <item>
-           <widget class="QCheckBox" name="holdRxOscBox">
-            <property name="text">
-             <string>Hold receive</string>
-            </property>
-            <property name="checked">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <spacer name="verticalSpacer">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
-        </item>
-       </layout>
+       </widget>
       </widget>
      </widget>
     </item>
@@ -852,15 +659,15 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>QCustomPlot</class>
-   <extends>QWidget</extends>
-   <header>qcustomplot.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>TextEdit</class>
    <extends>QWidget</extends>
    <header>textedit.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>Oscilloscope</class>
+   <extends>QWidget</extends>
+   <header>oscilloscope.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

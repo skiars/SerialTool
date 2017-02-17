@@ -2,6 +2,7 @@
 #include "portsetbox.h"
 #include "optionsbox.h"
 #include "aboutbox.h"
+#include "wavedecode.h"
 #include "version.h"
 
 SerialTool::SerialTool(QWidget *parent)
@@ -11,7 +12,6 @@ SerialTool::SerialTool(QWidget *parent)
 
     ui.setupUi(this);
     setWindowTitle(SOFTWARE_NAME " V" SOFTWARE_VERSION);
-    listViewInit();
 
     // 串口设置的控件移动到工具栏
     ui.toolBar1->insertWidget(ui.portSetAction, ui.portConfigWidget);
@@ -21,24 +21,13 @@ SerialTool::SerialTool(QWidget *parent)
     tabActionGroup->addAction(ui.actionVisibleTab0);
     tabActionGroup->addAction(ui.actionVisibleTab1);
 
-    // 对界面的初始化借宿之后再设置语言和样式表
+    // 对界面的初始化结束之后再设置语言和样式表
     qApp->installTranslator(&appTranslator);
     qApp->installTranslator(&qtTranslator);
     setLanguage("zh_CN");
     setStyleSheet("default");
 
-    // 拖动时不抗锯齿
-    ui.customPlot->setNoAntialiasingOnDrag(true);
-
-    for (int i = 0; i < CH_NUM; ++i) {
-        count[i] = 0.0;
-        ui.customPlot->addGraph();
-    }
-
     serialPort = new QSerialPort;
-
-    ui.customPlot->axisRect()->setupFullAxesBox(true);
-    ui.customPlot->setInteractions(QCP::iRangeDrag);
 
     scanPort(); // 扫描端口
 
@@ -63,9 +52,6 @@ SerialTool::SerialTool(QWidget *parent)
     loadConfig(); // 加载配置
     
     // create connection between axes and scroll bars:
-    connect(ui.horizontalScrollBar, SIGNAL(sliderMoved(int)), this, SLOT(horzScrollBarMoved(int)));
-    connect(ui.horizontalScrollBar, SIGNAL(actionTriggered(int)), this, SLOT(horzScrollBarTriggered()));
-    connect(ui.customPlot, SIGNAL(mouseMove(QMouseEvent*)), this, SLOT(plotMouseMove()));
     connect(ui.portRunAction, SIGNAL(triggered()), this, SLOT(changeRunFlag()));
     connect(ui.portSwitchAction, SIGNAL(triggered()), this, SLOT(onPortSwitchActionTriggered()));
     connect(serialPort, &QSerialPort::readyRead, this, &SerialTool::readPortData);
@@ -76,7 +62,6 @@ SerialTool::SerialTool(QWidget *parent)
     connect(ui.resendBox, &QCheckBox::stateChanged, this, &SerialTool::onResendBoxChanged);
     connect(ui.comboBoxBaudRate, &QComboBox::currentTextChanged, this, &SerialTool::setPortBaudRate);
     connect(ui.spinBoxStepTime, SIGNAL(valueChanged(int)), this, SLOT(resendTimeChange(int)));
-    connect(&dataTimer, SIGNAL(timeout()), this, SLOT(realtimeDataSlot()));
     connect(ui.portSetAction, SIGNAL(triggered()), this, SLOT(openSetPortInfoBox()));
     connect(ui.actionOption, SIGNAL(triggered()), this, SLOT(setOptions()));
     connect(ui.actionSave, SIGNAL(triggered()), this, SLOT(saveFile()));
@@ -86,14 +71,10 @@ SerialTool::SerialTool(QWidget *parent)
     connect(ui.toolBar1, SIGNAL(visibilityChanged(bool)), ui.actionVisibleToolbar, SLOT(setChecked(bool)));
     connect(ui.tabWidget, SIGNAL(currentChanged(int)), this, SLOT(tabIndexChanged(int)));
     connect(tabActionGroup, SIGNAL(triggered(QAction*)), this, SLOT(tabActionGroupTriggered(QAction*)));
-    connect(ui.yRateLowerBox, SIGNAL(valueChanged(double)), this, SLOT(setYRateLower(double)));
-    connect(ui.yRateUpperBox, SIGNAL(valueChanged(double)), this, SLOT(setYRateUpper(double)));
-    connect(ui.xRangeBox, SIGNAL(currentTextChanged(const QString &)), this, SLOT(setXRange(const QString &)));
     connect(ui.actionAbout, SIGNAL(triggered()), this, SLOT(about()));
     connect(ui.comboBox, SIGNAL(activated(const QString &)), this, SLOT(onComboBoxChanged(const QString &)));
     connect(ui.wrapLineBox, SIGNAL(stateChanged(int)), this, SLOT(onWrapBoxChanged(int)));
     
-    dataTimer.start(20);
     secTimer.start(1000);
 }
 
@@ -114,6 +95,7 @@ void SerialTool::setLanguage(const QString &string)
     appTranslator.load("language/" + string + ".qm");
     qtTranslator.load("language/qt_" + string + ".qm");
     ui.retranslateUi(this);
+    ui.oscPlot->retranslate(); // 示波器界面重新翻译
 }
 
 // 加载样式表
@@ -141,45 +123,14 @@ void SerialTool::loadSettings()
     ui.textEditTx->setFonts(fonts, fontSize,
         QColor(config->value("TransmitTextColor").toString()), fontStyle);
 
-    ui.customPlot->setBackground(QBrush(QColor(
-        config->value("PlotBackground").toString())));
-    QColor color = QColor(config->value("AxisColor").toString());
-    QPen pen(color);
-    ui.customPlot->xAxis->setBasePen(pen);
-    ui.customPlot->xAxis->setTickPen(pen);
-    ui.customPlot->xAxis->grid()->setPen(pen);
-    ui.customPlot->xAxis->setSubTickPen(pen);
-    ui.customPlot->xAxis->setTickLabelColor(color);
-    ui.customPlot->xAxis->setLabelColor(color);
-    ui.customPlot->xAxis->grid()->setZeroLinePen(pen); // 零点画笔
-    ui.customPlot->yAxis->setBasePen(pen);
-    ui.customPlot->yAxis->setTickPen(pen);
-    ui.customPlot->yAxis->grid()->setPen(pen);
-    ui.customPlot->yAxis->setSubTickPen(pen);
-    ui.customPlot->yAxis->setTickLabelColor(color);
-    ui.customPlot->yAxis->setLabelColor(color);
-    ui.customPlot->yAxis->grid()->setZeroLinePen(pen); // 零点画笔
-    ui.customPlot->xAxis2->setBasePen(pen);
-    ui.customPlot->xAxis2->setTickPen(pen);
-    ui.customPlot->xAxis2->setSubTickPen(pen);
-    ui.customPlot->yAxis2->setBasePen(pen);
-    ui.customPlot->yAxis2->setTickPen(pen);
-    ui.customPlot->yAxis2->setSubTickPen(pen);
+    ui.oscPlot->setBackground(QColor(config->value("PlotBackground").toString()));
+    ui.oscPlot->setGridColor(QColor(config->value("AxisColor").toString()));
 
     // 绘制时波形抗锯齿
-    if (config->value("PlotAntialiased").toBool()) {
-        ui.customPlot->setNotAntialiasedElement(QCP::aePlottables, false);
-    } else {
-        ui.customPlot->setNotAntialiasedElement(QCP::aePlottables, true);
-    }
+    ui.oscPlot->setPlotAntialiased(config->value("PlotAntialiased").toBool());
     // 绘制时网格抗锯齿
-    if (config->value("GridAntialiased").toBool()) {
-        ui.customPlot->setAntialiasedElement(QCP::aeGrid, true);
-        ui.customPlot->setAntialiasedElement(QCP::aeAxes, true);
-    } else {
-        ui.customPlot->setAntialiasedElement(QCP::aeGrid, false);
-        ui.customPlot->setAntialiasedElement(QCP::aeAxes, false);
-    }
+    ui.oscPlot->setGridAntialiased(config->value("GridAntialiased").toBool());
+
     config->endGroup();
 }
 
@@ -245,20 +196,15 @@ void SerialTool::loadConfig()
 
     // 串口示波器
     config->beginGroup("Oscillograph");
-    ui.yRateUpperBox->setValue(config->value("YAxisUpper").toReal());
-    ui.yRateLowerBox->setValue(config->value("YAxisLower").toReal());
+    ui.oscPlot->setXRange(config->value("XRange").toString());
+    ui.oscPlot->setYOffset(config->value("YOffset").toDouble());
+    ui.oscPlot->setYRange(config->value("YRange").toDouble());
     for (int i = 0; i < CH_NUM; ++i) {
-        ChannelItem *item = (ChannelItem *)(
-            ui.channelList->itemWidget(ui.channelList->item(i)));
-        item->setChecked(
-            config->value("Ch" + QString::number(i + 1) + "Visible").toBool());
-        item->setColor(QColor(
+        ui.oscPlot->setChannelColor(i, QColor(
             config->value("Ch" + QString::number(i + 1) + "Color").toString()));
-        ui.customPlot->graph(i)->setPen(QPen(item->color()));
+        ui.oscPlot->setChannelVisible(i,
+                config->value("Ch" + QString::number(i + 1) + "Visible").toBool());
     }
-    ui.customPlot->yAxis->setRange(ui.yRateLowerBox->value(), ui.yRateUpperBox->value());
-    ui.xRangeBox->setCurrentText(config->value("xAxisRange").toString());
-    setXRange(ui.xRangeBox->currentText());
     config->endGroup();
 
     // 最后读取系统设置
@@ -304,19 +250,15 @@ void SerialTool::saveConfig()
 
     // 串口示波器
     config->beginGroup("Oscillograph");
-    config->setValue("YAxisUpper",
-        QVariant(QString::number(ui.yRateUpperBox->value())));
-    config->setValue("YAxisLower",
-        QVariant(QString::number(ui.yRateLowerBox->value())));
-    config->setValue("xAxisRange",
-        QVariant(ui.xRangeBox->currentText()));
+    config->setValue("YOffset", QVariant(ui.oscPlot->yOffset()));
+    config->setValue("YRange", QVariant(ui.oscPlot->yRange()));
+    config->setValue("XRange", QVariant(ui.oscPlot->xRange()));
+    
     for (int i = 0; i < CH_NUM; ++i) {
-        ChannelItem *item = (ChannelItem *)(
-            ui.channelList->itemWidget(ui.channelList->item(i)));
         config->setValue("Ch" + QString::number(i + 1) + "Visible",
-            QVariant(item->isChecked()));
+            QVariant(ui.oscPlot->channelVisible(i)));
         config->setValue("Ch" + QString::number(i + 1) + "Color",
-                QVariant(item->color().name()));
+                QVariant(ui.oscPlot->channelColor(i).name()));
     }
     config->endGroup();
 
@@ -358,80 +300,12 @@ void SerialTool::saveFile()
     }
     docPath = QFileInfo(fname).path();
     if (filter.indexOf("(*.png)", 0)) {
-        ui.customPlot->savePng(fname);
+        ui.oscPlot->savePng(fname);
     } else if (filter.indexOf("(*.bmp)", 0)) {
-        ui.customPlot->saveBmp(fname);
+        ui.oscPlot->saveBmp(fname);
     } else if (filter.indexOf("(*.pdf)", 0)) {
-        ui.customPlot->savePdf(fname);
+        ui.oscPlot->savePdf(fname);
     }
-}
-
-// 滚动条滑块移动触发
-void SerialTool::horzScrollBarMoved(int value)
-{
-    if (ui.horizontalScrollBar->maximum() == value) {
-        replotFlag = true;
-    } else {
-        replotFlag = false;
-    }
-    ui.customPlot->xAxis->setRange(value / (100.0 / xRange) + xRange,
-        ui.customPlot->xAxis->range().size(), Qt::AlignRight);
-    ui.customPlot->replot();
-}
-
-// 滚动条按键触发
-void SerialTool::horzScrollBarTriggered()
-{
-    int value = ui.horizontalScrollBar->value();
-    ui.customPlot->xAxis->setRange(value / (100.0 / xRange) + xRange,
-        ui.customPlot->xAxis->range().size(), Qt::AlignRight);
-    ui.customPlot->replot();
-}
-
-// 鼠标拖动
-void SerialTool::plotMouseMove()
-{
-    double upper = ui.customPlot->xAxis->range().upper;
-    int key = (int)((upper - xRange) * (100.0 / xRange));
-    if (upper > xRange) {
-        if (ui.horizontalScrollBar->maximum() == key) {
-            replotFlag = true;
-        } else {
-            replotFlag = false;
-        }
-        ui.horizontalScrollBar->setValue(key);
-    }
-    ui.yRateUpperBox->setValue(ui.customPlot->yAxis->range().upper);
-    ui.yRateLowerBox->setValue(ui.customPlot->yAxis->range().lower);
-}
-
-
-void SerialTool::setYRateLower(double d)
-{
-    ui.customPlot->yAxis->setRangeLower(d);
-    ui.yRateUpperBox->setValue(ui.customPlot->yAxis->range().upper);
-}
-
-void SerialTool::setYRateUpper(double d)
-{
-    ui.customPlot->yAxis->setRangeUpper(d);
-    ui.yRateLowerBox->setValue(ui.customPlot->yAxis->range().lower);
-}
-
-void SerialTool::setXRange(const QString &str)
-{
-    double upper = ui.customPlot->xAxis->range().upper;
-    xRange = str.toDouble();
-    if (upper < xRange) {
-        ui.horizontalScrollBar->setRange(0, 0);
-        ui.horizontalScrollBar->setValue(0);
-        ui.customPlot->xAxis->setRange(0, xRange);
-    } else {
-        ui.horizontalScrollBar->setRange(0, (int)((upper - xRange) * (100.0 / xRange)));
-        ui.horizontalScrollBar->setValue((int)((upper - xRange) * (100.0 / xRange)));
-        ui.customPlot->xAxis->setRange(upper, xRange, Qt::AlignRight);
-    }
-    ui.customPlot->replot();
 }
 
 void SerialTool::tabIndexChanged(int index)
@@ -453,48 +327,6 @@ void SerialTool::tabActionGroupTriggered(QAction *action)
     
 }
 
-// 添加数据
-void SerialTool::addData(int channel, double key, double value)
-{
-    ui.customPlot->graph(channel)->addData(key, value);
-}
-
-void SerialTool::setChannelVisible(int ch, bool on)
-{
-    ui.customPlot->graph(ch)->setVisible(on);
-}
-
-void SerialTool::channelStyleChanged(ChannelItem *item)
-{
-    int ch = item->channel();
-    if (item->isChecked()) {
-        setChannelVisible(ch, true);
-    } else {
-        setChannelVisible(ch, false);
-    }
-    ui.customPlot->graph(ch)->setPen(QPen(item->color()));
-    ui.customPlot->replot();
-}
-
-void SerialTool::realtimeDataSlot()
-{
-    // 显示更新
-    if (runFlag) {
-        double key = count[0];
-        for (int i = 0; i < CH_NUM; ++i) {
-            key = key > count[i] ? key : count[i];
-        }
-        if (key > xRange) {
-            ui.horizontalScrollBar->setRange(0, (int)((key - xRange) * (100.0 / xRange)));
-            if (replotFlag) {
-                ui.horizontalScrollBar->setValue((int)((key - xRange) * (100.0 / xRange)));
-                ui.customPlot->xAxis->setRange(key, xRange, Qt::AlignRight);
-            }
-        }
-        ui.customPlot->replot();
-    }
-}
-
 void SerialTool::changeRunFlag()
 {
     if (runFlag == true) {
@@ -502,11 +334,13 @@ void SerialTool::changeRunFlag()
         QIcon icon(":/SerialTool/images/start.ico");
         ui.portRunAction->setIcon(icon);
         ui.portRunAction->setText(tr("Start Tx/Rx"));
+        ui.oscPlot->timer()->stop();
     } else {
         runFlag = true;
         QIcon icon(":/SerialTool/images/pause.ico");
         ui.portRunAction->setIcon(icon);
         ui.portRunAction->setText(tr("Pause Tx/Rx"));
+        ui.oscPlot->timer()->start();
     }
 }
 
@@ -599,6 +433,9 @@ void SerialTool::openPort()
         ui.comboBoxPortNum->setEnabled(false); // 禁止更改串口
         ui.sendButton->setEnabled(true);
         ui.portRunAction->setEnabled(true);
+        if (runFlag) {
+            ui.oscPlot->timer()->start();
+        }
     } else {
         QMessageBox err(QMessageBox::Critical,
             tr("Error"),
@@ -618,6 +455,7 @@ void SerialTool::closePort()
     ui.comboBoxPortNum->setEnabled(true); // 允许更改串口
     ui.sendButton->setEnabled(false);
     ui.portRunAction->setEnabled(false);
+    ui.oscPlot->timer()->stop(); // 暂停定时器
 }
 
 // 打开串口槽函数
@@ -663,52 +501,6 @@ void SerialTool::onSendButtonClicked()
         ui.comboBox->insertItem(0, str); // 数据添加到第0个元素
         ui.comboBox->setCurrentIndex(0);
     }
-}
-
-// 数据帧类容:
-// byte[0]: 'C'
-// byte[1]: 'H'
-// byte[2]: 通道
-// byte[3]: float[0]
-// byte[4]: float[1]
-// byte[5]: float[2]
-// byte[6]: float[3]
-static bool serialPortGetByte(char &ch, float &value, char byte)
-{
-    static quint8 buffer[5], pos = 0, last = '\0';
-    
-    // 捕获帧头状态机
-    switch (last) {
-    case 0:
-        last = byte == 'C' ? 'C' : 0;
-        pos = 0;
-        break;
-    case 'C':
-        last = byte == 'H' ? 'H' : 0;
-        break;
-    case 'H':
-        last = (quint8)byte < CH_NUM  ? 'T' : 0;
-    case 'T':
-        buffer[pos++] = byte;
-        if (pos == 5) {
-            last = 0;
-            union {
-                quint32 i;
-                float f;
-            } data;
-            data.i = (quint32)buffer[1] << 24;
-            data.i |= (quint32)buffer[2] << 16;
-            data.i |= (quint32)buffer[3] << 8;
-            data.i |= (quint32)buffer[4];
-            value = data.f;
-            ch = buffer[0];
-            return true;
-        }
-        break;
-    default:
-        last = 0;
-    }
-    return false;
 }
 
 static void byteArrayToHex(QString &str, QByteArray &arr, int countOfLine)
@@ -774,13 +566,13 @@ void SerialTool::readPortData()
             ui.textEditRx->append(str);
         }
         // 串口示波器接收数据
-        if (ui.tabWidget->currentIndex() == 1 || ui.holdRxOscBox->isChecked()) {
+        if (ui.tabWidget->currentIndex() == 1 || ui.oscPlot->holdReceive()) {
             for (int i = 0; i < buf.length(); ++i) {
                 char ch;
-                float value;
-                if (serialPortGetByte(ch, value, buf.data()[i]) == true) {
-                    addData(ch, count[(int)ch], value);
-                    count[(int)ch] += 1.0; // 计数
+                double value;
+                // 解析串口协议
+                if (waveGetPointValue(ch, value, buf.data()[i]) == true) {
+                    ui.oscPlot->addData(ch, value);
                 }
             }
         }
@@ -811,15 +603,8 @@ void SerialTool::cleanData()
         ui.textEditRx->clear();
         asciiBuf.clear();
         break;
-    case 1: // 串口示波器
-        for (int i = 0; i < CH_NUM; ++i) {
-            ui.customPlot->graph(i)->data()->clear();
-            ui.horizontalScrollBar->setValue(0);
-            ui.horizontalScrollBar->setRange(0, 0);
-            ui.customPlot->xAxis->setRange(0, xRange, Qt::AlignLeft);
-            ui.customPlot->replot();
-            count[i] = 0.0;
-        }
+    case 1:
+        ui.oscPlot->clear();
         break;
     }
     // 计数清零
@@ -840,19 +625,6 @@ void SerialTool::onResendBoxChanged(int status)
 void SerialTool::resendTimeChange(int msc)
 {
     resendTimer.setInterval(msc);
-}
-
-void SerialTool::listViewInit()
-{
-    ui.channelList->setModelColumn(2); // 两列
-    for (int i = 0; i < CH_NUM; ++i) {
-        QListWidgetItem *item = new QListWidgetItem;
-        ui.channelList->addItem(item);
-        ChannelItem *chItem = new ChannelItem("CH" + QString::number(i + 1));
-        ui.channelList->setItemWidget(item, chItem);
-        chItem->setChannel(i);
-        connect(chItem, &ChannelItem::changelChanged, this, &SerialTool::channelStyleChanged);
-    }
 }
 
 void SerialTool::about()

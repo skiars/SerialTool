@@ -35,8 +35,9 @@ void ChannelItem::setColor(QColor color)
     Color = color;
     QPixmap pixmap(16, 16);
     QPainter painter(&pixmap);
-    painter.setPen(Qt::NoPen);
-    painter.fillRect(QRect(0, 0, 16, 16), color);
+    painter.setPen(QColor(50, 50, 50));
+    painter.drawRect(QRect(0, 0, 15, 15));
+    painter.fillRect(QRect(1, 1, 14, 14), color);
 
     colorBtn->defaultAction()->setIcon(QIcon(pixmap));
 }
