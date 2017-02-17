@@ -46,8 +46,6 @@ char ws_point_int8(char *buffer, char channel, int8_t value)
     return 4; // 数据帧长度
 }
 
-/* end of file sendwave.c */
-
 /* 函数功能: 发送int16类型数据
  * 函数参数:
  *     buffer : 输入缓冲区, 需要5byte
