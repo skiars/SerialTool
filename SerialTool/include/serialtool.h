@@ -36,6 +36,7 @@ private slots:
     void onSendButtonClicked();
     void readPortData();
     void writePortData();
+    void writePort(const QByteArray &array);
     void onResendBoxChanged(int status);
     void resendTimeChange(int msc);
     void cleanData();
@@ -61,7 +62,7 @@ private:
     int rxCount, txCount;
     QLabel *rxCntLabel, *txCntLabel, *portInfoLabel;
     QByteArray asciiBuf;
-    QTranslator appTranslator, qtTranslator;
+    QTranslator appTranslator, qtTranslator, qsciTranslator;
 };
 
 #endif // SERIALTOOL_H

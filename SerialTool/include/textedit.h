@@ -12,6 +12,7 @@ public:
     void setText(const QString &text);
     void append(const QString &text);
     void setFonts(QString fonts, int size, QColor color = Qt::black, QString style = "");
+    void setHighLight();
 
 public slots:
     void setWrap(bool wrap);

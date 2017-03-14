@@ -6,8 +6,7 @@ Oscilloscope::Oscilloscope(QWidget *parent)
 {
     ui.setupUi(parent);
 
-    // 拖动时不抗锯齿
-    ui.customPlot->setNoAntialiasingOnDrag(true);
+    setupPlot();
     setupChannel();
     listViewInit();
 
@@ -15,7 +14,7 @@ Oscilloscope::Oscilloscope(QWidget *parent)
     QRegExpValidator *pReg = new QRegExpValidator(rx, this);
     ui.xRangeBox->lineEdit()->setValidator(pReg);
 
-    updataTimer.setInterval(20);
+    updataTimer.setInterval(15);
     updataTimer.start();
 
     connect(ui.customPlot->xAxis, SIGNAL(rangeChanged(QCPRange)), this, SLOT(xAxisChanged(QCPRange)));
@@ -38,6 +37,27 @@ void Oscilloscope::retranslate()
     ui.retranslateUi(this);
 }
 
+
+// 初始化示波器界面
+void Oscilloscope::setupPlot()
+{
+    // 拖动时不抗锯齿
+    ui.customPlot->setNoAntialiasingOnDrag(true);
+
+    // 设置刻度线
+    QSharedPointer<	QCPAxisTicker> xTicker(new QCPAxisTicker);
+    QSharedPointer<	QCPAxisTicker> yTicker(new QCPAxisTicker);
+    xTicker->setTickCount(5);
+    ui.customPlot->xAxis->setTicker(xTicker);
+    ui.customPlot->xAxis2->setTicker(xTicker);
+    yTicker->setTickCount(5);
+    ui.customPlot->yAxis->setTicker(yTicker);
+    ui.customPlot->yAxis2->setTicker(yTicker);
+    // 显示小网格
+    ui.customPlot->xAxis->grid()->setSubGridVisible(true);
+    ui.customPlot->yAxis->grid()->setSubGridVisible(true);
+}
+
 // 初始化通道
 void Oscilloscope::setupChannel()
 {
@@ -52,6 +72,7 @@ void Oscilloscope::setupChannel()
     ui.customPlot->yAxis->setRange(0, 2, Qt::AlignCenter);
 }
 
+// 通道列表初始化
 void Oscilloscope::listViewInit()
 {
     ui.channelList->setModelColumn(2); // 两列
@@ -142,23 +163,14 @@ void Oscilloscope::setXRange(const QString &str)
 // 设置波形绘制抗锯齿
 void Oscilloscope::setPlotAntialiased(bool status)
 {
-    if (status) {
-        ui.customPlot->setAntialiasedElement(QCP::aePlottables, true);
-    } else {
-        ui.customPlot->setNotAntialiasedElement(QCP::aePlottables, true);
-    }
+    ui.customPlot->setNotAntialiasedElement(QCP::aePlottables, !status);
 }
 
 // 设置网格抗锯齿
 void Oscilloscope::setGridAntialiased(bool status)
 {
-    if (status) {
-        ui.customPlot->setAntialiasedElement(QCP::aeGrid, true);
-        ui.customPlot->setAntialiasedElement(QCP::aeAxes, true);
-    } else {
-        ui.customPlot->setNotAntialiasedElement(QCP::aeGrid, true);
-        ui.customPlot->setNotAntialiasedElement(QCP::aeAxes, true);
-    }
+    ui.customPlot->setAntialiasedElement(QCP::aeGrid, status);
+    ui.customPlot->setAntialiasedElement(QCP::aeAxes, status);
 }
 
 // 设置背景颜色
@@ -171,6 +183,7 @@ void Oscilloscope::setBackground(QColor color)
 void Oscilloscope::setGridColor(QColor color)
 {
     QPen pen(color);
+
     ui.customPlot->xAxis->setBasePen(pen);
     ui.customPlot->xAxis->setTickPen(pen);
     ui.customPlot->xAxis->grid()->setPen(pen);
@@ -191,6 +204,12 @@ void Oscilloscope::setGridColor(QColor color)
     ui.customPlot->yAxis2->setBasePen(pen);
     ui.customPlot->yAxis2->setTickPen(pen);
     ui.customPlot->yAxis2->setSubTickPen(pen);
+
+    // 网格颜色
+    color.setAlpha(0x30);
+    pen.setColor(color);
+    ui.customPlot->xAxis->grid()->setSubGridPen(pen);
+    ui.customPlot->yAxis->grid()->setSubGridPen(pen);
 }
 
 // 设置通道颜色

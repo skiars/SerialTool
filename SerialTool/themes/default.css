@@ -8,7 +8,7 @@ QMainWindow {
   background: white;
 }
 
-QComboBox, QSpinBox, QDoubleSpinBox, QListWidget, QLineEdit {
+QComboBox, QSpinBox, QDoubleSpinBox, QListWidget, QLineEdit, QTextEdit {
   background: white;
   border: 1px solid gray;
   border-radius: 3px;
@@ -285,4 +285,18 @@ QToolBar {
 QToolBar::handle {
   background: lightgray;
   width: 5px;
+}
+
+QProgressBar, QLineEdit {
+  height: 1em;
+}
+
+QProgressBar {
+  background-color: #E0E0E0;
+  border: 1px solid gray;
+  border-radius: 3px;
+}
+
+QProgressBar::chunk{  
+    background-color: #05B8CC;
 }

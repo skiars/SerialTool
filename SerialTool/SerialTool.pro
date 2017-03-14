@@ -38,7 +38,10 @@ SOURCES += \
     source/serialtool.cpp\
     source/textedit.cpp \
     source/wavedecode.cpp \
-    source/oscilloscope.cpp
+    source/oscilloscope.cpp \
+    source/filetransferview.cpp \
+    source/filethread.cpp \
+    source/xmodem.cpp
 
 HEADERS  += \
     include/aboutbox.h \
@@ -50,7 +53,11 @@ HEADERS  += \
     include/textedit.h \
     include/version.h \
     include/wavedecode.h \
-    include/oscilloscope.h
+    include/oscilloscope.h \
+    include/filethread.h \
+    include/filetransferview.h \
+    include/xmodem.h \
+    include/xmodem_crc16.h
 
 DISTFILES += \
     resource/images/clear.png \
@@ -72,6 +79,7 @@ FORMS += \
     ui/optionsbox.ui \
     ui/portsetbox.ui \
     ui/serialtool.ui \
-    ui/oscilloscope.ui
+    ui/oscilloscope.ui \
+    ui/filetransferview.ui
 
 LIBS += -lqscintilla2

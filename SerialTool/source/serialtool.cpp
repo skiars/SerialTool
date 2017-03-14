@@ -24,6 +24,7 @@ SerialTool::SerialTool(QWidget *parent)
     // 对界面的初始化结束之后再设置语言和样式表
     qApp->installTranslator(&appTranslator);
     qApp->installTranslator(&qtTranslator);
+    qApp->installTranslator(&qsciTranslator);
     setLanguage("zh_CN");
     setStyleSheet("default");
 
@@ -74,6 +75,7 @@ SerialTool::SerialTool(QWidget *parent)
     connect(ui.actionAbout, SIGNAL(triggered()), this, SLOT(about()));
     connect(ui.comboBox, SIGNAL(activated(const QString &)), this, SLOT(onComboBoxChanged(const QString &)));
     connect(ui.wrapLineBox, SIGNAL(stateChanged(int)), this, SLOT(onWrapBoxChanged(int)));
+    connect(ui.fileTransfer, &FileTransferView::sendData, this, &SerialTool::writePort);
     
     secTimer.start(1000);
 }
@@ -94,8 +96,10 @@ void SerialTool::setLanguage(const QString &string)
 {
     appTranslator.load("language/" + string + ".qm");
     qtTranslator.load("language/qt_" + string + ".qm");
+    qsciTranslator.load("language/qscintilla_" + string + ".qm");
     ui.retranslateUi(this);
     ui.oscPlot->retranslate(); // 示波器界面重新翻译
+    ui.fileTransfer->retranslate(); // 文件传输界面重新翻译
 }
 
 // 加载样式表
@@ -207,6 +211,9 @@ void SerialTool::loadConfig()
     }
     config->endGroup();
 
+    // 读取文件传输功能的设置
+    ui.fileTransfer->loadConfig(config);
+
     // 最后读取系统设置
     loadSettings();
 }
@@ -223,7 +230,7 @@ void SerialTool::saveConfig()
     // 打开页面配置
     config->beginGroup("Workspace");
     config->setValue("TabIndex",
-        QVariant(QString::number(ui.tabWidget->currentIndex())));
+        QVariant(ui.tabWidget->currentIndex()));
     config->setValue("ToolBarVisible", QVariant(ui.toolBar1->isVisible()));
     config->setValue("StatusBarVisible", QVariant(ui.statusBar->isVisible()));
     config->endGroup();
@@ -278,6 +285,9 @@ void SerialTool::saveConfig()
     }
     config->endGroup();
     config->endGroup();
+
+    // 读取文件传输功能的设置
+    ui.fileTransfer->saveConfig(config);
 }
 
 void SerialTool::setOptions()
@@ -576,6 +586,10 @@ void SerialTool::readPortData()
                 }
             }
         }
+        // 串口文件传输
+        if (ui.tabWidget->currentIndex() == 2) {
+            ui.fileTransfer->readData(buf);
+        }
     }
     buf.clear();
 }
@@ -591,9 +605,15 @@ void SerialTool::writePortData()
         } else {
             arr = QByteArray::fromHex(ui.textEditTx->text().toLatin1());
         }
-        txCount += arr.length(); // 发送计数
-        serialPort->write(arr.data(), arr.length());
+        writePort(arr);
     }
+}
+
+// 想串口发送数据,带参数
+void SerialTool::writePort(const QByteArray &array)
+{
+    txCount += array.length(); // 发送计数
+    serialPort->write(array.data(), array.length());
 }
 
 void SerialTool::cleanData()

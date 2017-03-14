@@ -42,6 +42,7 @@ public:
     void savePdf(const QString &fileName);
 
 private:
+    void setupPlot();
     void setupChannel();
     void listViewInit();
 

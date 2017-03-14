@@ -1,5 +1,6 @@
 #include "textedit.h"
 #include <QScrollBar>
+#include <Qsci/qscilexercpp.h>
 
 TextEdit::TextEdit(QWidget *parent) : QsciScintilla(parent)
 {
@@ -33,11 +34,11 @@ void TextEdit::setFonts(QString fonts, int size, QColor color, QString style)
 {
     fontFamily = fonts;
     fontSize = size;
-    lineNumFont = QFont(fonts.section('+', 0, 0), size);
+    lineNumFont = QFont(fonts.section(',', 0, 0), size);
     // 文本显示
-    SendScintilla(SCI_STYLESETFONT, fonts.toStdString().c_str());
-    SendScintilla(SCI_STYLESETSIZE, 0, size);
-    SendScintilla(SCI_STYLESETFORE, 0, color);
+    SendScintilla(SCI_STYLESETFONT, STYLE_DEFAULT, fonts.toStdString().c_str());
+    SendScintilla(SCI_STYLESETSIZE, STYLE_DEFAULT, size);
+    SendScintilla(SCI_STYLESETFORE, STYLE_DEFAULT, color);
     if (style.indexOf("bold") != -1) { // 粗体字
         SendScintilla(SCI_STYLESETBOLD, (int)0, true);
     } else {
@@ -48,15 +49,16 @@ void TextEdit::setFonts(QString fonts, int size, QColor color, QString style)
     } else {
         SendScintilla(SCI_STYLESETITALIC, (int)0, (long)false);
     }
+    SendScintilla(SCI_STYLECLEARALL); // 设置全局风格
 
     // 光标颜色
     SendScintilla(SCI_SETCARETFORE, color);
 
     // 页边显示行号
     SendScintilla(SCI_STYLESETFONT, STYLE_LINENUMBER,
-        fonts.section('+', 0, 0).toStdString().c_str());
+        fonts.section(',', 0, 0).toStdString().c_str());
     SendScintilla(SCI_STYLESETSIZE, STYLE_LINENUMBER, size);
-    SendScintilla(SCI_STYLESETFORE, STYLE_LINENUMBER, 0xFF4030);
+    SendScintilla(SCI_STYLESETFORE, STYLE_LINENUMBER, 0xFF8050);
     SendScintilla(SCI_SETMARGINTYPEN, 1, SC_MARGIN_NUMBER);
     setMarginsWidth();
     
@@ -138,4 +140,39 @@ void TextEdit::setWrap(bool wrap)
         QsciScintilla::setWrapMode(WrapNone);
     }
     isWrap = wrap;
+}
+
+// 设置语法高亮
+void TextEdit::setHighLight()
+{
+    const char* g_szKeywords =
+        "asm auto bool break case catch char class const "
+        "const_cast continue default delete do double "
+        "dynamic_cast else enum explicit extern false finally "
+        "float for friend goto if inline int long mutable "
+        "namespace new operator private protected public "
+        "register reinterpret_cast register return short signed "
+        "sizeof static static_cast struct switch template "
+        "this throw true try typedef typeid typename "
+        "union unsigned using virtual void volatile "
+        "wchar_t while";
+    //...
+    SendScintilla(SCI_SETLEXER, SCLEX_CPP); // C++语法解析
+    SendScintilla(SCI_SETKEYWORDS, (unsigned long)0, g_szKeywords);// 设置关键字
+    // 下面设置各种语法元素前景色
+    
+    SendScintilla(SCI_STYLESETFORE, QsciLexerCPP::Keyword, 0xFF4030);   // 关键字
+    SendScintilla(SCI_STYLESETFORE, QsciLexerCPP::DoubleQuotedString, 0x1515A3); // 字符串
+    SendScintilla(SCI_STYLESETFORE, QsciLexerCPP::SingleQuotedString, 0x1515A3); // 字符
+    SendScintilla(SCI_STYLESETFORE, QsciLexerCPP::Operator, 0xB48246); // 运算符
+    SendScintilla(SCI_STYLESETFORE, QsciLexerCPP::Number, 0x4F4F2F); // 数字
+    SendScintilla(SCI_STYLESETFORE, QsciLexerCPP::PreProcessor, 0x808080); // 预编译开关
+    SendScintilla(SCI_STYLESETFORE, QsciLexerCPP::Comment, 0x008000); // 块注释
+    SendScintilla(SCI_STYLESETFORE, QsciLexerCPP::CommentLine, 0x008000); // 行注释
+    SendScintilla(SCI_STYLESETFORE, QsciLexerCPP::CommentDoc, 0x008000); // 文档注释（/**开头）
+    SendScintilla(SCI_SETTABWIDTH, 4); // Tab宽度
+
+    // 当前行高亮
+    SendScintilla(SCI_SETCARETLINEVISIBLE, true);
+    SendScintilla(SCI_SETCARETLINEBACK, 0xb0ffff);
 }
