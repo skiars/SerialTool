@@ -3,7 +3,8 @@
 
 #include "ui_optionsbox.h"
 #include <QtWidgets/QDialog>
-#include "serialtool.h"
+
+class SerialTool;
 
 class OptionsBox : public QDialog {
     Q_OBJECT
@@ -11,6 +12,10 @@ class OptionsBox : public QDialog {
 public:
     OptionsBox(SerialTool *parent = Q_NULLPTR);
     ~OptionsBox();
+
+private:
+    void loadCommand();
+    void saveCommand();
 
 private slots:
     void processOptions(QAbstractButton *button);
@@ -20,6 +25,10 @@ private slots:
     void setTxFontColor();
     void setPlotBackgroundColor();
     void setAxisColor();
+    void onCmdNewClick();
+    void onCmdEditClick();
+    void onCmdDeleteClick();
+    void setCmdItemColor();
 
 private:
     Ui_optionsBox ui;

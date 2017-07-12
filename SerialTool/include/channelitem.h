@@ -45,6 +45,8 @@ public:
         Channel = ch;
     }
 
+    void edit();
+
 private slots:
     void itemChange();
     void changeColor();

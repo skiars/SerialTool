@@ -12,7 +12,7 @@ public:
     void setText(const QString &text);
     void append(const QString &text);
     void setFonts(QString fonts, int size, QColor color = Qt::black, QString style = "");
-    void setHighLight();
+    void setHighLight(bool mode);
 
 public slots:
     void setWrap(bool wrap);
@@ -33,6 +33,7 @@ private:
     int lineCount = 1;
     bool isWrap = false;
     bool scrollEnd = true;
+    bool highLight = false;
 };
 
 #endif

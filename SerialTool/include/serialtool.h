@@ -7,10 +7,18 @@
 #include <QtSerialPort/QSerialPortInfo>
 #include <QMessageBox>
 #include "channelitem.h"
+#include "vediobox.h"
+
+class TcpUdpPort;
 
 class SerialTool : public QMainWindow
 {
     Q_OBJECT
+
+    enum PortType {
+        ComPort,
+        NetworkPort
+    };
 
 public:
     SerialTool(QWidget *parent = Q_NULLPTR);
@@ -45,16 +53,23 @@ private slots:
     void about();
     void onComboBoxChanged(const QString &string);
     void onWrapBoxChanged(int status);
+    void onVedioBoxTriggered();
+    void onVedioBoxDelete();
+    void currentTabChanged(int index);
 
 private:
     void loadConfig();
     void closeEvent(QCloseEvent *event);
+    bool openComPort();
+    bool openTcpUdpPort();
+    void loadPortTool();
 
 private:
     Ui_SerialTool ui;
     QString docPath;
     QTimer resendTimer; // 重发时间
     QTimer secTimer;   // 秒定时器
+    TcpUdpPort *tcpUdpPort; // TCP/UDP端口
     QSerialPort *serialPort;
     QSettings *config;
     bool runFlag = true;
@@ -63,6 +78,8 @@ private:
     QLabel *rxCntLabel, *txCntLabel, *portInfoLabel;
     QByteArray asciiBuf;
     QTranslator appTranslator, qtTranslator, qsciTranslator;
+    VedioBox *vedioBox = NULL;
+    PortType portType;
 };
 
 #endif // SERIALTOOL_H

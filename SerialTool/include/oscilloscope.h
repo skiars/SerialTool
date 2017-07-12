@@ -16,12 +16,13 @@ public:
 
     void retranslate();
 
+    void start();
+    void stop();
     double yOffset();
     double yRange();
     double xRange();
     bool channelVisible(int channel);
     QColor channelColor(int channel);
-    QTimer * timer();
     bool holdReceive();
 
     void setYOffset(double offset);
@@ -40,6 +41,7 @@ public:
     void savePng(const QString &fileName);
     void saveBmp(const QString &fileName);
     void savePdf(const QString &fileName);
+    void saveText(const QString &fname);
 
 private:
     void setupPlot();

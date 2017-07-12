@@ -1,6 +1,7 @@
 ﻿#include "optionsbox.h"
 #include <QFontDialog>
 #include <QColorDialog>
+#include "serialtool.h"
 
 OptionsBox::OptionsBox(SerialTool *parent) : QDialog(parent)
 {
@@ -27,6 +28,7 @@ OptionsBox::OptionsBox(SerialTool *parent) : QDialog(parent)
     axColor = config->value("AxisColor").toString();
     ui.plotAntiBox->setChecked(config->value("PlotAntialiased").toBool());
     ui.gridAntiBox->setChecked(config->value("GridAntialiased").toBool());
+    ui.portTypeBox->setCurrentIndex(config->value("PortType").toInt());
     config->endGroup();
 
     if (!fontFamily.isEmpty()) {
@@ -39,6 +41,8 @@ OptionsBox::OptionsBox(SerialTool *parent) : QDialog(parent)
     ui.lineEditPlotColor->setText(bgColor);
     ui.lineEditAxisColor->setText(axColor);
 
+    loadCommand();
+
     connect(ui.fontAnsiSetButton, SIGNAL(clicked()), this, SLOT(setTextFontAnsi()));
     connect(ui.fontMultiSetButton, SIGNAL(clicked()), this, SLOT(setTextFontMulti()));
     connect(ui.rxColorButton, SIGNAL(clicked()), this, SLOT(setRxFontColor()));
@@ -47,6 +51,10 @@ OptionsBox::OptionsBox(SerialTool *parent) : QDialog(parent)
         this, SLOT(processOptions(QAbstractButton *)));
     connect(ui.plotBgColorButton, SIGNAL(clicked()), this, SLOT(setPlotBackgroundColor()));
     connect(ui.axisColorButton, SIGNAL(clicked()), this, SLOT(setAxisColor()));
+    connect(ui.cmdNew, SIGNAL(clicked()), this, SLOT(onCmdNewClick()));
+    connect(ui.cmdEdit, SIGNAL(clicked()), this, SLOT(onCmdEditClick()));
+    connect(ui.cmdDelete, SIGNAL(clicked()), this, SLOT(onCmdDeleteClick()));
+    connect(ui.cmdList, SIGNAL(itemChanged(QListWidgetItem *)), this, SLOT(setCmdItemColor()));
 }
 
 OptionsBox::~OptionsBox()
@@ -73,7 +81,9 @@ void OptionsBox::processOptions(QAbstractButton *button)
         config->setValue("AxisColor", QVariant(axColor));
         config->setValue("PlotAntialiased", QVariant(ui.plotAntiBox->isChecked()));
         config->setValue("GridAntialiased", QVariant(ui.gridAntiBox->isChecked()));
+        config->setValue("PortType", QVariant(ui.portTypeBox->currentIndex()));
         config->endGroup();
+        saveCommand(); // 保存命令
         serialTool->loadSettings(); // 配置生效
     }
 }
@@ -143,4 +153,96 @@ void OptionsBox::setAxisColor()
     QColor color = QColorDialog::getColor(QColor(axColor), this);
     axColor = color.name();
     ui.lineEditAxisColor->setText(axColor);
+}
+
+void OptionsBox::onCmdNewClick()
+{
+    QListWidgetItem *item = new QListWidgetItem();
+
+    // 设置新建项为可以编辑的项目
+    item->setFlags(item->flags() | Qt::ItemIsEditable);
+    ui.cmdList->addItem(item);
+    ui.cmdList->setCurrentItem(item);
+    setCmdItemColor(); // 上色
+}
+
+void OptionsBox::onCmdEditClick()
+{
+    QListWidgetItem *item = ui.cmdList->currentItem();
+
+    if (item) {
+        ui.cmdList->editItem(item);
+    }
+}
+
+void OptionsBox::onCmdDeleteClick()
+{
+    delete ui.cmdList->currentItem();
+    setCmdItemColor(); // 上色
+}
+
+void OptionsBox::setCmdItemColor()
+{
+    int i, count = ui.cmdList->count();
+    QRegExp regExp("^[_A-Za-z][_0-9A-Za-z]{0,}$"); // 匹配正确的命令名格式
+
+    for (i = 0; i < count; ++i) {
+        QColor color;
+        QListWidgetItem *item = ui.cmdList->item(i);
+        QString str = item->text();
+        if (!str.isEmpty() && (!regExp.exactMatch(str)
+            || ui.cmdList->findItems(str, Qt::MatchExactly).count() > 1)) {
+            color = QColor(0xFF7000);
+        } else {
+            color = i & 0x01 ? QColor(0xD6F3FF) : QColor(0xBDECFF);
+        }
+        item->setBackgroundColor(color);
+    }
+}
+
+void OptionsBox::loadCommand()
+{
+    QFile file("keywords");
+    QListWidgetItem *item;
+
+    if (file.open(QIODevice::Text | QIODevice::ReadOnly)) {
+        QTextStream text(&file);
+        // 添加条目
+        while (!text.atEnd()) {
+            QString str;
+
+            text >> str;
+            // 不是空行就插入
+            if (!str.isEmpty()) {
+                item = new QListWidgetItem(str);
+                item->setFlags(item->flags() | Qt::ItemIsEditable);
+                ui.cmdList->addItem(item);
+            }
+        }
+        file.close();
+        // 设置选中行
+        if (ui.cmdList->count() > 0) {
+            ui.cmdList->setCurrentRow(0);
+            setCmdItemColor(); // 上色
+        }
+    }
+}
+
+void OptionsBox::saveCommand()
+{
+    QFile file("keywords");
+
+    if (file.open(QIODevice::Text | QIODevice::WriteOnly)) {
+        int i, count = ui.cmdList->count();
+
+        QTextStream text(&file);
+        for (i = 0; i < count; ++i) {
+            QString str = ui.cmdList->item(i)->text();
+            // 不是空行就插入
+            if (!str.isEmpty()) {
+                text << str << '\n'; // 写入文件
+            }
+        }
+        file.close();
+    }
 }

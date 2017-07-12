@@ -3,8 +3,6 @@
 
 ChannelItem::ChannelItem(QString string, QColor color, QWidget *parent) : QWidget(parent)
 {
-    
-
     colorBtn = new QToolButton;
     colorBtn->setFixedSize(QSize(16, 16));
     colorBtn->setAutoRaise(true);

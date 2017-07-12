@@ -1,4 +1,5 @@
 #include "oscilloscope.h"
+#include <QTextStream>
 
 #define SCALE   (1000.0 / _xRange)
 
@@ -14,8 +15,7 @@ Oscilloscope::Oscilloscope(QWidget *parent)
     QRegExpValidator *pReg = new QRegExpValidator(rx, this);
     ui.xRangeBox->lineEdit()->setValidator(pReg);
 
-    updataTimer.setInterval(15);
-    updataTimer.start();
+    updataTimer.setInterval(10);
 
     connect(ui.customPlot->xAxis, SIGNAL(rangeChanged(QCPRange)), this, SLOT(xAxisChanged(QCPRange)));
     connect(ui.customPlot->yAxis, SIGNAL(rangeChanged(QCPRange)), this, SLOT(yAxisChanged(QCPRange)));
@@ -85,6 +85,7 @@ void Oscilloscope::listViewInit()
         channelStyleChanged(chItem);
         connect(chItem, &ChannelItem::changelChanged, this, &Oscilloscope::channelStyleChanged);
     }
+    ui.channelList->editItem(ui.channelList->item(0));
 }
 
 // 返回Y轴偏置
@@ -135,10 +136,16 @@ QColor Oscilloscope::channelColor(int channel)
     return item->color();
 }
 
-// 返回更新定时器
-QTimer * Oscilloscope::timer()
+// 开始运行
+void Oscilloscope::start()
 {
-    return &updataTimer;
+    updataTimer.start();
+}
+
+// 结束运行
+void Oscilloscope::stop()
+{
+    updataTimer.stop();
 }
 
 // 返回保持接收状态
@@ -370,4 +377,34 @@ void Oscilloscope::timeUpdata()
         }
     }
     ui.customPlot->replot();
+}
+
+// 保存txt文件
+void Oscilloscope::saveText(const QString &fname)
+{
+    QFile file(fname);
+    int graphCount = ui.customPlot->graphCount();
+    int dataCount[CH_NUM], dataCountMax = -1;
+
+    file.open(QFile::WriteOnly);
+    QTextStream out(&file);
+    for (int i = 0; i < CH_NUM; ++i) {
+        dataCount[i] = ui.customPlot->graph(i)->dataCount();
+        if (dataCount[i] > dataCountMax) {
+            dataCountMax = dataCount[i];
+        }
+    }
+    out.setRealNumberPrecision(8);
+    for (int i = 0; i < dataCountMax; ++i) {
+        double key = ui.customPlot->graph(0)->dataMainKey(i);
+        out << key << ", ";
+        for (int j = 0; j < graphCount; ++j) {
+            if (i < dataCount[j]) {
+                double value = ui.customPlot->graph(j)->dataMainValue(i);
+                out << value << ", ";
+            }
+        }
+        out << endl;
+    }
+    file.close();
 }

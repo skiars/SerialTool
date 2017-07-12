@@ -1,6 +1,8 @@
 #include "textedit.h"
+#include <QtCore>
 #include <QScrollBar>
 #include <Qsci/qscilexercpp.h>
+#include <Qsci/qscilexerbash.h>
 
 TextEdit::TextEdit(QWidget *parent) : QsciScintilla(parent)
 {
@@ -68,6 +70,10 @@ void TextEdit::setFonts(QString fonts, int size, QColor color, QString style)
        This mode never adjusts the scroll width to be narrower.
        */
     SendScintilla(SCI_SETSCROLLWIDTHTRACKING, true);
+
+    if (highLight) { // 重新设置语法高亮
+        setHighLight(true);
+    }
 }
 
 void TextEdit::setMarginsWidth()
@@ -143,8 +149,38 @@ void TextEdit::setWrap(bool wrap)
 }
 
 // 设置语法高亮
-void TextEdit::setHighLight()
+void TextEdit::setHighLight(bool mode)
 {
+    if (mode) {
+        highLight = true;
+    } else {
+        highLight = false;
+        SendScintilla(SCI_SETLEXER, SCLEX_CONTAINER);
+        return;
+    }
+
+#if 1
+    QByteArray keyWords;
+
+    QFile file("keywords");
+
+    if (file.open(QIODevice::ReadOnly)) {
+        keyWords = file.readAll();
+        file.close();
+    }
+    //NULL
+    SendScintilla(SCI_SETLEXER, SCLEX_BASH); // bash解析器
+    SendScintilla(SCI_SETKEYWORDS, (unsigned long)0, keyWords.data());// 设置关键字
+    // 下面设置各种语法元素前景色
+    SendScintilla(SCI_STYLESETFORE, QsciLexerBash::Default, 0x38312A); // 默认
+    SendScintilla(SCI_STYLESETFORE, QsciLexerBash::Keyword, 0x8B8B00);   // 关键字
+    SendScintilla(SCI_STYLESETFORE, QsciLexerBash::DoubleQuotedString, 0x6666D4); // 字符串
+    SendScintilla(SCI_STYLESETFORE, QsciLexerBash::SingleQuotedString, 0x6666D4); // 字符
+    SendScintilla(SCI_STYLESETFORE, QsciLexerBash::Operator, 0xB48246); // 运算符
+    SendScintilla(SCI_STYLESETFORE, QsciLexerBash::Number, 0x006F7F); // 数字
+    SendScintilla(SCI_STYLESETFORE, QsciLexerBash::Comment, 0x008000); // 行注释
+    SendScintilla(SCI_STYLESETFORE, QsciLexerBash::Identifier, 0x38312A); // 识别符
+#else
     const char* g_szKeywords =
         "asm auto bool break case catch char class const "
         "const_cast continue default delete do double "
@@ -156,23 +192,24 @@ void TextEdit::setHighLight()
         "this throw true try typedef typeid typename "
         "union unsigned using virtual void volatile "
         "wchar_t while";
-    //...
-    SendScintilla(SCI_SETLEXER, SCLEX_CPP); // C++语法解析
+
+    SendScintilla(SCI_SETLEXER, SCLEX_CPP); // C++解析器
     SendScintilla(SCI_SETKEYWORDS, (unsigned long)0, g_szKeywords);// 设置关键字
+
     // 下面设置各种语法元素前景色
-    
     SendScintilla(SCI_STYLESETFORE, QsciLexerCPP::Keyword, 0xFF4030);   // 关键字
     SendScintilla(SCI_STYLESETFORE, QsciLexerCPP::DoubleQuotedString, 0x1515A3); // 字符串
     SendScintilla(SCI_STYLESETFORE, QsciLexerCPP::SingleQuotedString, 0x1515A3); // 字符
     SendScintilla(SCI_STYLESETFORE, QsciLexerCPP::Operator, 0xB48246); // 运算符
     SendScintilla(SCI_STYLESETFORE, QsciLexerCPP::Number, 0x4F4F2F); // 数字
-    SendScintilla(SCI_STYLESETFORE, QsciLexerCPP::PreProcessor, 0x808080); // 预编译开关
+    SendScintilla(SCI_STYLESETFORE, QsciLexerCPP::PreProcessor, 0x808080); // 预处理指令
     SendScintilla(SCI_STYLESETFORE, QsciLexerCPP::Comment, 0x008000); // 块注释
     SendScintilla(SCI_STYLESETFORE, QsciLexerCPP::CommentLine, 0x008000); // 行注释
     SendScintilla(SCI_STYLESETFORE, QsciLexerCPP::CommentDoc, 0x008000); // 文档注释（/**开头）
-    SendScintilla(SCI_SETTABWIDTH, 4); // Tab宽度
+#endif
 
+    SendScintilla(SCI_SETTABWIDTH, 4); // Tab宽度
     // 当前行高亮
     SendScintilla(SCI_SETCARETLINEVISIBLE, true);
-    SendScintilla(SCI_SETCARETLINEBACK, 0xb0ffff);
+    SendScintilla(SCI_SETCARETLINEBACK, 0xE0E0E0);
 }

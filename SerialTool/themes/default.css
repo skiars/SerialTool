@@ -300,3 +300,7 @@ QProgressBar {
 QProgressBar::chunk{  
     background-color: #05B8CC;
 }
+
+QComboBox#protocolBox {
+  width: 100px;
+}

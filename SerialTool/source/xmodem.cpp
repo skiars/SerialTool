@@ -155,7 +155,6 @@ int XModemClass::receive(const QByteArray &arr, qint64 &bytes)
     }
     pdata += pos; // 获取帧数据
     // 校验
-    qDebug("last: %d, pdata[1]: %d", lastCount, pdata[1]);
     if (calcVerifi(pdata) == pdata[131] // 检查校验字节
         && pdata[1] == ~pdata[2] // 帧计数校验
         && ((char)(lastCount + 1) == pdata[1] || lastCount == pdata[1])) { // 帧数是否正常

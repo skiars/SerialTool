@@ -132,15 +132,18 @@
          </property>
          <property name="minimumSize">
           <size>
-           <width>90</width>
+           <width>80</width>
            <height>0</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
-           <width>90</width>
+           <width>80</width>
            <height>16777215</height>
           </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">width: 80px;</string>
          </property>
          <property name="currentText">
           <string notr="true">1200</string>
@@ -244,7 +247,7 @@
       <property name="currentIndex">
        <number>0</number>
       </property>
-      <widget class="QWidget" name="tab_2">
+      <widget class="QWidget" name="tabTester">
        <attribute name="title">
         <string>Tester</string>
        </attribute>
@@ -481,7 +484,7 @@
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Preferred" vsizetype="Ignored">
                   <horstretch>0</horstretch>
-                  <verstretch>1</verstretch>
+                  <verstretch>0</verstretch>
                  </sizepolicy>
                 </property>
                </widget>
@@ -494,7 +497,7 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="tab_3">
+      <widget class="QWidget" name="tabOsc">
        <attribute name="title">
         <string>Plot</string>
        </attribute>
@@ -509,7 +512,7 @@
         </property>
        </widget>
       </widget>
-      <widget class="QWidget" name="tab">
+      <widget class="QWidget" name="tabFileTrans">
        <attribute name="title">
         <string>File Transmit</string>
        </attribute>
@@ -560,6 +563,7 @@
      <string>Tools</string>
     </property>
     <addaction name="actionOption"/>
+    <addaction name="actionVedioBox"/>
    </widget>
    <widget class="QMenu" name="menu_3">
     <property name="title">
@@ -741,6 +745,11 @@
    </property>
    <property name="shortcut">
     <string>F1</string>
+   </property>
+  </action>
+  <action name="actionVedioBox">
+   <property name="text">
+    <string>Vedio Box</string>
    </property>
   </action>
  </widget>

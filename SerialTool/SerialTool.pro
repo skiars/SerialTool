@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core widgets printsupport serialport gui
+QT       += core widgets printsupport serialport gui network
 
 TARGET = SerialTool
 TEMPLATE = app
@@ -41,7 +41,9 @@ SOURCES += \
     source/oscilloscope.cpp \
     source/filetransferview.cpp \
     source/filethread.cpp \
-    source/xmodem.cpp
+    source/xmodem.cpp \
+    source/vediobox.cpp \
+    source/tcpudpport.cpp
 
 HEADERS  += \
     include/aboutbox.h \
@@ -57,7 +59,9 @@ HEADERS  += \
     include/filethread.h \
     include/filetransferview.h \
     include/xmodem.h \
-    include/xmodem_crc16.h
+    include/xmodem_crc16.h \
+    include/vediobox.h \
+    include/tcpudpport.h
 
 DISTFILES += \
     resource/images/clear.png \
@@ -80,6 +84,8 @@ FORMS += \
     ui/portsetbox.ui \
     ui/serialtool.ui \
     ui/oscilloscope.ui \
-    ui/filetransferview.ui
+    ui/filetransferview.ui \
+    ui/vediobox.ui \
+    ui/tcpudpport.ui
 
 LIBS += -lqscintilla2

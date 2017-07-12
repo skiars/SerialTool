@@ -4,6 +4,7 @@
 #include "aboutbox.h"
 #include "wavedecode.h"
 #include "version.h"
+#include "tcpudpport.h"
 
 SerialTool::SerialTool(QWidget *parent)
     : QMainWindow(parent)
@@ -12,9 +13,6 @@ SerialTool::SerialTool(QWidget *parent)
 
     ui.setupUi(this);
     setWindowTitle(SOFTWARE_NAME " V" SOFTWARE_VERSION);
-
-    // 串口设置的控件移动到工具栏
-    ui.toolBar1->insertWidget(ui.portSetAction, ui.portConfigWidget);
 
     // 互斥动作
     tabActionGroup = new QActionGroup(this);
@@ -29,8 +27,11 @@ SerialTool::SerialTool(QWidget *parent)
     setStyleSheet("default");
 
     serialPort = new QSerialPort;
-
-    scanPort(); // 扫描端口
+    tcpUdpPort = new TcpUdpPort(this);
+    // 将串口配置控件移除
+    ui.verticalLayout_2->removeWidget(ui.portConfigWidget);
+    ui.toolBar1->insertWidget(ui.portSetAction, ui.portConfigWidget);
+    ui.toolBar1->insertWidget(ui.portSetAction, tcpUdpPort);
 
     rxCount = 0;
     txCount = 0;
@@ -46,16 +47,13 @@ SerialTool::SerialTool(QWidget *parent)
     ui.statusBar->addWidget(txCntLabel);
 
     ui.textEditRx->setReadOnly(true);
-
-    // 发送区自动换行
-    ui.textEditTx->setWrap(true);
+    ui.textEditTx->setWrap(true); // 发送区自动换行
 
     loadConfig(); // 加载配置
     
     // create connection between axes and scroll bars:
     connect(ui.portRunAction, SIGNAL(triggered()), this, SLOT(changeRunFlag()));
     connect(ui.portSwitchAction, SIGNAL(triggered()), this, SLOT(onPortSwitchActionTriggered()));
-    connect(serialPort, &QSerialPort::readyRead, this, &SerialTool::readPortData);
     connect(ui.sendButton, &QPushButton::clicked, this, &SerialTool::onSendButtonClicked);
     connect(ui.clearAction, SIGNAL(triggered()), this, SLOT(cleanData()));
     QObject::connect(&resendTimer, &QTimer::timeout, this, &SerialTool::writePortData);
@@ -76,7 +74,10 @@ SerialTool::SerialTool(QWidget *parent)
     connect(ui.comboBox, SIGNAL(activated(const QString &)), this, SLOT(onComboBoxChanged(const QString &)));
     connect(ui.wrapLineBox, SIGNAL(stateChanged(int)), this, SLOT(onWrapBoxChanged(int)));
     connect(ui.fileTransfer, &FileTransferView::sendData, this, &SerialTool::writePort);
-    
+    connect(ui.actionVedioBox, SIGNAL(triggered()), this, SLOT(onVedioBoxTriggered()));
+    connect(ui.tabWidget, SIGNAL(currentChanged(int)), this, SLOT(currentTabChanged(int)));
+
+    scanPort(); // 扫描端口
     secTimer.start(1000);
 }
 
@@ -97,7 +98,7 @@ void SerialTool::setLanguage(const QString &string)
     appTranslator.load("language/" + string + ".qm");
     qtTranslator.load("language/qt_" + string + ".qm");
     qsciTranslator.load("language/qscintilla_" + string + ".qm");
-    ui.retranslateUi(this);
+    ui.retranslateUi(this);    // 重新翻译界面
     ui.oscPlot->retranslate(); // 示波器界面重新翻译
     ui.fileTransfer->retranslate(); // 文件传输界面重新翻译
 }
@@ -134,8 +135,19 @@ void SerialTool::loadSettings()
     ui.oscPlot->setPlotAntialiased(config->value("PlotAntialiased").toBool());
     // 绘制时网格抗锯齿
     ui.oscPlot->setGridAntialiased(config->value("GridAntialiased").toBool());
+    PortType type = (PortType)config->value("PortType").toInt();
 
     config->endGroup();
+
+    // 发送区与接收区设置语法高亮
+    ui.textEditTx->setHighLight(true);
+    ui.textEditRx->setHighLight(true);
+
+    if (type != portType) {
+        closePort(); // 端口改变时关闭之前的端口
+        portType = type;
+    }
+    loadPortTool();
 }
 
 // 控件数据初始化, 在构造函数中初始化各种控件的初始值
@@ -158,10 +170,17 @@ void SerialTool::loadConfig()
     config->endGroup();
     config->endGroup();
 
-    // 配置波特率
+    // 串口设置
     config->beginGroup("SerialPort");
     serialPort->setBaudRate(config->value("BaudRate").toInt());
     ui.comboBoxBaudRate->setCurrentText(QString::number(serialPort->baudRate()));
+    config->endGroup();
+
+    // TCP/UDP设置
+    config->beginGroup("TcpUdpPort");
+    tcpUdpPort->setServerAddress(config->value("ServerAddress").toString());
+    tcpUdpPort->setPortNumber(config->value("PortNumber").toInt());
+    tcpUdpPort->setPortProtocol(config->value("PortProtocol").toString());
     config->endGroup();
 
     // 打开页面配置
@@ -221,10 +240,20 @@ void SerialTool::loadConfig()
 // 保存配置
 void SerialTool::saveConfig()
 {
-    // 保存波特率
+    // 保存串口设置
     config->beginGroup("SerialPort");
     config->setValue("BaudRate",
         QVariant(ui.comboBoxBaudRate->currentText()));
+    config->endGroup();
+
+    // 保存TCP/UDP设置
+    config->beginGroup("TcpUdpPort");
+    config->setValue("ServerAddress",
+        QVariant(tcpUdpPort->serverAddress()));
+    config->setValue("PortNumber",
+        QVariant(tcpUdpPort->portNumber()));
+    config->setValue("PortProtocol",
+        QVariant(tcpUdpPort->portProtocol()));
     config->endGroup();
     
     // 打开页面配置
@@ -302,19 +331,22 @@ void SerialTool::saveFile()
     QString filter;
     QString fname = QFileDialog::getSaveFileName(this, "Save", docPath,
         tr("Portable Network Graphic Format (*.png);;"
-            "Bitmap (*.bmp);;"
-           "Portable Document Format (*.pdf)"), &filter,
+           "Bitmap (*.bmp);;"
+           "Portable Document Format (*.pdf);;"
+           "Wave Plain Text File (*.txt)"), &filter,
         QFileDialog::HideNameFilterDetails);
     if (fname.isNull()) {
         return;
     }
     docPath = QFileInfo(fname).path();
-    if (filter.indexOf("(*.png)", 0)) {
+    if (filter.indexOf("(*.png)", 0) != -1) {
         ui.oscPlot->savePng(fname);
-    } else if (filter.indexOf("(*.bmp)", 0)) {
+    } else if (filter.indexOf("(*.bmp)", 0) != -1) {
         ui.oscPlot->saveBmp(fname);
-    } else if (filter.indexOf("(*.pdf)", 0)) {
+    } else if (filter.indexOf("(*.pdf)", 0) != -1) {
         ui.oscPlot->savePdf(fname);
+    } else if (filter.indexOf("(*.txt)", 0) != -1) {
+        ui.oscPlot->saveText(fname);
     }
 }
 
@@ -344,13 +376,15 @@ void SerialTool::changeRunFlag()
         QIcon icon(":/SerialTool/images/start.ico");
         ui.portRunAction->setIcon(icon);
         ui.portRunAction->setText(tr("Start Tx/Rx"));
-        ui.oscPlot->timer()->stop();
+        ui.oscPlot->stop();
     } else {
         runFlag = true;
         QIcon icon(":/SerialTool/images/pause.ico");
         ui.portRunAction->setIcon(icon);
         ui.portRunAction->setText(tr("Pause Tx/Rx"));
-        ui.oscPlot->timer()->start();
+        if (ui.tabWidget->widget(ui.tabWidget->currentIndex()) == ui.tabOsc) {
+            ui.oscPlot->start();
+        }
     }
 }
 
@@ -410,68 +444,100 @@ void SerialTool::scanPort()
     // 需要同步或者comboBoxPortNum存在无效端口
     if (sync || !ui.comboBoxPortNum->itemText(i).isEmpty()) {
         int len = 0;
-        QString longStr, str = ui.comboBoxPortNum->currentText();
+        QFontMetrics fm(ui.comboBoxPortNum->font());
+        QString str = ui.comboBoxPortNum->currentText();
         ui.comboBoxPortNum->clear();
         for (i = 0; i < vec.length(); ++i) {
             QString t = vec[i].portName() + " (" + vec[i].description() + ")";
             ui.comboBoxPortNum->addItem(t);
-            if (t.length() > len) { // 统计最长字符串
-                len = t.length();
-                longStr = t;
+            int width = fm.boundingRect(t).width(); // 计算字符串的像素宽度
+            if (width > len) { // 统计最长字符串
+                len = width;
             }
         }
-        if (!str.isEmpty()) {
+        if (!str.isEmpty()) { // 设置当前选中的端口
             ui.comboBoxPortNum->setCurrentText(str);
         } else {
             ui.comboBoxPortNum->setCurrentIndex(0);
         }
         // 自动控制下拉列表宽度
-        QFontMetrics fm(ui.comboBoxPortNum->font());
-        len = fm.boundingRect(longStr).width() + 9;
-        ui.comboBoxPortNum->view()->setMinimumWidth(len);
+        ui.comboBoxPortNum->view()->setMinimumWidth(len + 9);
     }
 }
 
-void SerialTool::openPort()
+// 打开串口端口
+bool SerialTool::openComPort()
 {
     QString name = ui.comboBoxPortNum->currentText().section(' ', 0, 0);
     serialPort->setPortName(name);
     if (serialPort->open(QIODevice::ReadWrite)) {
+        ui.comboBoxPortNum->setEnabled(false); // 禁止更改串口
+        connect(serialPort, &QSerialPort::readyRead, this, &SerialTool::readPortData);
+        return true;
+    }
+    QMessageBox err(QMessageBox::Critical,
+        tr("Error"),
+        tr("Can not open the port!\n"
+            "Port may be occupied or configured incorrectly!"),
+        QMessageBox::Cancel, this);
+    err.exec();
+    return false;
+}
+
+// 打开TCP/UDP端口
+bool SerialTool::openTcpUdpPort()
+{
+    if (tcpUdpPort->open()) {
+        connect(tcpUdpPort, &TcpUdpPort::readyRead, this, &SerialTool::readPortData);
+        return true;
+    }
+    return false;
+}
+
+// 打开端口
+void SerialTool::openPort()
+{
+    bool status = false;
+
+    if (portType == ComPort) {
+        status = openComPort();
+    } else if (portType == NetworkPort) {
+        status = openTcpUdpPort();
+    }
+    if (status) {
         QIcon icon(":/SerialTool/images/close.png");
         ui.portSwitchAction->setIcon(icon);
         ui.portSwitchAction->setText(tr("Close Port"));
-        ui.comboBoxPortNum->setEnabled(false); // 禁止更改串口
         ui.sendButton->setEnabled(true);
         ui.portRunAction->setEnabled(true);
-        if (runFlag) {
-            ui.oscPlot->timer()->start();
+        if (runFlag && ui.tabWidget->widget(ui.tabWidget->currentIndex()) == ui.tabOsc) {
+            ui.oscPlot->start(); // 启动串口示波器
         }
-    } else {
-        QMessageBox err(QMessageBox::Critical,
-            tr("Error"),
-            tr("Can not open the port!\n"
-                "Port may be occupied or configured incorrectly!"),
-            QMessageBox::Cancel, this);
-        err.exec();
     }
 }
 
 void SerialTool::closePort()
 {
-    serialPort->close(); // 关闭串口
+    if (serialPort->isOpen()) {
+        serialPort->close(); // 关闭串口
+        ui.comboBoxPortNum->setEnabled(true); // 允许更改串口
+    }
+    if (tcpUdpPort->isOpen()) {
+        tcpUdpPort->close();
+    }
+    ui.oscPlot->stop(); // 串口示波器开始结束运行
     QIcon icon(":/SerialTool/images/connect.png");
     ui.portSwitchAction->setIcon(icon);
     ui.portSwitchAction->setText(tr("Open Port"));
-    ui.comboBoxPortNum->setEnabled(true); // 允许更改串口
     ui.sendButton->setEnabled(false);
     ui.portRunAction->setEnabled(false);
-    ui.oscPlot->timer()->stop(); // 暂停定时器
 }
 
 // 打开串口槽函数
 void SerialTool::onPortSwitchActionTriggered()
 { 
-    if (serialPort->isOpen() == true) { // 现在需要关闭端口
+    bool opend = serialPort->isOpen() || tcpUdpPort->isOpen();
+    if (opend == true) { // 现在需要关闭端口
         closePort();
     } else { // 端口关闭时打开端口
         openPort();
@@ -563,7 +629,12 @@ void SerialTool::readPortData()
     if (!runFlag) {
         return;
     }
-    QByteArray buf = serialPort->readAll(); // 读取串口数据
+    QByteArray buf;
+    if (portType == ComPort) {
+        buf = serialPort->readAll(); // 读取串口数据
+    } else if (portType == NetworkPort) {
+        buf = tcpUdpPort->readAll(); // 读取TCP/UDP数据
+    }
     rxCount += buf.length(); // 接收计数
     if (!buf.isEmpty()) {
         if (ui.tabWidget->currentIndex() == 0) { // 串口调试助手
@@ -590,6 +661,9 @@ void SerialTool::readPortData()
         if (ui.tabWidget->currentIndex() == 2) {
             ui.fileTransfer->readData(buf);
         }
+        if (vedioBox != NULL) {
+            vedioBox->addData(buf);
+        }
     }
     buf.clear();
 }
@@ -597,7 +671,7 @@ void SerialTool::readPortData()
 // 向串口发送数据
 void SerialTool::writePortData()
 {
-    if (runFlag && serialPort->isOpen()) {
+    if (runFlag && (serialPort->isOpen() || portType == NetworkPort)) {
         QByteArray arr;
         if (ui.portWriteAscii->isChecked() == true) {
             QTextCodec *code = QTextCodec::codecForName("GB-2312");
@@ -609,11 +683,15 @@ void SerialTool::writePortData()
     }
 }
 
-// 想串口发送数据,带参数
+// 向端口发送数据,带参数
 void SerialTool::writePort(const QByteArray &array)
 {
     txCount += array.length(); // 发送计数
-    serialPort->write(array.data(), array.length());
+    if (portType == ComPort) {
+        serialPort->write(array.data(), array.length());
+    } else if (portType == NetworkPort) {
+        tcpUdpPort->write(array);
+    }
 }
 
 void SerialTool::cleanData()
@@ -662,4 +740,53 @@ void SerialTool::onComboBoxChanged(const QString &string)
 void SerialTool::onWrapBoxChanged(int status)
 {
     ui.textEditRx->setWrap(status);
+}
+
+void SerialTool::loadPortTool()
+{
+    if (portType == ComPort) {
+        ui.portConfigWidget->setVisible(true);
+        ui.label->setVisible(true);
+        ui.comboBoxPortNum->setVisible(true);
+        ui.label_2->setVisible(true);
+        ui.comboBoxBaudRate->setVisible(true);
+        ui.portConfigWidget->setVisible(true);
+        ui.portSetAction->setVisible(true);
+        tcpUdpPort->setVisibleWidget(false);
+    } else if (portType == NetworkPort) {
+        ui.portConfigWidget->setVisible(false);
+        ui.label->setVisible(false);
+        ui.comboBoxPortNum->setVisible(false);
+        ui.label_2->setVisible(false);
+        ui.comboBoxBaudRate->setVisible(false);
+        ui.portConfigWidget->setVisible(false);
+        ui.portSetAction->setVisible(false);
+        tcpUdpPort->setVisibleWidget(true);
+    }
+}
+
+void SerialTool::onVedioBoxTriggered()
+{
+    if (vedioBox == NULL) { // 当对话框没有创建时创建
+        vedioBox = new VedioBox(this);
+        connect(vedioBox, SIGNAL(destroyed()), this, SLOT(onVedioBoxDelete()));
+        vedioBox->setModal(false); // 非模态对话框
+        vedioBox->setAttribute(Qt::WA_DeleteOnClose);
+        vedioBox->setFilePath(docPath);
+        vedioBox->show();
+    }
+}
+
+void SerialTool::onVedioBoxDelete()
+{
+    vedioBox = NULL;
+}
+
+void SerialTool::currentTabChanged(int index)
+{
+    if (runFlag && ui.tabWidget->widget(index) == ui.tabOsc) { // 只有在串口示波器选项卡下面才会启动示波器
+        ui.oscPlot->start();
+    } else {
+        ui.oscPlot->stop();
+    }
 }

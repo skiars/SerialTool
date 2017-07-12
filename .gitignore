@@ -244,6 +244,5 @@ ModelManifest.xml
 # FAKE - F# Make
 .fake/
 
-SerialTool/*.ini
-Win32/
-GeneratedFiles/
+*-Debug/
+*-Release/
