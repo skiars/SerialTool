@@ -188,39 +188,39 @@
 <context>
     <name>SerialTool</name>
     <message>
-        <location filename="../source/serialtool.cpp" line="378"/>
+        <location filename="../source/serialtool.cpp" line="384"/>
         <source>Start Tx/Rx</source>
         <translation>开始发送/接收</translation>
     </message>
     <message>
         <location filename="../ui/serialtool.ui" line="665"/>
-        <location filename="../source/serialtool.cpp" line="384"/>
+        <location filename="../source/serialtool.cpp" line="390"/>
         <source>Pause Tx/Rx</source>
         <translation>暂停发送/接收</translation>
     </message>
     <message>
         <location filename="../ui/serialtool.ui" line="649"/>
-        <location filename="../source/serialtool.cpp" line="531"/>
+        <location filename="../source/serialtool.cpp" line="537"/>
         <source>Open Port</source>
         <translation>打开端口</translation>
     </message>
     <message>
-        <location filename="../source/serialtool.cpp" line="510"/>
+        <location filename="../source/serialtool.cpp" line="516"/>
         <source>Close Port</source>
         <translation>关闭端口</translation>
     </message>
     <message>
-        <location filename="../source/serialtool.cpp" line="479"/>
+        <location filename="../source/serialtool.cpp" line="485"/>
         <source>Error</source>
         <translation>错误</translation>
     </message>
     <message>
-        <location filename="../source/serialtool.cpp" line="333"/>
+        <location filename="../source/serialtool.cpp" line="339"/>
         <source>Portable Network Graphic Format (*.png);;Bitmap (*.bmp);;Portable Document Format (*.pdf);;Wave Plain Text File (*.txt)</source>
         <translation>图像文件存储格式 (*.png);;位图文件 (*.bmp);;便携式文档格式 (*.pdf);;波形纯文本文件 (*.txt)</translation>
     </message>
     <message>
-        <location filename="../source/serialtool.cpp" line="480"/>
+        <location filename="../source/serialtool.cpp" line="486"/>
         <source>Can not open the port!
 Port may be occupied or configured incorrectly!</source>
         <translation>无法打开端口！
@@ -506,7 +506,7 @@ Please check the port number.</source>
     <message>
         <location filename="../ui/optionsbox.ui" line="81"/>
         <source>Language</source>
-        <translation></translation>
+        <translation>语言</translation>
     </message>
     <message>
         <location filename="../ui/optionsbox.ui" line="111"/>

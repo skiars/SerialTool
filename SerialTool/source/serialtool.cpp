@@ -5,10 +5,12 @@
 #include "wavedecode.h"
 #include "version.h"
 #include "tcpudpport.h"
+#include "defaultconfig.h"
 
 SerialTool::SerialTool(QWidget *parent)
     : QMainWindow(parent)
 {
+    syncDefaultConfig("config.ini");
     config = new QSettings("config.ini", QSettings::IniFormat);
 
     ui.setupUi(this);
@@ -19,12 +21,10 @@ SerialTool::SerialTool(QWidget *parent)
     tabActionGroup->addAction(ui.actionVisibleTab0);
     tabActionGroup->addAction(ui.actionVisibleTab1);
 
-    // 对界面的初始化结束之后再设置语言和样式表
+    // 配置翻译环境
     qApp->installTranslator(&appTranslator);
     qApp->installTranslator(&qtTranslator);
     qApp->installTranslator(&qsciTranslator);
-    setLanguage("zh_CN");
-    setStyleSheet("default");
 
     serialPort = new QSerialPort;
     tcpUdpPort = new TcpUdpPort(this);
@@ -87,7 +87,11 @@ SerialTool::~SerialTool()
 }
 
 // 关闭事件
+#ifdef __GNUC__
+void SerialTool::closeEvent(__attribute__((unused)) QCloseEvent *event)
+#else
 void SerialTool::closeEvent(QCloseEvent *event)
+#endif
 {
     saveConfig();
 }
@@ -95,9 +99,9 @@ void SerialTool::closeEvent(QCloseEvent *event)
 // 加载语言
 void SerialTool::setLanguage(const QString &string)
 {
-    appTranslator.load("language/" + string + ".qm");
-    qtTranslator.load("language/qt_" + string + ".qm");
-    qsciTranslator.load("language/qscintilla_" + string + ".qm");
+    appTranslator.load("language/" + string + "/serialtool.qm");
+    qtTranslator.load("language/" + string + "/qt.qm");
+    qsciTranslator.load("language/" + string + "/qscintilla.qm");
     ui.retranslateUi(this);    // 重新翻译界面
     ui.oscPlot->retranslate(); // 示波器界面重新翻译
     ui.fileTransfer->retranslate(); // 文件传输界面重新翻译
@@ -107,7 +111,7 @@ void SerialTool::setLanguage(const QString &string)
 void SerialTool::setStyleSheet(const QString &string)
 {
     // 样式表
-    QFile qss("themes/" + string + ".css");
+    QFile qss("themes/" + string + "/style.css");
     qss.open(QFile::ReadOnly);
     qApp->setStyleSheet(qss.readAll());
     qss.close();
@@ -137,6 +141,10 @@ void SerialTool::loadSettings()
     ui.oscPlot->setGridAntialiased(config->value("GridAntialiased").toBool());
     PortType type = (PortType)config->value("PortType").toInt();
 
+    // 语言设置
+    setLanguage(config->value("Language").toString());
+    setStyleSheet(config->value("Theme").toString());
+
     config->endGroup();
 
     // 发送区与接收区设置语法高亮
@@ -160,12 +168,13 @@ void SerialTool::loadConfig()
 
     // 控件数据
     config->beginGroup("WidgetData");
-    config->beginGroup("comboBox");
-    int count = config->value("Count").toInt();
+    config->beginGroup("ComboBox");
+    int count = config->beginReadArray("Items");
     for (int i = 0; i < count; ++i) {
-        ui.comboBox->addItem(
-            config->value("Item" + QString::number(i)).toString());
+        config->setArrayIndex(i);
+        ui.comboBox->addItem(config->value("data").toString());
     }
+    config->endArray();
     ui.comboBox->setCurrentIndex(0);
     config->endGroup();
     config->endGroup();
@@ -222,12 +231,13 @@ void SerialTool::loadConfig()
     ui.oscPlot->setXRange(config->value("XRange").toString());
     ui.oscPlot->setYOffset(config->value("YOffset").toDouble());
     ui.oscPlot->setYRange(config->value("YRange").toDouble());
+    config->beginReadArray("Channels");
     for (int i = 0; i < CH_NUM; ++i) {
-        ui.oscPlot->setChannelColor(i, QColor(
-            config->value("Ch" + QString::number(i + 1) + "Color").toString()));
-        ui.oscPlot->setChannelVisible(i,
-                config->value("Ch" + QString::number(i + 1) + "Visible").toBool());
+        config->setArrayIndex(i);
+        ui.oscPlot->setChannelVisible(i, config->value("Visible").toBool());
+        ui.oscPlot->setChannelColor(i, QColor(config->value("Color").toString()));
     }
+    config->endArray();
     config->endGroup();
 
     // 读取文件传输功能的设置
@@ -289,13 +299,13 @@ void SerialTool::saveConfig()
     config->setValue("YOffset", QVariant(ui.oscPlot->yOffset()));
     config->setValue("YRange", QVariant(ui.oscPlot->yRange()));
     config->setValue("XRange", QVariant(ui.oscPlot->xRange()));
-    
+    config->beginWriteArray("Channels");
     for (int i = 0; i < CH_NUM; ++i) {
-        config->setValue("Ch" + QString::number(i + 1) + "Visible",
-            QVariant(ui.oscPlot->channelVisible(i)));
-        config->setValue("Ch" + QString::number(i + 1) + "Color",
-                QVariant(ui.oscPlot->channelColor(i).name()));
+        config->setArrayIndex(i);
+        config->setValue("Visible", ui.oscPlot->channelVisible(i));
+        config->setValue("Color", ui.oscPlot->channelColor(i).name());
     }
+    config->endArray();
     config->endGroup();
 
     // 路经
@@ -305,13 +315,14 @@ void SerialTool::saveConfig()
 
     // 控件数据
     config->beginGroup("WidgetData");
-    config->beginGroup("comboBox");
+    config->beginGroup("ComboBox");
     int count = ui.comboBox->count();
-    config->setValue("Count", count);
+    config->beginWriteArray("Items");
     for (int i = 0; i < count; ++i) {
-        config->setValue("Item" + QString::number(i),
-            QVariant(ui.comboBox->itemText(i)));
+        config->setArrayIndex(i);
+        config->setValue("data", ui.comboBox->itemText(i));
     }
+    config->endArray();
     config->endGroup();
     config->endGroup();
 

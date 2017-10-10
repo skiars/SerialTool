@@ -29,6 +29,7 @@ private slots:
     void onCmdEditClick();
     void onCmdDeleteClick();
     void setCmdItemColor();
+    void setLanguage(int index);
 
 private:
     Ui_optionsBox ui;
@@ -36,6 +37,8 @@ private:
     QString fontFamily, fontStyle;
     int fontSize;
     QString rxColor, txColor, bgColor, axColor;
+    QString language, theme;
+    QVector<QString> languageList;
 };
 
 #endif
