@@ -3,6 +3,47 @@
 #include <QColorDialog>
 #include "serialtool.h"
 
+static QString languageName(const QString &path)
+{
+    QFile file(path + "/name");
+
+    if(file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        QByteArray line = file.readLine();
+        return QString(line).trimmed(); // 去除字符串两端的空白
+    }
+    return QString();
+}
+
+static void scanLanguagePath(const QString &path, QVector<QString> &languageList, QComboBox *comboBox)
+{
+    QDir dir(path);
+
+    foreach(QFileInfo mfi , dir.entryInfoList()) {
+        if (mfi.isDir() && mfi.fileName() != "." && mfi.fileName() != "..") {
+            QString language;
+            language = languageName(path + "/" + mfi.fileName());
+            if (!language.isEmpty()) {
+                comboBox->addItem(language);
+                languageList.append(mfi.fileName());
+            }
+        }
+    }
+}
+
+static void scanThemesPath(const QString &path, QComboBox *comboBox)
+{
+    QDir dir(path);
+
+    foreach(QFileInfo mfi , dir.entryInfoList()) {
+        if (mfi.isDir() && mfi.fileName() != "." && mfi.fileName() != "..") {
+            QFile file(path + "/" + mfi.fileName() + "/style.css");
+            if (file.exists()) {
+                comboBox->addItem(mfi.fileName());
+            }
+        }
+    }
+}
+
 OptionsBox::OptionsBox(SerialTool *parent) : QDialog(parent)
 {
     // 不显示问号
@@ -29,6 +70,8 @@ OptionsBox::OptionsBox(SerialTool *parent) : QDialog(parent)
     ui.plotAntiBox->setChecked(config->value("PlotAntialiased").toBool());
     ui.gridAntiBox->setChecked(config->value("GridAntialiased").toBool());
     ui.portTypeBox->setCurrentIndex(config->value("PortType").toInt());
+    language = config->value("Language").toString();
+    theme = config->value("Theme").toString();
     config->endGroup();
 
     if (!fontFamily.isEmpty()) {
@@ -40,6 +83,11 @@ OptionsBox::OptionsBox(SerialTool *parent) : QDialog(parent)
     ui.lineEditTxColor->setText(txColor);
     ui.lineEditPlotColor->setText(bgColor);
     ui.lineEditAxisColor->setText(axColor);
+
+    scanLanguagePath("language", languageList, ui.languageBox);
+    ui.languageBox->setCurrentText(languageName("language/" + language));
+    scanThemesPath("themes", ui.themeBox);
+    ui.themeBox->setCurrentText(theme);
 
     loadCommand();
 
@@ -55,6 +103,7 @@ OptionsBox::OptionsBox(SerialTool *parent) : QDialog(parent)
     connect(ui.cmdEdit, SIGNAL(clicked()), this, SLOT(onCmdEditClick()));
     connect(ui.cmdDelete, SIGNAL(clicked()), this, SLOT(onCmdDeleteClick()));
     connect(ui.cmdList, SIGNAL(itemChanged(QListWidgetItem *)), this, SLOT(setCmdItemColor()));
+    connect(ui.languageBox, SIGNAL(currentIndexChanged(int)), this, SLOT(setLanguage(int)));
 }
 
 OptionsBox::~OptionsBox()
@@ -82,9 +131,12 @@ void OptionsBox::processOptions(QAbstractButton *button)
         config->setValue("PlotAntialiased", QVariant(ui.plotAntiBox->isChecked()));
         config->setValue("GridAntialiased", QVariant(ui.gridAntiBox->isChecked()));
         config->setValue("PortType", QVariant(ui.portTypeBox->currentIndex()));
+        config->setValue("Language", QVariant(language));
+        config->setValue("Theme", QVariant(ui.themeBox->currentText()));
         config->endGroup();
         saveCommand(); // 保存命令
         serialTool->loadSettings(); // 配置生效
+        ui.retranslateUi(this);
     }
 }
 
@@ -245,4 +297,9 @@ void OptionsBox::saveCommand()
         }
         file.close();
     }
+}
+
+void OptionsBox::setLanguage(int index)
+{
+    language = languageList[index];
 }

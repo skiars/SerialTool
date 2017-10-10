@@ -43,7 +43,8 @@ SOURCES += \
     source/filethread.cpp \
     source/xmodem.cpp \
     source/vediobox.cpp \
-    source/tcpudpport.cpp
+    source/tcpudpport.cpp \
+    source/defaultconfig.cpp
 
 HEADERS  += \
     include/aboutbox.h \
@@ -61,7 +62,8 @@ HEADERS  += \
     include/xmodem.h \
     include/xmodem_crc16.h \
     include/vediobox.h \
-    include/tcpudpport.h
+    include/tcpudpport.h \
+    include/defaultconfig.h
 
 DISTFILES += \
     resource/images/clear.png \

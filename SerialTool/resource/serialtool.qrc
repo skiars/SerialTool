@@ -14,4 +14,7 @@
     <qresource prefix="/license">
         <file>license.html</file>
     </qresource>
+    <qresource prefix="/config">
+        <file>default.ini</file>
+    </qresource>
 </RCC>

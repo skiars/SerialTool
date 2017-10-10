@@ -396,8 +396,7 @@ void Oscilloscope::saveText(const QString &fname)
     }
     out.setRealNumberPrecision(8);
     for (int i = 0; i < dataCountMax; ++i) {
-        double key = ui.customPlot->graph(0)->dataMainKey(i);
-        out << key << ", ";
+        out << i << ", ";
         for (int j = 0; j < graphCount; ++j) {
             if (i < dataCount[j]) {
                 double value = ui.customPlot->graph(j)->dataMainValue(i);

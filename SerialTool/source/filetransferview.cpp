@@ -4,7 +4,7 @@
 #include <QtCore>
 #include "xmodem.h"
 
-// ¹¹Ôìº¯Êý
+// æž„é€ å‡½æ•°
 FileTransferView::FileTransferView(QWidget *parent) : QWidget(parent)
 {
     ui.setupUi(this);
@@ -21,7 +21,7 @@ void FileTransferView::retranslate()
     ui.retranslateUi(this);
 }
 
-/* ¶ÁÈ¡ÅäÖÃÎÄ¼þ */
+/* è¯»å–é…ç½®æ–‡ä»¶ */
 void FileTransferView::loadConfig(QSettings *config)
 {
     config->beginGroup("FileTransmit");
@@ -37,7 +37,7 @@ void FileTransferView::loadConfig(QSettings *config)
     config->endGroup();
 }
 
-// ±£´æÅäÖÃ
+// ä¿å­˜é…ç½®
 void FileTransferView::saveConfig(QSettings *config)
 {
     config->beginGroup("FileTransmit");
@@ -49,7 +49,7 @@ void FileTransferView::saveConfig(QSettings *config)
     config->endGroup();
 }
 
-// ´ò¿ªÎÄ¼þ°´Å¥°´ÏÂ
+// æ‰“å¼€æ–‡ä»¶æŒ‰é’®æŒ‰ä¸‹
 void FileTransferView::browseButtonClicked()
 {
     QString fname;
@@ -58,12 +58,12 @@ void FileTransferView::browseButtonClicked()
     } else {
         fname = QFileDialog::getSaveFileName(this, "Open File", ui.pathBox->text());
     }
-    if (!fname.isEmpty()) { // ÎÄ¼þÃûÓÐÐ§
+    if (!fname.isEmpty()) { // æ–‡ä»¶åæœ‰æ•ˆ
         ui.pathBox->setText(fname);
     }
 }
 
-// ·¢ËÍÎÄ¼þ
+// å‘é€æ–‡ä»¶
 void FileTransferView::sendFile()
 {
     bool res = true;
@@ -73,12 +73,12 @@ void FileTransferView::sendFile()
     };
     QFile file(ui.pathBox->text());
 
-    if (ui.sendButton->isChecked()) { // ·¢ËÍÄ£Ê½ÒªÇóÎÄ¼þ¿ÉÒÔÒÔÖ»¶Á·½Ê½´ò¿ª
+    if (ui.sendButton->isChecked()) { // å‘é€æ¨¡å¼è¦æ±‚æ–‡ä»¶å¯ä»¥ä»¥åªè¯»æ–¹å¼æ‰“å¼€
         res = file.open(QFile::ReadOnly);
         if (res) {
             file.close();
         }
-    } else { // ½ÓÊÕÄ£Ê½ÒªÇóÎÄ¼þ¿ÉÒÔÒÔÖ»Ð´·½Ê½´ò¿ª
+    } else { // æŽ¥æ”¶æ¨¡å¼è¦æ±‚æ–‡ä»¶å¯ä»¥ä»¥åªå†™æ–¹å¼æ‰“å¼€
         res = file.open(QFile::WriteOnly);
         if (res) {
             file.close();
@@ -88,14 +88,14 @@ void FileTransferView::sendFile()
         thread.setFileName(ui.pathBox->text());
         thread.setProtocol(FileThread::XModem);
         thread.setTransMode(mode[!ui.sendButton->isChecked()]);
-        beforceSend(); // Ô¤·¢ËÍÎÄ±¾
+        beforceSend(); // é¢„å‘é€æ–‡æœ¬
         thread.startTransfer();
         ui.startButton->setEnabled(false);
         ui.stopButton->setEnabled(true);
         QString string(tr("Start transmit file: \"")
             + ui.pathBox->text() + "\".");
         logOut(string, Qt::blue);
-    } else { // ÎÞ·¨´ò¿ªÎÄ¼þ
+    } else { // æ— æ³•æ‰“å¼€æ–‡ä»¶
         QString string(tr("Can not open the file: \"")
             + ui.pathBox->text() + "\".\n");
 
@@ -108,7 +108,7 @@ void FileTransferView::sendFile()
     }
 }
 
-// ·¢ËÍÊý¾Ý
+// å‘é€æ•°æ®
 void FileTransferView::portSendData(const QByteArray &array)
 {
     QString string;
@@ -117,23 +117,23 @@ void FileTransferView::portSendData(const QByteArray &array)
     ui.progressBar->setValue(thread.progress());
 }
 
-// ½ÓÊÕÊý¾Ý
+// æŽ¥æ”¶æ•°æ®
 void FileTransferView::readData(const QByteArray &array)
 {
     thread.readData(array);
 }
 
-// È¡Ïû·¢ËÍ
+// å–æ¶ˆå‘é€
 void FileTransferView::cancelTransfer()
 {
     if (thread.cancelTransfer()) {
-        logOut(tr("Cancel transfer.\n"), Qt::blue);
+        logOut(tr("Cancel transfer.\n"), Qt::darkGray);
         ui.startButton->setEnabled(true);
         ui.stopButton->setEnabled(false);
     }
 }
 
-// ÏÔÊ¾Ò»Ìõlog
+// æ˜¾ç¤ºä¸€æ¡log
 void FileTransferView::logOut(const QString &string, QColor color)
 {
     QString time = QDateTime::currentDateTime().toString("hh:mm:ss");
@@ -142,7 +142,7 @@ void FileTransferView::logOut(const QString &string, QColor color)
     ui.textEdit->append("[" + time + "] " + string);
 }
 
-// ´«ÊäÍê³É²Û
+// ä¼ è¾“å®Œæˆæ§½
 void FileTransferView::onTransFinsh()
 {
     ui.startButton->setEnabled(true);
@@ -150,10 +150,10 @@ void FileTransferView::onTransFinsh()
     logOut(tr("Transmit finished.\n"), Qt::darkGreen);
 }
 
-// Ô¤·¢ËÍÎÄ±¾
+// é¢„å‘é€æ–‡æœ¬
 void FileTransferView::beforceSend()
 {
-    // Ö»ÓÐÔÚ·¢ËÍÄ£Ê½ÏÂ²Å¿ÉÒÔÊ¹ÓÃÔ¤·¢ËÍÄ£Ê½
+    // åªæœ‰åœ¨å‘é€æ¨¡å¼ä¸‹æ‰å¯ä»¥ä½¿ç”¨é¢„å‘é€æ¨¡å¼
     if (ui.sendButton->isChecked() && ui.enableBerforSendBox->isChecked()) {
         QTextCodec *code = QTextCodec::codecForName("GB-2312");
         QByteArray arr = code->fromUnicode(ui.beforeSendEdit->toPlainText());

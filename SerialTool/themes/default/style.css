@@ -37,7 +37,7 @@ QComboBox::drop-down {
   width: 20px;
   border-top-right-radius: 3px; /* same radius as the QComboBox */
   border-bottom-right-radius: 3px;
-  image: url(themes/images/arrow_down.png);
+  image: url(themes/default/images/arrow_down.png);
 }
 
 QComboBox:hover {
@@ -57,7 +57,7 @@ QSpinBox::up-button, QDoubleSpinBox::up-button {
   subcontrol-position: top right;
 
   width: 16px;
-  image: url(themes/images/up.png);
+  image: url(themes/default/images/up.png);
   border-radius: 2px;
 }
 
@@ -66,7 +66,7 @@ QSpinBox::down-button, QDoubleSpinBox::down-button {
   subcontrol-position: bottom right;
 
   width: 16px;
-  image: url(themes/images/down.png);
+  image: url(themes/default/images/down.png);
   border-radius: 2px;
 }
 
@@ -186,7 +186,7 @@ QScrollBar::add-line:horizontal {
   border-top: 1px solid gray;
   border-bottom: 1px solid gray;
   border-right: 1px solid gray;
-  image: url(themes/images/right.png);
+  image: url(themes/default/images/right.png);
 }
 
 QScrollBar::sub-line:horizontal {
@@ -198,7 +198,7 @@ QScrollBar::sub-line:horizontal {
   border-top: 1px solid gray;
   border-bottom: 1px solid gray;
   border-left: 1px solid gray;
-  image: url(themes/images/left.png);
+  image: url(themes/default/images/left.png);
 }
 
 QScrollBar::vertical {
@@ -221,7 +221,7 @@ QScrollBar::add-line::vertical {
   border-bottom: 1px solid gray;
   border-left: 1px solid gray;
   border-right: 1px solid gray;
-  image: url(themes/images/down.png);
+  image: url(themes/default/images/down.png);
 }
 
 QScrollBar::sub-line::vertical {
@@ -233,7 +233,7 @@ QScrollBar::sub-line::vertical {
   border-top: 1px solid gray;
   border-left: 1px solid gray;
   border-right: 1px solid gray;
-  image: url(themes/images/up.png);
+  image: url(themes/default/images/up.png);
 }
 
 QPushButton {
@@ -257,7 +257,7 @@ QPushButton:disabled, QComboBox:disabled {
 }
 
 QComboBox::drop-down:disabled {
-  image: url(themes/images/arrow_down_disabled.png);
+  image: url(themes/default/images/arrow_down_disabled.png);
 }
 
 QAction {
