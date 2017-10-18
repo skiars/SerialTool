@@ -73,7 +73,7 @@ void VedioBox::copyImage()
     char *data = imageData;
 
     str = "const unsigned char image_data[600] = {\n"
-        "    ";
+          "    ";
     for (int y = 0; y < 60; ++y) {
         for (int x = 0; x < 10; ++x) {
             str += QString::asprintf("0x%.2X", (quint8)*data++);

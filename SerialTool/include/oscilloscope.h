@@ -13,6 +13,7 @@ class Oscilloscope : public QWidget {
 
 public:
     Oscilloscope(QWidget *parent = Q_NULLPTR);
+    ~Oscilloscope();
 
     void retranslate();
 

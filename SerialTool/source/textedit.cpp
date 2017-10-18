@@ -162,7 +162,8 @@ void TextEdit::setHighLight(bool mode)
 #if 1
     QByteArray keyWords;
 
-    QFile file("keywords");
+    QFile file(QStandardPaths::writableLocation(
+        QStandardPaths::AppConfigLocation) + "/keywords");
 
     if (file.open(QIODevice::ReadOnly)) {
         keyWords = file.readAll();

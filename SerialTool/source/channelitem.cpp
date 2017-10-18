@@ -23,6 +23,12 @@ ChannelItem::ChannelItem(QString string, QColor color, QWidget *parent) : QWidge
     connect(checkBox, &QCheckBox::stateChanged, this, &ChannelItem::itemChange);
 }
 
+ChannelItem::~ChannelItem()
+{
+    delete colorBtn;
+    delete checkBox;
+}
+
 void ChannelItem::itemChange()
 {
     emit changelChanged(this);
