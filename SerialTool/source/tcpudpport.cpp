@@ -27,7 +27,6 @@ TcpUdpPort::~TcpUdpPort()
     delete ui;
     delete tcpClient;
     delete tcpServer;
-
 }
 
 void TcpUdpPort::setVisibleWidget(bool status)

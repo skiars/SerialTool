@@ -254,8 +254,8 @@ void OptionsBox::setCmdItemColor()
 
 void OptionsBox::loadCommand()
 {
-    QFile file("keywords");
-    QListWidgetItem *item;
+    QFile file(QStandardPaths::writableLocation(
+        QStandardPaths::AppConfigLocation) + "/keywords");
 
     if (file.open(QIODevice::Text | QIODevice::ReadOnly)) {
         QTextStream text(&file);
@@ -266,7 +266,7 @@ void OptionsBox::loadCommand()
             text >> str;
             // 不是空行就插入
             if (!str.isEmpty()) {
-                item = new QListWidgetItem(str);
+                QListWidgetItem *item = new QListWidgetItem(str);
                 item->setFlags(item->flags() | Qt::ItemIsEditable);
                 ui.cmdList->addItem(item);
             }
@@ -282,7 +282,8 @@ void OptionsBox::loadCommand()
 
 void OptionsBox::saveCommand()
 {
-    QFile file("keywords");
+    QFile file(QStandardPaths::writableLocation
+        (QStandardPaths::AppConfigLocation) + "/keywords");
 
     if (file.open(QIODevice::Text | QIODevice::WriteOnly)) {
         int i, count = ui.cmdList->count();

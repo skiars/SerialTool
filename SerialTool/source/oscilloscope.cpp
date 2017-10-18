@@ -31,6 +31,11 @@ Oscilloscope::Oscilloscope(QWidget *parent)
     clear();
 }
 
+Oscilloscope::~Oscilloscope()
+{
+
+}
+
 // 重新设置语言
 void Oscilloscope::retranslate()
 {
@@ -45,8 +50,8 @@ void Oscilloscope::setupPlot()
     ui.customPlot->setNoAntialiasingOnDrag(true);
 
     // 设置刻度线
-    QSharedPointer<	QCPAxisTicker> xTicker(new QCPAxisTicker);
-    QSharedPointer<	QCPAxisTicker> yTicker(new QCPAxisTicker);
+    QSharedPointer<QCPAxisTicker> xTicker(new QCPAxisTicker);
+    QSharedPointer<QCPAxisTicker> yTicker(new QCPAxisTicker);
     xTicker->setTickCount(5);
     ui.customPlot->xAxis->setTicker(xTicker);
     ui.customPlot->xAxis2->setTicker(xTicker);

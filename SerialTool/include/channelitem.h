@@ -14,6 +14,7 @@ class ChannelItem : public QWidget {
 public:
     ChannelItem(QString string,
         QColor color = QColor(255, 255, 255), QWidget *parent = Q_NULLPTR);
+    ~ChannelItem();
 
     Qt::CheckState checkState() {
         return checkBox->checkState();

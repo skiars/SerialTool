@@ -70,6 +70,8 @@ bool FileThread::cancelTransfer()
     }
     if (res) {
         file->close();
+        delete file;
+        file = nullptr;
         transMode = StopMode;
     }
     return res;

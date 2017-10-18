@@ -10,8 +10,10 @@
 SerialTool::SerialTool(QWidget *parent)
     : QMainWindow(parent)
 {
-    syncDefaultConfig("config.ini");
-    config = new QSettings("config.ini", QSettings::IniFormat);
+    QString configPath(QStandardPaths::writableLocation(
+        QStandardPaths::AppConfigLocation) + "/config.ini");
+    syncDefaultConfig(configPath);
+    config = new QSettings(configPath, QSettings::IniFormat);
 
     ui.setupUi(this);
     setWindowTitle(SOFTWARE_NAME " V" SOFTWARE_VERSION);
@@ -83,7 +85,13 @@ SerialTool::SerialTool(QWidget *parent)
 
 SerialTool::~SerialTool()
 {
-    
+    delete config;
+    delete tabActionGroup;
+    delete serialPort;
+    delete tcpUdpPort;
+    delete rxCntLabel;
+    delete txCntLabel;
+    delete portInfoLabel;
 }
 
 // 关闭事件
