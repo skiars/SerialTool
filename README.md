@@ -1,3 +1,5 @@
+
+
 # SerialTool
 
 SerialTool是一个实用的串口调试工具，这款工具支持串口调试助手、波形显示和文件传输等功能。该工具软件使用GPL许可证发布。
@@ -11,6 +13,10 @@ SerialTool是一个实用的串口调试工具，这款工具支持串口调试�
 * 串口调试助手支持语法高亮(bash模式)
 * 支持TCP/UDP和串口两种端口模式
 * 支持文件传输(目前只支持XModem协议)
+
+## 下载地址
+* [Gihub](https://github.com/Le-Seul/SerialTool/releases)
+* [百度网盘](http://pan.baidu.com/s/1c18ZXW8)
 
 ## 更新计划
 * 波形显示界面增加数值显示功能(显示各通道当前值)
