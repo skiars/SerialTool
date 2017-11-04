@@ -49,6 +49,9 @@ void ChannelItem::setColor(QColor color)
 void ChannelItem::changeColor()
 {
     QColor color = QColorDialog::getColor(QColor(Color), this);
-    setColor(color);
-    emit changelChanged(this);
+
+    if (color.isValid()) {
+        setColor(color);
+        emit changelChanged(this);
+    }
 }

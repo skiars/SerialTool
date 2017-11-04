@@ -44,7 +44,8 @@ SOURCES += \
     source/xmodem.cpp \
     source/vediobox.cpp \
     source/tcpudpport.cpp \
-    source/defaultconfig.cpp
+    source/defaultconfig.cpp \
+    source/oscopetimestamp.cpp
 
 HEADERS  += \
     include/aboutbox.h \
@@ -63,7 +64,8 @@ HEADERS  += \
     include/xmodem_crc16.h \
     include/vediobox.h \
     include/tcpudpport.h \
-    include/defaultconfig.h
+    include/defaultconfig.h \
+    include/oscopetimestamp.h
 
 DISTFILES += \
     resource/images/clear.png \

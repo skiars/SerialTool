@@ -18,15 +18,13 @@ SerialTool::SerialTool(QWidget *parent)
     ui.setupUi(this);
     setWindowTitle(SOFTWARE_NAME " V" SOFTWARE_VERSION);
 
+    // 串口示波器波形解码器
+    waveDecode = new WaveDecode();
+
     // 互斥动作
     tabActionGroup = new QActionGroup(this);
     tabActionGroup->addAction(ui.actionVisibleTab0);
     tabActionGroup->addAction(ui.actionVisibleTab1);
-
-    // 配置翻译环境
-    qApp->installTranslator(&appTranslator);
-    qApp->installTranslator(&qtTranslator);
-    qApp->installTranslator(&qsciTranslator);
 
     serialPort = new QSerialPort;
     tcpUdpPort = new TcpUdpPort(this);
@@ -38,8 +36,8 @@ SerialTool::SerialTool(QWidget *parent)
     rxCount = 0;
     txCount = 0;
     // 状态栏设置
-    rxCntLabel = new QLabel("Rx: 0Bytes", this);
-    txCntLabel = new QLabel("Tx: 0Bytes", this);
+    rxCntLabel = new QLabel("RX: 0Bytes", this);
+    txCntLabel = new QLabel("TX: 0Bytes", this);
     portInfoLabel = new QLabel("", this);
     rxCntLabel->setMinimumWidth(120);
     txCntLabel->setMinimumWidth(120);
@@ -92,6 +90,7 @@ SerialTool::~SerialTool()
     delete rxCntLabel;
     delete txCntLabel;
     delete portInfoLabel;
+    delete waveDecode;
 }
 
 // 关闭事件
@@ -107,12 +106,28 @@ void SerialTool::closeEvent(QCloseEvent *event)
 // 加载语言
 void SerialTool::setLanguage(const QString &string)
 {
-    appTranslator.load("language/" + string + "/serialtool.qm");
-    qtTranslator.load("language/" + string + "/qt.qm");
-    qsciTranslator.load("language/" + string + "/qscintilla.qm");
-    ui.retranslateUi(this);    // 重新翻译界面
-    ui.oscPlot->retranslate(); // 示波器界面重新翻译
-    ui.fileTransfer->retranslate(); // 文件传输界面重新翻译
+    // 首先卸载翻译
+    if (!translator.isEmpty()) {
+        for (int i = 0; i < translator.size(); ++i) {
+            qApp->removeTranslator(translator[i]);  // 卸载翻译环境
+            delete translator[i];
+        }
+        translator.clear();
+    }
+    // 遍历文件
+    QDir dir("language/" + string);
+    foreach(QFileInfo mfi ,dir.entryInfoList()) {
+        if (mfi.isFile() && mfi.suffix() == "qm") { // 是翻译文件
+            QTranslator* ts = new QTranslator;
+            ts->load(mfi.absoluteFilePath());
+            qApp->installTranslator(ts);    // 安装翻译环境
+            translator.append(ts);
+        }
+    }
+    // 重新翻译界面
+    ui.retranslateUi(this);
+    ui.oscPlot->retranslate();
+    ui.fileTransfer->retranslate();
 }
 
 // 加载样式表
@@ -427,6 +442,7 @@ void SerialTool::onSecTimerTimeout()
     }
     // 更新显示信息
     QString str;
+    QPalette palette;
     str = ui.comboBoxPortNum->currentText().section(" ", 0, 0) + " ";
     if (serialPort->isOpen()) {
         str += "OPEND, " + QString::number(serialPort->baudRate()) + "bps, "
@@ -434,15 +450,16 @@ void SerialTool::onSecTimerTimeout()
             + parity[serialPort->parity()] + ", "
             + QString::number(serialPort->stopBits()) + ", "
             + flowControl[serialPort->flowControl()];
-        portInfoLabel->setStyleSheet("color:green; font-family: Microsoft YaHei UI;");
+            palette.setColor(QPalette::WindowText,Qt::darkGreen);
     } else {
         str += "CLOSED";
-        portInfoLabel->setStyleSheet("color:red; font-family: Microsoft YaHei UI;");
+        palette.setColor(QPalette::WindowText,Qt::red);
     }
     portInfoLabel->setText(str);
-    str = "Rx: " + QString::number(rxCount) + "Bytes";
+    portInfoLabel->setPalette(palette);
+    str = "RX: " + QString::number(rxCount) + "Bytes";
     rxCntLabel->setText(str);
-    str = "Tx: " + QString::number(txCount) + "Bytes";
+    str = "TX: " + QString::number(txCount) + "Bytes";
     txCntLabel->setText(str);
 }
 
@@ -668,11 +685,10 @@ void SerialTool::readPortData()
         // 串口示波器接收数据
         if (ui.tabWidget->currentIndex() == 1 || ui.oscPlot->holdReceive()) {
             for (int i = 0; i < buf.length(); ++i) {
-                char ch;
-                double value;
+                WaveDataType data;
                 // 解析串口协议
-                if (waveGetPointValue(ch, value, buf.data()[i]) == true) {
-                    ui.oscPlot->addData(ch, value);
+                if (waveDecode->frameDecode(data, buf.data()[i]) == true) {
+                    ui.oscPlot->addData(data);
                 }
             }
         }

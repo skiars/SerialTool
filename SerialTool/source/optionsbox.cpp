@@ -182,29 +182,41 @@ void OptionsBox::setTextFontMulti()
 void OptionsBox::setRxFontColor()
 {
     QColor color = QColorDialog::getColor(QColor(rxColor), this);
-    rxColor = color.name();
-    ui.lineEditRxColor->setText(rxColor);
+
+    if (color.isValid()) {
+        rxColor = color.name();
+        ui.lineEditRxColor->setText(rxColor);
+    }
 }
 
 void OptionsBox::setTxFontColor()
 {
     QColor color = QColorDialog::getColor(QColor(txColor), this);
-    txColor = color.name();
-    ui.lineEditTxColor->setText(txColor);
+
+    if (color.isValid()) {
+        txColor = color.name();
+        ui.lineEditTxColor->setText(txColor);
+    }
 }
 
 void OptionsBox::setPlotBackgroundColor()
 {
     QColor color = QColorDialog::getColor(QColor(bgColor), this);
-    bgColor = color.name();
-    ui.lineEditPlotColor->setText(bgColor);
+
+    if (color.isValid()) {
+        bgColor = color.name();
+        ui.lineEditPlotColor->setText(bgColor);
+    }
 }
 
 void OptionsBox::setAxisColor()
 {
     QColor color = QColorDialog::getColor(QColor(axColor), this);
-    axColor = color.name();
-    ui.lineEditAxisColor->setText(axColor);
+
+    if (color.isValid()) {
+        axColor = color.name();
+        ui.lineEditAxisColor->setText(axColor);
+    }
 }
 
 void OptionsBox::onCmdNewClick()

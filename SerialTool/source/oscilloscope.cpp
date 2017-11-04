@@ -1,11 +1,16 @@
 #include "oscilloscope.h"
 #include <QTextStream>
+#include "channelitem.h"
+#include "wavedecode.h"
+#include "oscopetimestamp.h"
 
 #define SCALE   (1000.0 / _xRange)
 
 Oscilloscope::Oscilloscope(QWidget *parent)
 {
     ui.setupUi(parent);
+
+    timeStamp = new OscopeTimeStamp();
 
     setupPlot();
     setupChannel();
@@ -33,7 +38,7 @@ Oscilloscope::Oscilloscope(QWidget *parent)
 
 Oscilloscope::~Oscilloscope()
 {
-
+    delete timeStamp;
 }
 
 // 重新设置语言
@@ -68,7 +73,7 @@ void Oscilloscope::setupChannel()
 {
     // 初始化通道
     for (int i = 0; i < CH_NUM; ++i) {
-        count[i] = 0.0;
+        count[i] = 0;
         ui.customPlot->addGraph();
     }
 
@@ -243,10 +248,16 @@ void Oscilloscope::setChannelVisible(int chanel, bool visible)
 }
 
 // 添加数据
-void Oscilloscope::addData(int channel, double value)
+void Oscilloscope::addData(const WaveDataType& data)
 {
-    ui.customPlot->graph(channel)->addData(count[channel], value);
-    count[channel] += 1.0;
+    if (data.mode == WaveValueMode) {
+        uint8_t channel = data.channel;
+
+        ui.customPlot->graph(channel)->addData(count[channel], data.value);
+        count[channel] += 1;
+    } else { // WaveTimeStampMode
+        timeStamp->append(data, maxCount());
+    }
 }
 
 // 清空数据
@@ -254,12 +265,25 @@ void Oscilloscope::clear()
 {
     for (int i = 0; i < CH_NUM; ++i) {
         ui.customPlot->graph(i)->data()->clear();
-        count[i] = 0.0;
+        count[i] = 0;
     }
+    timeStamp->clear();
     ui.horizontalScrollBar->setValue(0);
     ui.horizontalScrollBar->setRange(0, 0);
     ui.customPlot->xAxis->setRange(0, _xRange, Qt::AlignLeft);
     ui.customPlot->replot();
+}
+
+uint64_t Oscilloscope::maxCount()
+{
+    uint64_t max = 0;
+
+    for (int i = 0; i < CH_NUM; ++i) {
+        if (count[i] > max) {
+            max = count[i];
+        }
+    }
+    return max;
 }
 
 // 保存PNG文件
@@ -371,7 +395,7 @@ void Oscilloscope::xRangeChanged(const QString &str)
 void Oscilloscope::timeUpdata()
 {
     // 显示更新
-    double key = count[0];
+    uint64_t key = count[0];
     for (int i = 0; i < CH_NUM; ++i) {
         key = key > count[i] ? key : count[i];
     }
@@ -388,24 +412,27 @@ void Oscilloscope::timeUpdata()
 void Oscilloscope::saveText(const QString &fname)
 {
     QFile file(fname);
-    int graphCount = ui.customPlot->graphCount();
-    int dataCount[CH_NUM], dataCountMax = -1;
+    uint64_t dataCountMax = maxCount();
 
     file.open(QFile::WriteOnly);
     QTextStream out(&file);
+
+    out << "Index";
     for (int i = 0; i < CH_NUM; ++i) {
-        dataCount[i] = ui.customPlot->graph(i)->dataCount();
-        if (dataCount[i] > dataCountMax) {
-            dataCountMax = dataCount[i];
+        if (count[i]) {
+            out << ", CH" << i + 1;
         }
     }
+    out << endl;
+
     out.setRealNumberPrecision(8);
-    for (int i = 0; i < dataCountMax; ++i) {
-        out << i << ", ";
-        for (int j = 0; j < graphCount; ++j) {
-            if (i < dataCount[j]) {
+    for (uint64_t i = 0; i < dataCountMax; ++i) {
+        timeStamp->printTextStream(out, i);
+        out << i;
+        for (int j = 0; j < CH_NUM; ++j) {
+            if (i < count[j]) {
                 double value = ui.customPlot->graph(j)->dataMainValue(i);
-                out << value << ", ";
+                out << ", " << value;
             }
         }
         out << endl;

@@ -2,11 +2,14 @@
 #define __OSCILLOSCOPE_H
 
 #include "ui_oscilloscope.h"
-#include "channelitem.h"
 
 #ifndef  CH_NUM
 #define CH_NUM 16
 #endif
+
+struct WaveDataType;
+class OscopeTimeStamp;
+class ChannelItem;
 
 class Oscilloscope : public QWidget {
     Q_OBJECT
@@ -36,7 +39,7 @@ public:
     void setGridColor(QColor color);
     void setChannelColor(int channel, const QColor &color);
     void setChannelVisible(int chanel, bool visible);
-    void addData(int channel, double value);
+    void addData(const WaveDataType& data);
     void clear();
 
     void savePng(const QString &fileName);
@@ -48,6 +51,7 @@ private:
     void setupPlot();
     void setupChannel();
     void listViewInit();
+    uint64_t maxCount();
 
 private slots:
     void yOffsetChanged(double offset);
@@ -62,8 +66,9 @@ private slots:
 private:
     Ui_Oscilloscope ui;
     bool replotFlag = 1;
-    double count[CH_NUM], _xRange;
+    uint64_t count[CH_NUM], _xRange;
     QTimer updataTimer; // 更新定时器
+    OscopeTimeStamp* timeStamp;
 };
 
 #endif
