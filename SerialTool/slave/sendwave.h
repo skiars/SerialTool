@@ -1,14 +1,14 @@
 /*****************************************************************************
- * ÎÄ¼þÃû: sendwave.h
- *   °æ±¾: V1.0
- *   ×÷Õß: ¹ÙÎÄÁÁ
- *   ÈÕÆÚ: 2017/2/12
- *   ËµÃ÷: ±¾ÎÄ¼þÊôÓÚSerialToolÈí¼þµÄ²¨ÐÎÏÔÊ¾¹¦ÄÜµÄÏÂÎ»»ú²Î¿¼´úÂë, ×÷ÓÃÊÇ½«Êý
- *         Öµ×ª»»ÎªSerialTool¿ÉÒÔÊ¶±ðµÄÖ¡, ÓÃ»§ÐèÊµÏÖ´®¿Ú·¢ËÍº¯Êý, ½áºÏ±¾³ÌÐò
- *         ¼´¿ÉÊµÏÖ´®¿Ú·¢ËÍ²¨ÐÎµÄÏÔÊ¾, ±¾³ÌÐòÊÊºÏSerialTool v1.0.11¼°ºóÐø°æ±¾.
+ * æ–‡ä»¶å: sendwave.c
+ *   ç‰ˆæœ¬: V1.1
+ *   ä½œè€…: å®˜æ–‡äº®
+ *   æ—¥æœŸ: 2017/11/2
+ *   è¯´æ˜Ž: æœ¬æ–‡ä»¶å±žäºŽSerialToolè½¯ä»¶çš„æ³¢å½¢æ˜¾ç¤ºåŠŸèƒ½çš„ä¸‹ä½æœºå‚è€ƒä»£ç , ä½œç”¨æ˜¯å°†æ•°
+ *         å€¼è½¬æ¢ä¸ºSerialToolå¯ä»¥è¯†åˆ«çš„å¸§, ç”¨æˆ·éœ€å®žçŽ°ä¸²å£å‘é€å‡½æ•°, ç»“åˆæœ¬ç¨‹åº
+ *         å³å¯å®žçŽ°ä¸²å£å‘é€æ³¢å½¢çš„æ˜¾ç¤º, æœ¬ç¨‹åºé€‚åˆSerialTool v1.1.6åŠåŽç»­ç‰ˆæœ¬.
  *
- * SerialToolÔ´ÂëÁ´½Ó: https://github.com/Le-Seul/SerialTool
- * SerialTool°²×°°üÁ´½Ó: https://github.com/Le-Seul/SerialTool/releases
+ * SerialToolæºç é“¾æŽ¥: https://github.com/Le-Seul/SerialTool
+ * SerialToolå®‰è£…åŒ…é“¾æŽ¥: https://github.com/Le-Seul/SerialTool/releases
  *
  *****************************************************************************/
 
@@ -23,7 +23,7 @@
 #endif
 #endif // __cplusplus
 
-/* ¶¨Òå¸÷Í¨µÀ */
+/* å®šä¹‰å„é€šé“ */
 #define     CH1     0
 #define     CH2     1
 #define     CH3     2
@@ -41,7 +41,19 @@
 #define     CH15    14
 #define     CH16    15
 
-/* ¹«¹²º¯ÊýÉùÃ÷ */
+/* ä¿¡æ¯å¸§æ•°æ®ç»“æž„å®šä¹‰ */
+typedef struct {
+    uint8_t year;           // 0~99 -> 2000 ~ 2099, 7 bit
+    uint8_t month;          // 1 ~ 12, 4 bit
+    uint8_t day;            // 1 ~ 31, 5 bit
+    uint8_t hour;           // 0 ~ 23, 5 bit
+    uint8_t min;            // 0 ~ 59, 6 bit
+    uint8_t sec;            // 0 ~ 59, 6 bit
+    uint16_t msec;          // 0 ~ 1000, 10 bit
+    uint32_t sampleRate;    // 21 bit
+} ws_timestamp_t;
+
+/* å…¬å…±å‡½æ•°å£°æ˜Ž */
 char ws_point_int8(char *buffer, char channel, int8_t value);
 char ws_point_int16(char *buffer, char channel, int16_t value);
 char ws_point_int32(char *buffer, char channel, int32_t value);
@@ -52,6 +64,7 @@ char ws_add_int8(char *buffer, char channel, int8_t value);
 char ws_add_int16(char *buffer, char channel, int16_t value);
 char ws_add_int32(char *buffer, char channel, int32_t value);
 char ws_add_float(char *buffer, char channel, float value);
+char ws_send_timestamp(char *buffer, ws_timestamp_t* ts);
 
 #ifdef __cplusplus
 #if __cplusplus

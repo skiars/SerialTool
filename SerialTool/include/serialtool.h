@@ -10,6 +10,7 @@
 #include "vediobox.h"
 
 class TcpUdpPort;
+class WaveDecode;
 
 class SerialTool : public QMainWindow
 {
@@ -77,9 +78,10 @@ private:
     int rxCount, txCount;
     QLabel *rxCntLabel, *txCntLabel, *portInfoLabel;
     QByteArray asciiBuf;
-    QTranslator appTranslator, qtTranslator, qsciTranslator;
+    QVector<QTranslator*> translator;
     VedioBox *vedioBox = NULL;
     PortType portType;
+    WaveDecode* waveDecode;
 };
 
 #endif // SERIALTOOL_H

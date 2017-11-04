@@ -11,6 +11,18 @@
    </rect>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout">
+   <property name="leftMargin">
+    <number>2</number>
+   </property>
+   <property name="topMargin">
+    <number>2</number>
+   </property>
+   <property name="rightMargin">
+    <number>2</number>
+   </property>
+   <property name="bottomMargin">
+    <number>2</number>
+   </property>
    <item>
     <widget class="QWidget" name="widget" native="true">
      <property name="sizePolicy">
@@ -36,14 +48,7 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="QCustomPlot" name="customPlot" native="true">
-        <property name="minimumSize">
-         <size>
-          <width>200</width>
-          <height>100</height>
-         </size>
-        </property>
-       </widget>
+       <widget class="QCustomPlot" name="customPlot" native="true"/>
       </item>
       <item>
        <widget class="QScrollBar" name="horizontalScrollBar">
@@ -60,10 +65,13 @@
      <item>
       <widget class="QListWidget" name="channelList">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Ignored" vsizetype="Expanding">
+        <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QListWidget { width: 4.8em }</string>
        </property>
       </widget>
      </item>

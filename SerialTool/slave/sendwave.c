@@ -1,131 +1,132 @@
 /*****************************************************************************
- * ÎÄ¼şÃû: sendwave.c
- *   °æ±¾: V1.0
- *   ×÷Õß: ¹ÙÎÄÁÁ
- *   ÈÕÆÚ: 2017/2/12
- *   ËµÃ÷: ±¾ÎÄ¼şÊôÓÚSerialToolÈí¼şµÄ²¨ĞÎÏÔÊ¾¹¦ÄÜµÄÏÂÎ»»ú²Î¿¼´úÂë, ×÷ÓÃÊÇ½«Êı
- *         Öµ×ª»»ÎªSerialTool¿ÉÒÔÊ¶±ğµÄÖ¡, ÓÃ»§ĞèÊµÏÖ´®¿Ú·¢ËÍº¯Êı, ½áºÏ±¾³ÌĞò
- *         ¼´¿ÉÊµÏÖ´®¿Ú·¢ËÍ²¨ĞÎµÄÏÔÊ¾, ±¾³ÌĞòÊÊºÏSerialTool v1.0.11¼°ºóĞø°æ±¾.
+ * æ–‡ä»¶å: sendwave.c
+ *   ç‰ˆæœ¬: V1.1
+ *   ä½œè€…: å®˜æ–‡äº®
+ *   æ—¥æœŸ: 2017/11/2
+ *   è¯´æ˜: æœ¬æ–‡ä»¶å±äºSerialToolè½¯ä»¶çš„æ³¢å½¢æ˜¾ç¤ºåŠŸèƒ½çš„ä¸‹ä½æœºå‚è€ƒä»£ç , ä½œç”¨æ˜¯å°†æ•°
+ *         å€¼è½¬æ¢ä¸ºSerialToolå¯ä»¥è¯†åˆ«çš„å¸§, ç”¨æˆ·éœ€å®ç°ä¸²å£å‘é€å‡½æ•°, ç»“åˆæœ¬ç¨‹åº
+ *         å³å¯å®ç°ä¸²å£å‘é€æ³¢å½¢çš„æ˜¾ç¤º, æœ¬ç¨‹åºé€‚åˆSerialTool v1.1.6åŠåç»­ç‰ˆæœ¬.
  *
- * SerialToolÔ´ÂëÁ´½Ó: https://github.com/Le-Seul/SerialTool
- * SerialTool°²×°°üÁ´½Ó: https://github.com/Le-Seul/SerialTool/releases
+ * SerialToolæºç é“¾æ¥: https://github.com/Le-Seul/SerialTool
+ * SerialToolå®‰è£…åŒ…é“¾æ¥: https://github.com/Le-Seul/SerialTool/releases
  *
  *****************************************************************************/
 
 #include "sendwave.h"
 
-/* ´Ë´¦¶¨ÒåÒ»Ğ©³£Á¿, ÇëÎğĞŞ¸Ä! */
+/* æ­¤å¤„å®šä¹‰ä¸€äº›å¸¸é‡, è¯·å‹¿ä¿®æ”¹! */
 enum {
     Ch_Num          = 16,
-    Frame_Head      = 0xA3,     // Ö¡Í·Ê¶±ğ×Ö
-    Frame_PointMode = 0xA8,     // µãÄ£Ê½Ê¶±ğ×Ö
-    Frame_SyncMode  = 0xA9,     // Í¬²½Ä£Ê½Ê¶±ğ×Ö
-    Format_Int8     = 0x10,     // int8Ê¶±ğ×Ö
-    Format_Int16    = 0x20,     // int16Ê¶±ğ×Ö
-    Format_Int32    = 0x30,     // int32Ê¶±ğ×Ö
-    Format_Float    = 0x00      // floatÊ¶±ğ×Ö
+    Frame_Head      = 0xA3,     // å¸§å¤´è¯†åˆ«å­—
+    Frame_PointMode = 0xA8,     // ç‚¹æ¨¡å¼è¯†åˆ«å­—
+    Frame_SyncMode  = 0xA9,     // åŒæ­¥æ¨¡å¼è¯†åˆ«å­—
+    Frame_InfoMode  = 0xAA,     // ä¿¡æ¯å¸§è¯†åˆ«å­—
+    Format_Int8     = 0x10,     // int8è¯†åˆ«å­—
+    Format_Int16    = 0x20,     // int16è¯†åˆ«å­—
+    Format_Int32    = 0x30,     // int32è¯†åˆ«å­—
+    Format_Float    = 0x00      // floatè¯†åˆ«å­—
 };
 
-/* º¯Êı¹¦ÄÜ: ·¢ËÍint8ÀàĞÍÊı¾İ
- * º¯Êı²ÎÊı:
- *     buffer : ÊäÈë»º³åÇø, ĞèÒª4byte
- *     channel: Í¨µÀ, È¡Öµ·¶Î§Îª0~15
- *     value  : Í¨µÀÊı¾İÖµ, 8bitÓĞ·ûºÅÕûÊı
- *     ·µ»ØÖµ : Êı¾İÖ¡³¤¶È(µ¥Î»Îªbyte)
+/* å‡½æ•°åŠŸèƒ½: å‘é€int8ç±»å‹æ•°æ®
+ * å‡½æ•°å‚æ•°:
+ *     buffer : è¾“å…¥ç¼“å†²åŒº, éœ€è¦4byte
+ *     channel: é€šé“, å–å€¼èŒƒå›´ä¸º0~15
+ *     value  : é€šé“æ•°æ®å€¼, 8bitæœ‰ç¬¦å·æ•´æ•°
+ *     è¿”å›å€¼ : æ•°æ®å¸§é•¿åº¦(å•ä½ä¸ºbyte)
  **/
 char ws_point_int8(char *buffer, char channel, int8_t value)
 {
-    if (channel > Ch_Num) { // Í¨µÀÖµ²»ºÏ·¨Ö±½Ó·µ»Ø
+    if (channel > Ch_Num) { // é€šé“å€¼ä¸åˆæ³•ç›´æ¥è¿”å›
         return 0;
     }
-    // Ö¡Í·
+    // å¸§å¤´
     *buffer++ = Frame_Head;
     *buffer++ = Frame_PointMode;
-    *buffer++ = channel | Format_Int8; // Í¨µÀ¼°Êı¾İ¸ñÊ½ĞÅÏ¢
-    *buffer = value; // Êı¾İÌí¼Óµ½Ö¡
-    return 4; // Êı¾İÖ¡³¤¶È
+    *buffer++ = channel | Format_Int8; // é€šé“åŠæ•°æ®æ ¼å¼ä¿¡æ¯
+    *buffer = value; // æ•°æ®æ·»åŠ åˆ°å¸§
+    return 4; // æ•°æ®å¸§é•¿åº¦
 }
 
-/* º¯Êı¹¦ÄÜ: ·¢ËÍint16ÀàĞÍÊı¾İ
- * º¯Êı²ÎÊı:
- *     buffer : ÊäÈë»º³åÇø, ĞèÒª5byte
- *     channel: Í¨µÀ, È¡Öµ·¶Î§Îª0~15
- *     value  : Í¨µÀÊı¾İÖµ, 16bitÓĞ·ûºÅÕûÊı
- *     ·µ»ØÖµ : Êı¾İÖ¡³¤¶È(µ¥Î»Îªbyte)
+/* å‡½æ•°åŠŸèƒ½: å‘é€int16ç±»å‹æ•°æ®
+ * å‡½æ•°å‚æ•°:
+ *     buffer : è¾“å…¥ç¼“å†²åŒº, éœ€è¦5byte
+ *     channel: é€šé“, å–å€¼èŒƒå›´ä¸º0~15
+ *     value  : é€šé“æ•°æ®å€¼, 16bitæœ‰ç¬¦å·æ•´æ•°
+ *     è¿”å›å€¼ : æ•°æ®å¸§é•¿åº¦(å•ä½ä¸ºbyte)
  **/
 char ws_point_int16(char *buffer, char channel, int16_t value)
 {
-    if (channel > Ch_Num) { // Í¨µÀÖµ²»ºÏ·¨Ö±½Ó·µ»Ø
+    if (channel > Ch_Num) { // é€šé“å€¼ä¸åˆæ³•ç›´æ¥è¿”å›
         return 0;
     }
-    // Ö¡Í·
+    // å¸§å¤´
     *buffer++ = Frame_Head;
     *buffer++ = Frame_PointMode;
-    *buffer++ = channel | Format_Int16; // Í¨µÀ¼°Êı¾İ¸ñÊ½ĞÅÏ¢
-    // Êı¾İÌí¼Óµ½Ö¡
+    *buffer++ = channel | Format_Int16; // é€šé“åŠæ•°æ®æ ¼å¼ä¿¡æ¯
+    // æ•°æ®æ·»åŠ åˆ°å¸§
     *buffer++ = (value >> 8) & 0xFF;
     *buffer = value & 0xFF;
-    return 5; // Êı¾İÖ¡³¤¶È
+    return 5; // æ•°æ®å¸§é•¿åº¦
 }
 
-/* º¯Êı¹¦ÄÜ: ·¢ËÍint32ÀàĞÍÊı¾İ
- * º¯Êı²ÎÊı:
- *     buffer : ÊäÈë»º³åÇø, ĞèÒª7byte
- *     channel: Í¨µÀ, È¡Öµ·¶Î§Îª0~15
- *     value  : Í¨µÀÊı¾İÖµ, 32bitÓĞ·ûºÅÕûÊı
- *     ·µ»ØÖµ : Êı¾İÖ¡³¤¶È(µ¥Î»Îªbyte)
+/* å‡½æ•°åŠŸèƒ½: å‘é€int32ç±»å‹æ•°æ®
+ * å‡½æ•°å‚æ•°:
+ *     buffer : è¾“å…¥ç¼“å†²åŒº, éœ€è¦7byte
+ *     channel: é€šé“, å–å€¼èŒƒå›´ä¸º0~15
+ *     value  : é€šé“æ•°æ®å€¼, 32bitæœ‰ç¬¦å·æ•´æ•°
+ *     è¿”å›å€¼ : æ•°æ®å¸§é•¿åº¦(å•ä½ä¸ºbyte)
  **/
 char ws_point_int32(char *buffer, char channel, int32_t value)
 {
-    if ((uint8_t)channel > Ch_Num) { // Í¨µÀÖµ²»ºÏ·¨Ö±½Ó·µ»Ø
+    if ((uint8_t)channel > Ch_Num) { // é€šé“å€¼ä¸åˆæ³•ç›´æ¥è¿”å›
         return 0;
     }
-    // Ö¡Í·
+    // å¸§å¤´
     *buffer++ = Frame_Head;
     *buffer++ = Frame_PointMode;
-    *buffer++ = channel | Format_Int32; // Í¨µÀ¼°Êı¾İ¸ñÊ½ĞÅÏ¢
-    // Êı¾İÌí¼Óµ½Ö¡
+    *buffer++ = channel | Format_Int32; // é€šé“åŠæ•°æ®æ ¼å¼ä¿¡æ¯
+    // æ•°æ®æ·»åŠ åˆ°å¸§
     *buffer++ = (value >> 24) & 0xFF;
     *buffer++ = (value >> 16) & 0xFF;
     *buffer++ = (value >> 8) & 0xFF;
     *buffer = value & 0xFF;
-    return 7; // Êı¾İÖ¡³¤¶È
+    return 7; // æ•°æ®å¸§é•¿åº¦
 }
 
-/* º¯Êı¹¦ÄÜ: ·¢ËÍfloatÀàĞÍÊı¾İ
- * º¯Êı²ÎÊı:
- *     buffer : ÊäÈë»º³åÇø, ĞèÒª7byte
- *     channel: Í¨µÀ, È¡Öµ·¶Î§Îª0~15
- *     value  : Í¨µÀÊı¾İÖµ, ÀàĞÍÎªµ¥¾«¶È¸¡µã(32bit)
- *     ·µ»ØÖµ : Êı¾İÖ¡³¤¶È(µ¥Î»Îªbyte)
+/* å‡½æ•°åŠŸèƒ½: å‘é€floatç±»å‹æ•°æ®
+ * å‡½æ•°å‚æ•°:
+ *     buffer : è¾“å…¥ç¼“å†²åŒº, éœ€è¦7byte
+ *     channel: é€šé“, å–å€¼èŒƒå›´ä¸º0~15
+ *     value  : é€šé“æ•°æ®å€¼, ç±»å‹ä¸ºå•ç²¾åº¦æµ®ç‚¹(32bit)
+ *     è¿”å›å€¼ : æ•°æ®å¸§é•¿åº¦(å•ä½ä¸ºbyte)
  **/
 char ws_point_float(char *buffer, char channel, float value)
 {
-    // Õâ¸öÁªºÏ±äÁ¿ÓÃÀ´ÊµÏÖ¸¡µãµ½ÕûĞÎµÄ±ä»»
+    // è¿™ä¸ªè”åˆå˜é‡ç”¨æ¥å®ç°æµ®ç‚¹åˆ°æ•´å½¢çš„å˜æ¢
     union {
         float f;
         uint32_t i;
     } temp;
 
-    if (channel > Ch_Num) { // Í¨µÀÖµ²»ºÏ·¨Ö±½Ó·µ»Ø
+    if (channel > Ch_Num) { // é€šé“å€¼ä¸åˆæ³•ç›´æ¥è¿”å›
         return 0;
     }
     temp.f = value;
-    // Ö¡Í·
+    // å¸§å¤´
     *buffer++ = Frame_Head;
     *buffer++ = Frame_PointMode;
-    *buffer++ = channel | Format_Float; // Í¨µÀ¼°Êı¾İ¸ñÊ½ĞÅÏ¢
-    // Êı¾İÌí¼Óµ½Ö¡
+    *buffer++ = channel | Format_Float; // é€šé“åŠæ•°æ®æ ¼å¼ä¿¡æ¯
+    // æ•°æ®æ·»åŠ åˆ°å¸§
     *buffer++ = (temp.i >> 24) & 0xFF;
     *buffer++ = (temp.i >> 16) & 0xFF;
     *buffer++ = (temp.i >>  8) & 0xFF;
     *buffer = temp.i & 0xFF;
-    return 7; // Êı¾İÖ¡³¤¶È
+    return 7; // æ•°æ®å¸§é•¿åº¦
 }
 
-/* º¯Êı¹¦ÄÜ: Í¬²½·¢ËÍÄ£Ê½»º³åÇø³õÊ¼»¯
- * º¯Êı²ÎÊı:
- *     buffer : ÊäÈë»º³åÇø, Í¬²½Ä£Ê½×î¶àÕ¼ÓÃ83bytes
+/* å‡½æ•°åŠŸèƒ½: åŒæ­¥å‘é€æ¨¡å¼ç¼“å†²åŒºåˆå§‹åŒ–
+ * å‡½æ•°å‚æ•°:
+ *     buffer : è¾“å…¥ç¼“å†²åŒº, åŒæ­¥æ¨¡å¼æœ€å¤šå ç”¨83bytes
  **/
 void ws_frame_init(char *buffer)
 {
@@ -134,54 +135,54 @@ void ws_frame_init(char *buffer)
     *buffer = 0;
 }
 
-/* º¯Êı¹¦ÄÜ: »ñÈ¡Í¬²½Ä£Ê½»º³åÇø³¤¶È(µ¥Î»bytes)
- * º¯Êı²ÎÊı:
- *     buffer : Í¬²½Ä£Ê½Ö¡»º³åÇø
+/* å‡½æ•°åŠŸèƒ½: è·å–åŒæ­¥æ¨¡å¼ç¼“å†²åŒºé•¿åº¦(å•ä½bytes)
+ * å‡½æ•°å‚æ•°:
+ *     buffer : åŒæ­¥æ¨¡å¼å¸§ç¼“å†²åŒº
  **/
 char ws_frame_length(const char *buffer)
 {
     return buffer[2] + 3;
 }
 
-/* º¯Êı¹¦ÄÜ: ÔÚÊıÍ¬²½¾İÖ¡ÖĞ¼ÓÈëÒ»¸öint8ÀàĞÍÊı¾İ
- * º¯Êı²ÎÊı:
- *     buffer : ÒÑ¾­³õÊ¼»¯µÄÖ¡»º³åÇø
- *     channel: Í¨µÀ, È¡Öµ·¶Î§Îª0~15
- *     value  : Í¨µÀÊı¾İÖµ, ÀàĞÍÎªint8
- *     ·µ»ØÖµ : 0, ¼ÓÈë³É¹¦, 1, Ö¡³¤¶ÈÒÑ¾­´ïµ½ÉÏÏŞ
+/* å‡½æ•°åŠŸèƒ½: åœ¨æ•°åŒæ­¥æ®å¸§ä¸­åŠ å…¥ä¸€ä¸ªint8ç±»å‹æ•°æ®
+ * å‡½æ•°å‚æ•°:
+ *     buffer : å·²ç»åˆå§‹åŒ–çš„å¸§ç¼“å†²åŒº
+ *     channel: é€šé“, å–å€¼èŒƒå›´ä¸º0~15
+ *     value  : é€šé“æ•°æ®å€¼, ç±»å‹ä¸ºint8
+ *     è¿”å›å€¼ : 0, åŠ å…¥æˆåŠŸ, 1, å¸§é•¿åº¦å·²ç»è¾¾åˆ°ä¸Šé™
  **/
 char ws_add_int8(char *buffer, char channel, int8_t value)
 {
     char count = buffer[2];
-    char *p = buffer + count + 3; // Ìø¹ıÇ°ÃæÊı¾İ
+    char *p = buffer + count + 3; // è·³è¿‡å‰é¢æ•°æ®
 
     count += 2;
-    if (count < 69) { // Ö¡×î´ó×Ö½ÚÊı
+    if (count < 69) { // å¸§æœ€å¤§å­—èŠ‚æ•°
         buffer[2] = count;
-        *p++ = channel | Format_Int8; // Í¨µÀ¼°Êı¾İ¸ñÊ½ĞÅÏ¢
-        *p = value; // Êı¾İÌí¼Óµ½Ö¡
+        *p++ = channel | Format_Int8; // é€šé“åŠæ•°æ®æ ¼å¼ä¿¡æ¯
+        *p = value; // æ•°æ®æ·»åŠ åˆ°å¸§
         return 1;
     }
     return 0;
 }
 
-/* º¯Êı¹¦ÄÜ: ÔÚÊıÍ¬²½¾İÖ¡ÖĞ¼ÓÈëÒ»¸öint16ÀàĞÍÊı¾İ
- * º¯Êı²ÎÊı:
- *     buffer : ÒÑ¾­³õÊ¼»¯µÄÖ¡»º³åÇø
- *     channel: Í¨µÀ, È¡Öµ·¶Î§Îª0~15
- *     value  : Í¨µÀÊı¾İÖµ, ÀàĞÍÎªint16
- *     ·µ»ØÖµ : 0, ¼ÓÈë³É¹¦, 1, Ö¡³¤¶ÈÒÑ¾­´ïµ½ÉÏÏŞ
+/* å‡½æ•°åŠŸèƒ½: åœ¨æ•°åŒæ­¥æ®å¸§ä¸­åŠ å…¥ä¸€ä¸ªint16ç±»å‹æ•°æ®
+ * å‡½æ•°å‚æ•°:
+ *     buffer : å·²ç»åˆå§‹åŒ–çš„å¸§ç¼“å†²åŒº
+ *     channel: é€šé“, å–å€¼èŒƒå›´ä¸º0~15
+ *     value  : é€šé“æ•°æ®å€¼, ç±»å‹ä¸ºint16
+ *     è¿”å›å€¼ : 0, åŠ å…¥æˆåŠŸ, 1, å¸§é•¿åº¦å·²ç»è¾¾åˆ°ä¸Šé™
  **/
 char ws_add_int16(char *buffer, char channel, int16_t value)
 {
     char count = buffer[2];
-    char *p = buffer + count + 3; // Ìø¹ıÇ°ÃæÊı¾İ
+    char *p = buffer + count + 3; // è·³è¿‡å‰é¢æ•°æ®
 
     count += 3;
-    if (count < 69) { // Ö¡×î´ó×Ö½ÚÊı
+    if (count < 69) { // å¸§æœ€å¤§å­—èŠ‚æ•°
         buffer[2] = count;
-        *p++ = channel | Format_Int16; // Í¨µÀ¼°Êı¾İ¸ñÊ½ĞÅÏ¢
-        // Êı¾İÌí¼Óµ½Ö¡
+        *p++ = channel | Format_Int16; // é€šé“åŠæ•°æ®æ ¼å¼ä¿¡æ¯
+        // æ•°æ®æ·»åŠ åˆ°å¸§
         *p++ = (value >> 8) & 0xFF;
         *p = value & 0xFF;
         return 1;
@@ -189,23 +190,23 @@ char ws_add_int16(char *buffer, char channel, int16_t value)
     return 0;
 }
 
-/* º¯Êı¹¦ÄÜ: ÔÚÊıÍ¬²½¾İÖ¡ÖĞ¼ÓÈëÒ»¸öint32ÀàĞÍÊı¾İ
- * º¯Êı²ÎÊı:
- *     buffer : ÒÑ¾­³õÊ¼»¯µÄÖ¡»º³åÇø
- *     channel: Í¨µÀ, È¡Öµ·¶Î§Îª0~15
- *     value  : Í¨µÀÊı¾İÖµ, ÀàĞÍÎªint32
- *     ·µ»ØÖµ : 0, ¼ÓÈë³É¹¦, 1, Ö¡³¤¶ÈÒÑ¾­´ïµ½ÉÏÏŞ
+/* å‡½æ•°åŠŸèƒ½: åœ¨æ•°åŒæ­¥æ®å¸§ä¸­åŠ å…¥ä¸€ä¸ªint32ç±»å‹æ•°æ®
+ * å‡½æ•°å‚æ•°:
+ *     buffer : å·²ç»åˆå§‹åŒ–çš„å¸§ç¼“å†²åŒº
+ *     channel: é€šé“, å–å€¼èŒƒå›´ä¸º0~15
+ *     value  : é€šé“æ•°æ®å€¼, ç±»å‹ä¸ºint32
+ *     è¿”å›å€¼ : 0, åŠ å…¥æˆåŠŸ, 1, å¸§é•¿åº¦å·²ç»è¾¾åˆ°ä¸Šé™
  **/
 char ws_add_int32(char *buffer, char channel, int32_t value)
 {
     char count = buffer[2];
-    char *p = buffer + count + 3; // Ìø¹ıÇ°ÃæÊı¾İ
+    char *p = buffer + count + 3; // è·³è¿‡å‰é¢æ•°æ®
 
     count += 5;
-    if (count < 69) { // Ö¡×î´ó×Ö½ÚÊı
+    if (count < 69) { // å¸§æœ€å¤§å­—èŠ‚æ•°
         buffer[2] = count;
-        *p++ = channel | Format_Int32; // Í¨µÀ¼°Êı¾İ¸ñÊ½ĞÅÏ¢
-        // Êı¾İÌí¼Óµ½Ö¡
+        *p++ = channel | Format_Int32; // é€šé“åŠæ•°æ®æ ¼å¼ä¿¡æ¯
+        // æ•°æ®æ·»åŠ åˆ°å¸§
         *p++ = (value >> 24) & 0xFF;
         *p++ = (value >> 16) & 0xFF;
         *p++ = (value >> 8) & 0xFF;
@@ -215,28 +216,28 @@ char ws_add_int32(char *buffer, char channel, int32_t value)
     return 0;
 }
 
-/* º¯Êı¹¦ÄÜ: ÔÚÊıÍ¬²½¾İÖ¡ÖĞ¼ÓÈëÒ»¸öfloatÀàĞÍÊı¾İ
- * º¯Êı²ÎÊı:
- *     buffer : ÒÑ¾­³õÊ¼»¯µÄÖ¡»º³åÇø
- *     channel: Í¨µÀ, È¡Öµ·¶Î§Îª0~15
- *     value  : Í¨µÀÊı¾İÖµ, ÀàĞÍÎªfloat
- *     ·µ»ØÖµ : 0, ¼ÓÈë³É¹¦, 1, Ö¡³¤¶ÈÒÑ¾­´ïµ½ÉÏÏŞ
+/* å‡½æ•°åŠŸèƒ½: åœ¨æ•°åŒæ­¥æ®å¸§ä¸­åŠ å…¥ä¸€ä¸ªfloatç±»å‹æ•°æ®
+ * å‡½æ•°å‚æ•°:
+ *     buffer : å·²ç»åˆå§‹åŒ–çš„å¸§ç¼“å†²åŒº
+ *     channel: é€šé“, å–å€¼èŒƒå›´ä¸º0~15
+ *     value  : é€šé“æ•°æ®å€¼, ç±»å‹ä¸ºfloat
+ *     è¿”å›å€¼ : 0, åŠ å…¥æˆåŠŸ, 1, å¸§é•¿åº¦å·²ç»è¾¾åˆ°ä¸Šé™
  **/
 char ws_add_float(char *buffer, char channel, float value)
 {
     char count = buffer[2];
-    char *p = buffer + count + 3; // Ìø¹ıÇ°ÃæÊı¾İ
+    char *p = buffer + count + 3; // è·³è¿‡å‰é¢æ•°æ®
 
     count += 5;
-    if (count < 69) { // Ö¡×î´ó×Ö½ÚÊı
+    if (count < 69) { // å¸§æœ€å¤§å­—èŠ‚æ•°
         union {
             float f;
             uint32_t i;
         } temp;
         buffer[2] = count;
         temp.f = value;
-        *p++ = channel | Format_Float; // Í¨µÀ¼°Êı¾İ¸ñÊ½ĞÅÏ¢
-        // Êı¾İÌí¼Óµ½Ö¡
+        *p++ = channel | Format_Float; // é€šé“åŠæ•°æ®æ ¼å¼ä¿¡æ¯
+        // æ•°æ®æ·»åŠ åˆ°å¸§
         *p++ = (temp.i >> 24) & 0xFF;
         *p++ = (temp.i >> 16) & 0xFF;
         *p++ = (temp.i >>  8) & 0xFF;
@@ -244,6 +245,35 @@ char ws_add_float(char *buffer, char channel, float value)
         return 1;
     }
     return 0;
+}
+
+/* å‡½æ•°åŠŸèƒ½: å‘é€æ—¶é—´æˆ³
+ * å‡½æ•°å‚æ•°:
+ *     buffer : è¾“å…¥ç¼“å†²åŒº
+ *     ts     : æ—¶é—´æˆ³
+ *     è¿”å›å€¼ : æ•°æ®å¸§é•¿åº¦, (å•ä½: bytes)
+ **/
+char ws_send_timestamp(char *buffer, ws_timestamp_t* ts)
+{
+    uint8_t temp;
+
+    *buffer++ = Frame_Head;
+    *buffer++ = Frame_InfoMode;
+    temp = (ts->year << 1) | ((ts->month >> 3) & 0x01);
+    *buffer++ = (char)temp;
+    temp = (ts->month << 5) | (ts->day & 0x1F);
+    *buffer++ = (char)temp;
+    temp = (ts->hour << 3) | ((ts->min >> 3) & 0x07);
+    *buffer++ = (char)temp;
+    temp = (ts->min << 5) | ((ts->sec >> 1) & 0x1F);
+    *buffer++ = (char)temp;
+    temp = (ts->sec << 7) | ((ts->msec >> 3) & 0x7F);
+    *buffer++ = (char)temp;
+    temp = (ts->msec << 5) | ((ts->sampleRate >> 16) & 0x1F);
+    *buffer++ = (char)temp;
+    *buffer++ = (char)((ts->sampleRate >> 8) & 0xFF);
+    *buffer = (char)(ts->sampleRate & 0xFF);
+    return 10;
 }
 
 /* end of file sendwave.c */
