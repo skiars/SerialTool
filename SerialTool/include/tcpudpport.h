@@ -36,6 +36,7 @@ public:
     void setServerAddress(const QString & string);
     void setPortNumber(int port);
     void setPortProtocol(const QString & string);
+    void retranslate();
 
 signals:
     void readyRead();

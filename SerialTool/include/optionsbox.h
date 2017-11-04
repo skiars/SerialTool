@@ -14,6 +14,7 @@ public:
     ~OptionsBox();
 
 private:
+    void setup();
     void loadCommand();
     void saveCommand();
 

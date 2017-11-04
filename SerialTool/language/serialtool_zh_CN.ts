@@ -137,22 +137,22 @@
 <context>
     <name>Oscilloscope</name>
     <message>
-        <location filename="../ui/oscilloscope.ui" line="79"/>
+        <location filename="../ui/oscilloscope.ui" line="87"/>
         <source>Y Range</source>
         <translation>Y轴范围</translation>
     </message>
     <message>
-        <location filename="../ui/oscilloscope.ui" line="108"/>
+        <location filename="../ui/oscilloscope.ui" line="116"/>
         <source>Y Offset</source>
         <translation>Y轴偏置</translation>
     </message>
     <message>
-        <location filename="../ui/oscilloscope.ui" line="137"/>
+        <location filename="../ui/oscilloscope.ui" line="145"/>
         <source>X Points</source>
         <translation>X轴点数</translation>
     </message>
     <message>
-        <location filename="../ui/oscilloscope.ui" line="234"/>
+        <location filename="../ui/oscilloscope.ui" line="242"/>
         <source>Hold Receive</source>
         <translation>保持接收</translation>
     </message>
@@ -188,39 +188,39 @@
 <context>
     <name>SerialTool</name>
     <message>
-        <location filename="../source/serialtool.cpp" line="384"/>
+        <location filename="../source/serialtool.cpp" line="412"/>
         <source>Start Tx/Rx</source>
         <translation>开始发送/接收</translation>
     </message>
     <message>
         <location filename="../ui/serialtool.ui" line="665"/>
-        <location filename="../source/serialtool.cpp" line="390"/>
+        <location filename="../source/serialtool.cpp" line="418"/>
         <source>Pause Tx/Rx</source>
         <translation>暂停发送/接收</translation>
     </message>
     <message>
         <location filename="../ui/serialtool.ui" line="649"/>
-        <location filename="../source/serialtool.cpp" line="537"/>
+        <location filename="../source/serialtool.cpp" line="567"/>
         <source>Open Port</source>
         <translation>打开端口</translation>
     </message>
     <message>
-        <location filename="../source/serialtool.cpp" line="516"/>
+        <location filename="../source/serialtool.cpp" line="546"/>
         <source>Close Port</source>
         <translation>关闭端口</translation>
     </message>
     <message>
-        <location filename="../source/serialtool.cpp" line="485"/>
+        <location filename="../source/serialtool.cpp" line="515"/>
         <source>Error</source>
         <translation>错误</translation>
     </message>
     <message>
-        <location filename="../source/serialtool.cpp" line="339"/>
+        <location filename="../source/serialtool.cpp" line="367"/>
         <source>Portable Network Graphic Format (*.png);;Bitmap (*.bmp);;Portable Document Format (*.pdf);;Wave Plain Text File (*.txt)</source>
         <translation>图像文件存储格式 (*.png);;位图文件 (*.bmp);;便携式文档格式 (*.pdf);;波形纯文本文件 (*.txt)</translation>
     </message>
     <message>
-        <location filename="../source/serialtool.cpp" line="486"/>
+        <location filename="../source/serialtool.cpp" line="516"/>
         <source>Can not open the port!
 Port may be occupied or configured incorrectly!</source>
         <translation>无法打开端口！
@@ -414,35 +414,35 @@ Port may be occupied or configured incorrectly!</source>
         <translation>端口</translation>
     </message>
     <message>
-        <location filename="../source/tcpudpport.cpp" line="76"/>
-        <location filename="../source/tcpudpport.cpp" line="88"/>
-        <location filename="../source/tcpudpport.cpp" line="101"/>
-        <location filename="../source/tcpudpport.cpp" line="114"/>
+        <location filename="../source/tcpudpport.cpp" line="75"/>
+        <location filename="../source/tcpudpport.cpp" line="87"/>
+        <location filename="../source/tcpudpport.cpp" line="100"/>
+        <location filename="../source/tcpudpport.cpp" line="113"/>
         <source>Error</source>
         <translation>错误</translation>
     </message>
     <message>
-        <location filename="../source/tcpudpport.cpp" line="76"/>
+        <location filename="../source/tcpudpport.cpp" line="75"/>
         <source>Please input port number.
 </source>
         <translation>请输入端口号。</translation>
     </message>
     <message>
-        <location filename="../source/tcpudpport.cpp" line="89"/>
+        <location filename="../source/tcpudpport.cpp" line="88"/>
         <source>Can not connect to server!
 Please check the network, IP address and port number.</source>
         <translation>无法连接到服务器！
 请检查网络、IP地址和端口号。</translation>
     </message>
     <message>
-        <location filename="../source/tcpudpport.cpp" line="115"/>
+        <location filename="../source/tcpudpport.cpp" line="114"/>
         <source>Can not create server!
 Please check the port number.</source>
         <translation>无法创建服务器！
 请检查端口号。</translation>
     </message>
     <message>
-        <location filename="../source/tcpudpport.cpp" line="101"/>
+        <location filename="../source/tcpudpport.cpp" line="100"/>
         <source>Please input IP address and port number!
 </source>
         <translation>请输入IP地址和端口号！</translation>

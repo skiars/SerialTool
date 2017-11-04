@@ -253,3 +253,8 @@ void TcpUdpPort::setPortProtocol(const QString & string)
 {
     return ui->protocolBox->setCurrentText(string);
 }
+
+void TcpUdpPort::retranslate()
+{
+    ui->retranslateUi(this);
+}

@@ -60,7 +60,7 @@
       </size>
      </property>
      <property name="styleSheet">
-      <string notr="true">width: 90px;
+      <string notr="true">QComboBox { width: 90px }
 </string>
      </property>
      <item>
@@ -108,10 +108,10 @@
       </size>
      </property>
      <property name="styleSheet">
-      <string notr="true">width: 100px;</string>
+      <string notr="true">QLineBox { width: 100px }</string>
      </property>
      <property name="text">
-      <string/>
+      <string notr="true"/>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -146,10 +146,10 @@
       </size>
      </property>
      <property name="styleSheet">
-      <string notr="true">width: 50px;</string>
+      <string notr="true">QLineBox { width: 50px }</string>
      </property>
      <property name="text">
-      <string/>
+      <string notr="true"/>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
