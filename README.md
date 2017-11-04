@@ -15,7 +15,7 @@ SerialTool是一个实用的串口调试工具，这款工具支持串口调试�
 * 支持文件传输(目前只支持XModem协议)
 
 ## 下载地址
-* [Gihub](https://github.com/Le-Seul/SerialTool/releases)
+* [GitHub](https://github.com/Le-Seul/SerialTool/releases)
 * [百度网盘](http://pan.baidu.com/s/1c18ZXW8)
 
 ## 更新计划
