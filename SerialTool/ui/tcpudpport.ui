@@ -95,20 +95,8 @@
    </item>
    <item>
     <widget class="QLineEdit" name="ipEdit">
-     <property name="minimumSize">
-      <size>
-       <width>100</width>
-       <height>0</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>100</width>
-       <height>16777215</height>
-      </size>
-     </property>
      <property name="styleSheet">
-      <string notr="true">QLineBox { width: 100px }</string>
+      <string notr="true">QLineEdit { width: 7em }</string>
      </property>
      <property name="text">
       <string notr="true"/>
@@ -133,20 +121,8 @@
    </item>
    <item>
     <widget class="QLineEdit" name="portEdit">
-     <property name="minimumSize">
-      <size>
-       <width>50</width>
-       <height>0</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>50</width>
-       <height>16777215</height>
-      </size>
-     </property>
      <property name="styleSheet">
-      <string notr="true">QLineBox { width: 50px }</string>
+      <string notr="true">QLineEdit { width: 4em }</string>
      </property>
      <property name="text">
       <string notr="true"/>

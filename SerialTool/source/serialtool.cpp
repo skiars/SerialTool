@@ -76,6 +76,8 @@ SerialTool::SerialTool(QWidget *parent)
     connect(ui.fileTransfer, &FileTransferView::sendData, this, &SerialTool::writePort);
     connect(ui.actionVedioBox, SIGNAL(triggered()), this, SLOT(onVedioBoxTriggered()));
     connect(ui.tabWidget, SIGNAL(currentChanged(int)), this, SLOT(currentTabChanged(int)));
+    connect(ui.comboBoxPortNum, SIGNAL(currentIndexChanged(int)), this, SLOT(dispPortStatus()));
+    connect(tcpUdpPort, SIGNAL(protocolChanged()), this, SLOT(dispPortStatus()));
 
     scanPort(); // 扫描端口
     secTimer.start(1000);
@@ -179,6 +181,7 @@ void SerialTool::loadSettings()
         closePort(); // 端口改变时关闭之前的端口
         portType = type;
     }
+    dispPortStatus(); // 更新端口状态显示
     loadPortTool();
 }
 
@@ -423,28 +426,23 @@ void SerialTool::changeRunFlag()
     }
 }
 
-void SerialTool::onSecTimerTimeout()
+// 串口端口状态
+void SerialTool::dispComPortStatus(QLabel *label)
 {
-    const QString parity[] {
+    QString str;
+    QPalette palette;
+    static const QString parity[] {
         "None", "Even", "Odd", "Space", "Mark", "Unknown"
     };
-    const QString flowControl[] {
+    static const QString flowControl[] {
         "None", "RTS/CTS", "XON/XOFF", "Unknown"
     };
 
-    if (serialPort->isOpen()) {
-        // 检查端口是否有错误
-        if (serialPort->error() != QSerialPort::NoError) {
-            closePort();
-            scanPort();
-        }
-    } else {
-        scanPort(); // 串口关闭时扫描可用端口
-    }
-    // 更新显示信息
-    QString str;
-    QPalette palette;
+    // 获取端口名
     str = ui.comboBoxPortNum->currentText().section(" ", 0, 0) + " ";
+    if (str == " ") { // 端口名是空的
+        str = "COM Port ";
+    }
     if (serialPort->isOpen()) {
         str += "OPEND, " + QString::number(serialPort->baudRate()) + "bps, "
             + QString::number(serialPort->dataBits()) + "bit, "
@@ -456,8 +454,53 @@ void SerialTool::onSecTimerTimeout()
         str += "CLOSED";
         palette.setColor(QPalette::WindowText,Qt::red);
     }
-    portInfoLabel->setText(str);
-    portInfoLabel->setPalette(palette);
+    label->setText(str);
+    label->setPalette(palette);
+}
+
+// TCP/UDP端口状态
+void SerialTool::dispTcpUdpPortStatus(QLabel *label)
+{
+    QPalette palette;
+    QString str = tcpUdpPort->portProtocol() + " ";
+
+    if (tcpUdpPort->isOpen()) {
+        str += "OPEND @" + tcpUdpPort->portAddress()
+            + ":" + QString::number(tcpUdpPort->portNumber());
+        palette.setColor(QPalette::WindowText,Qt::darkGreen);
+    } else {
+        str += "CLOSED";
+        palette.setColor(QPalette::WindowText,Qt::red);
+    }
+    label->setText(str);
+    label->setPalette(palette);
+}
+
+// 状态栏显示端口状态
+void SerialTool::dispPortStatus()
+{
+    if (portType == ComPort) {
+        dispComPortStatus(portInfoLabel);
+    } else if (portType == NetworkPort) {
+        dispTcpUdpPortStatus(portInfoLabel);
+    }
+}
+
+// 秒定时器溢出槽函数
+void SerialTool::onSecTimerTimeout()
+{
+    QString str;
+
+    if (serialPort->isOpen()) {
+        // 检查端口是否有错误
+        if (serialPort->error() != QSerialPort::NoError) {
+            closePort();
+            scanPort();
+        }
+    } else {
+        scanPort(); // 串口关闭时扫描可用端口
+    }
+    // 更新显示信息
     str = "RX: " + QString::number(rxCount) + "Bytes";
     rxCntLabel->setText(str);
     str = "TX: " + QString::number(txCount) + "Bytes";
@@ -550,6 +593,7 @@ void SerialTool::openPort()
         if (runFlag && ui.tabWidget->widget(ui.tabWidget->currentIndex()) == ui.tabOsc) {
             ui.oscPlot->start(); // 启动串口示波器
         }
+        dispPortStatus(); // 更新端口状态显示
     }
 }
 
@@ -562,12 +606,13 @@ void SerialTool::closePort()
     if (tcpUdpPort->isOpen()) {
         tcpUdpPort->close();
     }
-    ui.oscPlot->stop(); // 串口示波器开始结束运行
+    ui.oscPlot->stop(); // 串口示波器结束运行
     QIcon icon(":/SerialTool/images/connect.png");
     ui.portSwitchAction->setIcon(icon);
     ui.portSwitchAction->setText(tr("Open Port"));
     ui.sendButton->setEnabled(false);
     ui.portRunAction->setEnabled(false);
+    dispPortStatus(); // 更新端口状态显示
 }
 
 // 打开串口槽函数

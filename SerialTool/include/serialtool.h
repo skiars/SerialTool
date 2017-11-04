@@ -57,6 +57,7 @@ private slots:
     void onVedioBoxTriggered();
     void onVedioBoxDelete();
     void currentTabChanged(int index);
+    void dispPortStatus();
 
 private:
     void loadConfig();
@@ -64,6 +65,8 @@ private:
     bool openComPort();
     bool openTcpUdpPort();
     void loadPortTool();
+    void dispComPortStatus(QLabel *label);
+    void dispTcpUdpPortStatus(QLabel *label);
 
 private:
     Ui_SerialTool ui;

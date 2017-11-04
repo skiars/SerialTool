@@ -15,7 +15,7 @@ class TcpUdpPort : public QWidget
     Q_OBJECT
 
     enum Protocol {
-        TCPClient,
+        TCPClient = 0,
         TCPServer,
         UDP
     };
@@ -31,6 +31,7 @@ public:
     void write(const QByteArray &array);
     bool isOpen(void);
     QString serverAddress();
+    QString portAddress();
     int portNumber();
     QString portProtocol();
     void setServerAddress(const QString & string);
@@ -39,12 +40,13 @@ public:
     void retranslate();
 
 signals:
+    void protocolChanged();
     void readyRead();
 
 private slots:
     void newConnectSlot();
     void readMessage();
-    void protocolChanged();
+    void onProtocolChanged();
     void ipAddressEdited();
     void removeUserFormList();
 

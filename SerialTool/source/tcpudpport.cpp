@@ -18,7 +18,7 @@ TcpUdpPort::TcpUdpPort(QWidget *parent) :
 
     protocolChanged();
 
-    connect(ui->protocolBox, &QComboBox::currentTextChanged, this, &TcpUdpPort::protocolChanged);
+    connect(ui->protocolBox, &QComboBox::currentTextChanged, this, &TcpUdpPort::onProtocolChanged);
     connect(ui->ipEdit, &QLineEdit::textEdited, this, &TcpUdpPort::ipAddressEdited);
 }
 
@@ -45,7 +45,7 @@ void TcpUdpPort::ipAddressEdited()
     serverIP = ui->ipEdit->text();
 }
 
-void TcpUdpPort::protocolChanged()
+void TcpUdpPort::onProtocolChanged()
 {
     if (ui->protocolBox->currentText() == "TCP Client") {
         protocol = TCPClient;
@@ -55,7 +55,7 @@ void TcpUdpPort::protocolChanged()
         protocol = TCPServer;
         ui->ipEdit->setReadOnly(true);
         QHostInfo info = QHostInfo::fromName(QHostInfo::localHostName());
-        foreach (QHostAddress address,info.addresses()) {
+        foreach (QHostAddress address, info.addresses()) {
              if(address.protocol() == QAbstractSocket::IPv4Protocol) {
                 ui->ipEdit->setText(address.toString());
              }
@@ -64,6 +64,7 @@ void TcpUdpPort::protocolChanged()
         ui->ipEdit->setReadOnly(false);
         protocol = UDP;
     }
+    emit protocolChanged();
 }
 
 bool TcpUdpPort::open()
@@ -228,9 +229,16 @@ QString TcpUdpPort::portProtocol()
     return ui->protocolBox->currentText();
 }
 
+// 服务器IP
 QString TcpUdpPort::serverAddress()
 {
     return serverIP;
+}
+
+// 当前端口的IP
+QString TcpUdpPort::portAddress()
+{
+    return ui->ipEdit->text();
 }
 
 int TcpUdpPort::portNumber()
