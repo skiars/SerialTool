@@ -22,7 +22,7 @@ DEFINES += QT_DEPRECATED_WARNINGS QSCINTILLA_DLL
 
 QMAKE_CFLAGS +=
 
-TRANSLATIONS += language/zh_CN.ts
+TRANSLATIONS += language/serialtool_zh_CN.ts
 
 RC_FILE += resource/serialtool.rc
 

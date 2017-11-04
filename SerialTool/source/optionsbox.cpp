@@ -55,8 +55,37 @@ OptionsBox::OptionsBox(SerialTool *parent) : QDialog(parent)
     setFixedSize(400, 300); // 不能伸缩的对话框
 
     serialTool = parent;
-    
+
+    scanLanguagePath("language", languageList, ui.languageBox);
+    scanThemesPath("themes", ui.themeBox);
+    loadCommand();
+    setup(); // 配置界面初始化
+
+    connect(ui.fontAnsiSetButton, SIGNAL(clicked()), this, SLOT(setTextFontAnsi()));
+    connect(ui.fontMultiSetButton, SIGNAL(clicked()), this, SLOT(setTextFontMulti()));
+    connect(ui.rxColorButton, SIGNAL(clicked()), this, SLOT(setRxFontColor()));
+    connect(ui.txColorButton, SIGNAL(clicked()), this, SLOT(setTxFontColor()));
+    connect(ui.buttonBox, SIGNAL(clicked(QAbstractButton *)),
+        this, SLOT(processOptions(QAbstractButton *)));
+    connect(ui.plotBgColorButton, SIGNAL(clicked()), this, SLOT(setPlotBackgroundColor()));
+    connect(ui.axisColorButton, SIGNAL(clicked()), this, SLOT(setAxisColor()));
+    connect(ui.cmdNew, SIGNAL(clicked()), this, SLOT(onCmdNewClick()));
+    connect(ui.cmdEdit, SIGNAL(clicked()), this, SLOT(onCmdEditClick()));
+    connect(ui.cmdDelete, SIGNAL(clicked()), this, SLOT(onCmdDeleteClick()));
+    connect(ui.cmdList, SIGNAL(itemChanged(QListWidgetItem *)), this, SLOT(setCmdItemColor()));
+    connect(ui.languageBox, SIGNAL(currentIndexChanged(int)), this, SLOT(setLanguage(int)));
+}
+
+OptionsBox::~OptionsBox()
+{
+
+}
+
+// 初始化设置
+void OptionsBox::setup()
+{
     QSettings *config = serialTool->getConfig();
+
     // 字体和颜色设置
     config->beginGroup("Settings");
     fontFamily = config->value("FontFamily").toString();
@@ -84,38 +113,16 @@ OptionsBox::OptionsBox(SerialTool *parent) : QDialog(parent)
     ui.lineEditPlotColor->setText(bgColor);
     ui.lineEditAxisColor->setText(axColor);
 
-    scanLanguagePath("language", languageList, ui.languageBox);
     ui.languageBox->setCurrentText(languageName("language/" + language));
-    scanThemesPath("themes", ui.themeBox);
     ui.themeBox->setCurrentText(theme);
-
-    loadCommand();
-
-    connect(ui.fontAnsiSetButton, SIGNAL(clicked()), this, SLOT(setTextFontAnsi()));
-    connect(ui.fontMultiSetButton, SIGNAL(clicked()), this, SLOT(setTextFontMulti()));
-    connect(ui.rxColorButton, SIGNAL(clicked()), this, SLOT(setRxFontColor()));
-    connect(ui.txColorButton, SIGNAL(clicked()), this, SLOT(setTxFontColor()));
-    connect(ui.buttonBox, SIGNAL(clicked(QAbstractButton *)),
-        this, SLOT(processOptions(QAbstractButton *)));
-    connect(ui.plotBgColorButton, SIGNAL(clicked()), this, SLOT(setPlotBackgroundColor()));
-    connect(ui.axisColorButton, SIGNAL(clicked()), this, SLOT(setAxisColor()));
-    connect(ui.cmdNew, SIGNAL(clicked()), this, SLOT(onCmdNewClick()));
-    connect(ui.cmdEdit, SIGNAL(clicked()), this, SLOT(onCmdEditClick()));
-    connect(ui.cmdDelete, SIGNAL(clicked()), this, SLOT(onCmdDeleteClick()));
-    connect(ui.cmdList, SIGNAL(itemChanged(QListWidgetItem *)), this, SLOT(setCmdItemColor()));
-    connect(ui.languageBox, SIGNAL(currentIndexChanged(int)), this, SLOT(setLanguage(int)));
-}
-
-OptionsBox::~OptionsBox()
-{
-
 }
 
 // 保存配置
 void OptionsBox::processOptions(QAbstractButton *button)
 {
-    QString btnName = button->text();
-    if (btnName == "OK" || btnName == "Apply") {
+    QDialogButtonBox::StandardButton btn = ui.buttonBox->standardButton(button);
+
+    if (btn == QDialogButtonBox::Ok || btn == QDialogButtonBox::Apply) {
         QSettings *config = serialTool->getConfig();
         // 字体和颜色设置
         config->beginGroup("Settings");
@@ -137,6 +144,7 @@ void OptionsBox::processOptions(QAbstractButton *button)
         saveCommand(); // 保存命令
         serialTool->loadSettings(); // 配置生效
         ui.retranslateUi(this);
+        setup();    // 重新初始化OptionBox设置
     }
 }
 

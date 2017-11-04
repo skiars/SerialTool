@@ -128,6 +128,7 @@ void SerialTool::setLanguage(const QString &string)
     ui.retranslateUi(this);
     ui.oscPlot->retranslate();
     ui.fileTransfer->retranslate();
+    tcpUdpPort->retranslate();
 }
 
 // 加载样式表
