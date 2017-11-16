@@ -2,6 +2,7 @@
 #include "ui_tcpudpport.h"
 #include <QtNetwork>
 #include <QMessageBox>
+#include <QUdpSocket>
 
 TcpUdpPort::TcpUdpPort(QWidget *parent) :
     QWidget(parent),
@@ -9,7 +10,7 @@ TcpUdpPort::TcpUdpPort(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    QRegExp regExpIP("((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])[\\.]){3}(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])");
+    QRegExp regExpIP("localhost|((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])[\\.]){3}(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])");
     QRegExp regExpNetPort("((6553[0-5])|[655[0-2][0-9]|65[0-4][0-9]{2}|6[0-4][0-9]{3}|[1-5][0-9]{4}|[1-9][0-9]{3}|[1-9][0-9]{2}|[1-9][0-9]|[0-9])");
     QRegExpValidator *pReg = new QRegExpValidator(regExpIP, this);
     ui->ipEdit->setValidator(pReg);
@@ -27,6 +28,26 @@ TcpUdpPort::~TcpUdpPort()
     delete ui;
     delete tcpClient;
     delete tcpServer;
+}
+
+void TcpUdpPort::loadConfig(QSettings *config)
+{
+    config->beginGroup("TcpUdpPort");
+    serverIP = config->value("ServerAddress").toString();
+    ui->ipEdit->setText(serverIP);
+    ui->portEdit->setText(config->value("PortNumber").toString());
+    ui->protocolBox->setCurrentText(config->value("PortProtocol").toString());
+    onProtocolChanged();    // update protocol
+    config->endGroup();
+}
+
+void TcpUdpPort::saveConfig(QSettings *config)
+{
+    config->beginGroup("TcpUdpPort");
+    config->setValue("ServerAddress", QVariant(serverIP));
+    config->setValue("PortNumber", QVariant(ui->portEdit->text()));
+    config->setValue("PortProtocol", QVariant(ui->protocolBox->currentText()));
+    config->endGroup();
 }
 
 void TcpUdpPort::setVisibleWidget(bool status)
@@ -47,85 +68,139 @@ void TcpUdpPort::ipAddressEdited()
 
 void TcpUdpPort::onProtocolChanged()
 {
-    if (ui->protocolBox->currentText() == "TCP Client") {
+    const QString& protocolName = ui->protocolBox->currentText();
+
+    if (protocolName == "TCP Client") {
         protocol = TCPClient;
         ui->ipEdit->setReadOnly(false);
         ui->ipEdit->setText(serverIP);
-    } else if (ui->protocolBox->currentText() == "TCP Server") {
+    } else if (protocolName == "TCP Server") {
         protocol = TCPServer;
         ui->ipEdit->setReadOnly(true);
-        QHostInfo info = QHostInfo::fromName(QHostInfo::localHostName());
-        foreach (QHostAddress address, info.addresses()) {
-             if(address.protocol() == QAbstractSocket::IPv4Protocol) {
-                ui->ipEdit->setText(address.toString());
-             }
-        }
-    } else if (ui->protocolBox->currentText() == "UDP") {
-        ui->ipEdit->setReadOnly(false);
+        ui->ipEdit->setText(localHost());
+    } else if (protocolName == "UDP") {
         protocol = UDP;
+        ui->ipEdit->setReadOnly(false);
+        ui->ipEdit->setText(serverIP);
     }
     emit protocolChanged();
 }
 
+// get localhost address
+QString TcpUdpPort::localHost()
+{
+    QString ip;
+
+    QHostInfo info = QHostInfo::fromName(QHostInfo::localHostName());
+    foreach (QHostAddress address, info.addresses()) {
+         if(address.protocol() == QAbstractSocket::IPv4Protocol) {
+            ip = address.toString();
+         }
+    }
+    return ip;
+}
+
+bool TcpUdpPort::openTcpClient()
+{
+    if (ui->ipEdit->text().isEmpty() || ui->portEdit->text().isEmpty()) {
+        QMessageBox err(QMessageBox::Critical,
+            tr("Error"), tr("Please enter a valid IP address and port number.\n"),
+            QMessageBox::Cancel, this);
+        err.exec();
+        return false; // Returns false when the IP address or port number is wrong.
+    }
+    tcpClient = new QTcpSocket();
+    tcpClient->connectToHost(hostAddress(), ui->portEdit->text().toInt());
+    if (!tcpClient->waitForConnected(1000)) {
+        tcpClient->close();
+        delete tcpClient;
+        tcpClient = NULL;
+        QMessageBox err(QMessageBox::Critical,
+            tr("Error"),
+            tr("Can not connect to server!\n"
+                "Please check the network, IP address and port number."),
+            QMessageBox::Cancel, this);
+        err.exec();
+        return false; // Return false when network error.
+    }
+    ui->ipEdit->setReadOnly(true);
+    connect(tcpClient, SIGNAL(readyRead()), this,SLOT(readMessage()));
+    connect(tcpClient, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(onError()));
+    return true;
+}
+
+bool TcpUdpPort::openTcpServer()
+{
+    if (ui->portEdit->text().isEmpty()) {
+        QMessageBox err(QMessageBox::Critical,
+            tr("Error"), tr("Please enter a valid port number!\n"),
+            QMessageBox::Cancel, this);
+        err.exec();
+        return false; // Returns false when the port number is empty.
+    }
+    tcpServer = new QTcpServer();
+    if(!tcpServer->listen(QHostAddress::Any, ui->portEdit->text().toInt())) {
+           tcpServer->close();
+           delete tcpServer;
+           tcpServer = NULL;
+           delete tcpServer;
+           QMessageBox err(QMessageBox::Critical,
+               tr("Error"),
+               tr("Can not create server!\n"
+                  "Please check the port number."),
+               QMessageBox::Cancel, this);
+           err.exec();
+           return false; // Return false when network error.
+    }
+    connect(tcpServer, SIGNAL(newConnection()), this, SLOT(newConnectSlot()));
+    return true;
+}
+
+bool TcpUdpPort::openUdpScoket()
+{
+    if (ui->ipEdit->text().isEmpty() || ui->portEdit->text().isEmpty()) {
+        QMessageBox err(QMessageBox::Critical,
+            tr("Error"), tr("Please enter a valid IP address and port number.\n"),
+            QMessageBox::Cancel, this);
+        err.exec();
+        return false; // Returns false when the IP address or port number is wrong.
+    }
+    udpSocket = new QUdpSocket();
+    if (udpSocket->bind(ui->portEdit->text().toInt()) == false) {
+        QMessageBox err(QMessageBox::Critical,
+            tr("Error"),
+            tr("The port is occupied, Please re-enter it."),
+            QMessageBox::Cancel, this);
+        err.exec();
+        return false; // Return false when the port is occupied.
+    }
+    ui->ipEdit->setReadOnly(true);
+    connect(udpSocket, SIGNAL(readyRead()), this, SLOT(readMessage()));
+    return true; // return, because the UDP protocol does not need to connect.
+}
+
 bool TcpUdpPort::open()
 {
+    bool status = false;
+
     switch (protocol) {
     case TCPClient:
-        if (ui->ipEdit->text().isEmpty() || ui->portEdit->text().isEmpty()) {
-            QMessageBox err(QMessageBox::Critical,
-                tr("Error"), tr("Please input port number.\n"),
-                QMessageBox::Cancel, this);
-            err.exec();
-            return false;
-        }
-        tcpClient = new QTcpSocket();
-        tcpClient->connectToHost(QHostAddress(ui->ipEdit->text()), ui->portEdit->text().toInt());
-        if (!tcpClient->waitForConnected(1000)) {
-            tcpClient->close();
-            delete tcpClient;
-            tcpClient = NULL;
-            QMessageBox err(QMessageBox::Critical,
-                tr("Error"),
-                tr("Can not connect to server!\n"
-                    "Please check the network, IP address and port number."),
-                QMessageBox::Cancel, this);
-            err.exec();
-            return false;
-        }
-        ui->ipEdit->setEnabled(false);
-        connect(tcpClient, SIGNAL(readyRead()), this,SLOT(readMessage()));
+        status = openTcpClient();
         break;
     case TCPServer:
-        if (ui->portEdit->text().isEmpty()) {
-            QMessageBox err(QMessageBox::Critical,
-                tr("Error"), tr("Please input IP address and port number!\n"),
-                QMessageBox::Cancel, this);
-            err.exec();
-            return false;
-        }
-        tcpServer = new QTcpServer();
-        if(!tcpServer->listen(QHostAddress::Any, ui->portEdit->text().toInt())) {
-               tcpServer->close();
-               tcpServer->close();
-               delete tcpServer;
-               tcpServer = NULL;
-               delete tcpServer;
-               QMessageBox err(QMessageBox::Critical,
-                   tr("Error"),
-                   tr("Can not create server!\n"
-                      "Please check the port number."),
-                   QMessageBox::Cancel, this);
-               err.exec();
-               return false;
-        }
-        connect(tcpServer, SIGNAL(newConnection()), this, SLOT(newConnectSlot()));
+        status = openTcpServer();
+        break;
+    case UDP:
+        status = openUdpScoket();
         break;
     default:
-        return false;
+        break;
     }
-    ui->protocolBox->setEnabled(false);
-    ui->portEdit->setEnabled(false);
-    return true;
+    if (status) {
+        ui->protocolBox->setEnabled(false);
+        ui->portEdit->setReadOnly(true);
+    }
+    return status;
 }
 
 void TcpUdpPort::close()
@@ -134,24 +209,30 @@ void TcpUdpPort::close()
     case TCPClient:
         if (tcpClient) {
             tcpClient->close();
-            delete tcpClient;
+            tcpClient->deleteLater();
             tcpClient = NULL;
         }
         break;
     case TCPServer:
         if (tcpServer) {
             tcpServer->close();
-            delete tcpServer;
+            tcpServer->deleteLater();
             tcpServer = NULL;
         }
         listClient.clear();
+        break;
+    case UDP:
+        if (udpSocket) {
+            udpSocket->deleteLater();
+            udpSocket = NULL;
+        }
         break;
     default:
         break;
     }
     ui->protocolBox->setEnabled(true);
-    ui->ipEdit->setEnabled(true);
-    ui->portEdit->setEnabled(true);
+    ui->ipEdit->setReadOnly(false);
+    ui->portEdit->setReadOnly(false);
 }
 
 void TcpUdpPort::newConnectSlot()
@@ -163,15 +244,29 @@ void TcpUdpPort::newConnectSlot()
     connect(socket, SIGNAL(disconnected()), this, SLOT(removeUserFormList()));
 }
 
+void TcpUdpPort::readUdpDatagrams()
+{
+    QByteArray datagram;
+
+    do {
+        datagram.resize(udpSocket->pendingDatagramSize());
+        udpSocket->readDatagram(datagram.data(), datagram.size());
+    } while (udpSocket->hasPendingDatagrams());
+    readArray.append(datagram);
+}
+
 void TcpUdpPort::readMessage()
 {
-    QTcpSocket *socket = static_cast<QTcpSocket*>(sender());
+    QObject *socket = sender();
     switch (protocol) {
     case TCPClient:
         readArray.append(tcpClient->readAll());
         break;
     case TCPServer:
-        readArray.append(socket->readAll());
+        readArray.append(static_cast<QTcpSocket*>(socket)->readAll());
+        break;
+    case UDP:
+        readUdpDatagrams();
         break;
     default:
         break;
@@ -182,6 +277,7 @@ void TcpUdpPort::readMessage()
 void TcpUdpPort::removeUserFormList()
 {
     QTcpSocket *socket = static_cast<QTcpSocket*>(sender());
+    socket->close();
     listClient.removeOne(socket);
 }
 
@@ -197,16 +293,20 @@ void TcpUdpPort::write(const QByteArray &array)
     switch (protocol) {
     case TCPClient:
         if (tcpClient) {
-            tcpClient->write(array.data(), array.length());
+            tcpClient->write(array);
         }
         break;
     case TCPServer:
         if (tcpServer) {
             foreach (QTcpSocket *socket, listClient) {
-                socket->write(array.data(), array.length());
+                socket->write(array);
             }
         }
         break;
+    case UDP:
+        if (udpSocket) {
+            udpSocket->writeDatagram(array, hostAddress(), ui->portEdit->text().toInt());
+        }
     default:
         break;
     }
@@ -219,50 +319,45 @@ bool TcpUdpPort::isOpen(void)
         return tcpClient && tcpClient->isOpen();
     case TCPServer:
         return tcpServer && tcpServer->isListening();
+    case UDP:
+        return udpSocket != NULL;
     default:
         return false;
     }
 }
 
-QString TcpUdpPort::portProtocol()
-{
-    return ui->protocolBox->currentText();
-}
-
-// 服务器IP
-QString TcpUdpPort::serverAddress()
-{
-    return serverIP;
-}
-
-// 当前端口的IP
-QString TcpUdpPort::portAddress()
-{
-    return ui->ipEdit->text();
-}
-
-int TcpUdpPort::portNumber()
-{
-    return ui->portEdit->text().toInt();
-}
-
-void TcpUdpPort::setServerAddress(const QString & string)
-{
-    ui->ipEdit->setText(string);
-    serverIP =string;
-}
-
-void TcpUdpPort::setPortNumber(int port)
-{
-    ui->portEdit->setText(QString::number(port));
-}
-
-void TcpUdpPort::setPortProtocol(const QString & string)
-{
-    return ui->protocolBox->setCurrentText(string);
-}
-
 void TcpUdpPort::retranslate()
 {
     ui->retranslateUi(this);
+}
+
+bool TcpUdpPort::portStatus(QString &string)
+{
+    bool status;
+
+    string += ui->protocolBox->currentText() + " ";
+    if (this->isOpen()) {
+        string += "OPEND @" + ui->ipEdit->text()
+               + ":" + ui->portEdit->text();
+        status = true;
+    } else {
+        string += "CLOSED";
+        status = false;
+    }
+    return status;
+}
+
+QHostAddress TcpUdpPort::hostAddress() {
+    QString address = serverIP == "localhost" ? localHost() : serverIP;
+    return QHostAddress(address);
+}
+
+void TcpUdpPort::onError()
+{
+    QMessageBox err(QMessageBox::Critical,
+        tr("Error"),
+        tr("The remote host closed the connection."),
+        QMessageBox::Cancel, this);
+    err.exec();
+    emit connectionError();
 }

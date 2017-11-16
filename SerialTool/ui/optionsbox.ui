@@ -135,7 +135,7 @@
      </widget>
      <widget class="QWidget" name="tab1">
       <attribute name="title">
-       <string>Tester</string>
+       <string>Terminal</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <property name="leftMargin">

@@ -1,5 +1,6 @@
 #include "oscilloscope.h"
 #include <QTextStream>
+#include <QSettings.h>
 #include "channelitem.h"
 #include "wavedecode.h"
 #include "oscopetimestamp.h"
@@ -11,16 +12,16 @@ Oscilloscope::Oscilloscope(QWidget *parent)
     ui.setupUi(parent);
 
     timeStamp = new OscopeTimeStamp();
+    _xRange = 0;
 
     setupPlot();
     setupChannel();
     listViewInit();
 
-    QRegExp rx("^(-?[0]|-?[1-9][0-9]{0,5})(?:\\.\\d{1,4})?$|(^\\t?$)");
-    QRegExpValidator *pReg = new QRegExpValidator(rx, this);
+    QRegExpValidator *pReg = new QRegExpValidator(QRegExp("^\\d{2,7}$"));
     ui.xRangeBox->lineEdit()->setValidator(pReg);
 
-    updataTimer.setInterval(10);
+    updataTimer.setInterval(25);
 
     connect(ui.customPlot->xAxis, SIGNAL(rangeChanged(QCPRange)), this, SLOT(xAxisChanged(QCPRange)));
     connect(ui.customPlot->yAxis, SIGNAL(rangeChanged(QCPRange)), this, SLOT(yAxisChanged(QCPRange)));
@@ -32,8 +33,8 @@ Oscilloscope::Oscilloscope(QWidget *parent)
     connect(ui.xRangeBox, &QComboBox::currentTextChanged, this, &Oscilloscope::xRangeChanged);
     connect(&updataTimer, &QTimer::timeout, this, &Oscilloscope::timeUpdata);
 
-    setXRange(10);
     clear();
+    ui.channelList->setVisible(false);
 }
 
 Oscilloscope::~Oscilloscope()
@@ -41,20 +42,60 @@ Oscilloscope::~Oscilloscope()
     delete timeStamp;
 }
 
-// ÖØĞÂÉèÖÃÓïÑÔ
+// é‡æ–°è®¾ç½®è¯­è¨€
 void Oscilloscope::retranslate()
 {
     ui.retranslateUi(this);
 }
 
+// load settings
+void Oscilloscope::loadConfig(QSettings *config)
+{
+    config->beginGroup("Oscillograph");
+    ui.xRangeBox->setCurrentText(config->value("XRange").toString());
+    ui.yOffsetBox->setValue(config->value("YOffset").toDouble());
+    ui.yRangeBox->setValue(config->value("YRange").toDouble());
+    ui.holdReceiveBox->setChecked(config->value("HoldReceive").toBool());
+    // load channels settings
+    config->beginReadArray("Channels");
+    for (int i = 0; i < CH_NUM; ++i) {
+        config->setArrayIndex(i);
+        setChannelVisible(i, config->value("Visible").toBool());
+        QColor color(config->value("Color").toString());
+        ChannelItem *item = channelWidget(i);
+        item->setColor(color);
+        ui.customPlot->graph(i)->setPen(QPen(color));
+    }
+    config->endArray();
+    config->endGroup();
+}
 
-// ³õÊ¼»¯Ê¾²¨Æ÷½çÃæ
+// save settings
+void Oscilloscope::saveConfig(QSettings *config)
+{
+    config->beginGroup("Oscillograph");
+    config->setValue("YOffset", QVariant(ui.yOffsetBox->value()));
+    config->setValue("YRange", QVariant(ui.yRangeBox->value()));
+    config->setValue("XRange", QVariant(ui.xRangeBox->currentText()));
+    config->setValue("HoldReceive", QVariant(ui.holdReceiveBox->isChecked()));
+    // save channels settings
+    config->beginWriteArray("Channels");
+    for (int i = 0; i < CH_NUM; ++i) {
+        config->setArrayIndex(i);
+        config->setValue("Visible", channelWidget(i)->isChecked());
+        config->setValue("Color", channelWidget(i)->color().name());
+    }
+    config->endArray();
+    config->endGroup();
+}
+
+// åˆå§‹åŒ–ç¤ºæ³¢å™¨ç•Œé¢
 void Oscilloscope::setupPlot()
 {
-    // ÍÏ¶¯Ê±²»¿¹¾â³İ
+    // æ‹–åŠ¨æ—¶ä¸æŠ—é”¯é½¿
     ui.customPlot->setNoAntialiasingOnDrag(true);
 
-    // ÉèÖÃ¿Ì¶ÈÏß
+    // è®¾ç½®åˆ»åº¦çº¿
     QSharedPointer<QCPAxisTicker> xTicker(new QCPAxisTicker);
     QSharedPointer<QCPAxisTicker> yTicker(new QCPAxisTicker);
     xTicker->setTickCount(5);
@@ -63,29 +104,29 @@ void Oscilloscope::setupPlot()
     yTicker->setTickCount(5);
     ui.customPlot->yAxis->setTicker(yTicker);
     ui.customPlot->yAxis2->setTicker(yTicker);
-    // ÏÔÊ¾Ğ¡Íø¸ñ
+    // æ˜¾ç¤ºå°ç½‘æ ¼
     ui.customPlot->xAxis->grid()->setSubGridVisible(true);
     ui.customPlot->yAxis->grid()->setSubGridVisible(true);
 }
 
-// ³õÊ¼»¯Í¨µÀ
+// åˆå§‹åŒ–é€šé“
 void Oscilloscope::setupChannel()
 {
-    // ³õÊ¼»¯Í¨µÀ
+    // åˆå§‹åŒ–é€šé“
     for (int i = 0; i < CH_NUM; ++i) {
         count[i] = 0;
         ui.customPlot->addGraph();
     }
 
     ui.customPlot->axisRect()->setupFullAxesBox(true);
-    ui.customPlot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom); // ÔÊĞíÍÏ×§ºÍËõ·Å
+    ui.customPlot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom); // å…è®¸æ‹–æ‹½å’Œç¼©æ”¾
     ui.customPlot->yAxis->setRange(0, 2, Qt::AlignCenter);
 }
 
-// Í¨µÀÁĞ±í³õÊ¼»¯
+// é€šé“åˆ—è¡¨åˆå§‹åŒ–
 void Oscilloscope::listViewInit()
 {
-    ui.channelList->setModelColumn(2); // Á½ÁĞ
+    ui.channelList->setModelColumn(2); // ä¸¤åˆ—
     for (int i = 0; i < CH_NUM; ++i) {
         QListWidgetItem *item = new QListWidgetItem;
         ui.channelList->addItem(item);
@@ -98,105 +139,44 @@ void Oscilloscope::listViewInit()
     ui.channelList->editItem(ui.channelList->item(0));
 }
 
-// ·µ»ØYÖáÆ«ÖÃ
-double Oscilloscope::yOffset()
-{
-    return ui.yOffsetBox->value();
-}
-
-// ·µ»ØYÖá·¶Î§
-double Oscilloscope::yRange()
-{
-    return ui.yRangeBox->value();
-}
-
-// ·µ»ØXÖá·¶Î§
-double Oscilloscope::xRange()
-{
-    return ui.customPlot->xAxis->range().size();
-}
-
-// ÉèÖÃYÖáÆ«ÖÃ
-void Oscilloscope::setYOffset(double offset)
-{
-    ui.yOffsetBox->setValue(offset);
-}
-
-// ÉèÖÃYÖá·¶Î§
-void Oscilloscope::setYRange(double range)
-{
-    ui.yRangeBox->setValue(range);
-}
-
-// ·µ»ØÍ¨µÀÊÇ·ñ¿É¼û
-bool Oscilloscope::channelVisible(int channel)
-{
-    ChannelItem *item = (ChannelItem *)(
-        ui.channelList->itemWidget(ui.channelList->item(channel)));
-
-    return item->isChecked();
-}
-
-// ·µ»ØÍ¨µÀÑÕÉ«
-QColor Oscilloscope::channelColor(int channel)
-{
-    ChannelItem *item = (ChannelItem *)(
-        ui.channelList->itemWidget(ui.channelList->item(channel)));
-
-    return item->color();
-}
-
-// ¿ªÊ¼ÔËĞĞ
+// å¼€å§‹è¿è¡Œ
 void Oscilloscope::start()
 {
     updataTimer.start();
 }
 
-// ½áÊøÔËĞĞ
+// ç»“æŸè¿è¡Œ
 void Oscilloscope::stop()
 {
     updataTimer.stop();
 }
 
-// ·µ»Ø±£³Ö½ÓÊÕ×´Ì¬
+// è¿”å›ä¿æŒæ¥æ”¶çŠ¶æ€
 bool Oscilloscope::holdReceive()
 {
     return ui.holdReceiveBox->isChecked();
 }
 
-// ÉèÖÃXÖáµãÊı
-void Oscilloscope::setXRange(double range)
-{
-    setXRange(QString::number(range));
-}
-
-// ÉèÖÃXÖáµãÊı
-void Oscilloscope::setXRange(const QString &str)
-{
-    _xRange = str.toDouble();
-    ui.xRangeBox->setCurrentText(str);
-}
-
-// ÉèÖÃ²¨ĞÎ»æÖÆ¿¹¾â³İ
+// è®¾ç½®æ³¢å½¢ç»˜åˆ¶æŠ—é”¯é½¿
 void Oscilloscope::setPlotAntialiased(bool status)
 {
     ui.customPlot->setNotAntialiasedElement(QCP::aePlottables, !status);
 }
 
-// ÉèÖÃÍø¸ñ¿¹¾â³İ
+// è®¾ç½®ç½‘æ ¼æŠ—é”¯é½¿
 void Oscilloscope::setGridAntialiased(bool status)
 {
     ui.customPlot->setAntialiasedElement(QCP::aeGrid, status);
     ui.customPlot->setAntialiasedElement(QCP::aeAxes, status);
 }
 
-// ÉèÖÃ±³¾°ÑÕÉ«
+// è®¾ç½®èƒŒæ™¯é¢œè‰²
 void Oscilloscope::setBackground(QColor color)
 {
     ui.customPlot->setBackground(QBrush(color));
 }
 
-// ÉèÖÃÍø¸ñºÍÍ¼ÀıÑÕÉ«
+// è®¾ç½®ç½‘æ ¼å’Œå›¾ä¾‹é¢œè‰²
 void Oscilloscope::setGridColor(QColor color)
 {
     QPen pen(color);
@@ -207,14 +187,14 @@ void Oscilloscope::setGridColor(QColor color)
     ui.customPlot->xAxis->setSubTickPen(pen);
     ui.customPlot->xAxis->setTickLabelColor(color);
     ui.customPlot->xAxis->setLabelColor(color);
-    ui.customPlot->xAxis->grid()->setZeroLinePen(pen); // Áãµã»­±Ê
+    ui.customPlot->xAxis->grid()->setZeroLinePen(pen); // é›¶ç‚¹ç”»ç¬”
     ui.customPlot->yAxis->setBasePen(pen);
     ui.customPlot->yAxis->setTickPen(pen);
     ui.customPlot->yAxis->grid()->setPen(pen);
     ui.customPlot->yAxis->setSubTickPen(pen);
     ui.customPlot->yAxis->setTickLabelColor(color);
     ui.customPlot->yAxis->setLabelColor(color);
-    ui.customPlot->yAxis->grid()->setZeroLinePen(pen); // Áãµã»­±Ê
+    ui.customPlot->yAxis->grid()->setZeroLinePen(pen); // é›¶ç‚¹ç”»ç¬”
     ui.customPlot->xAxis2->setBasePen(pen);
     ui.customPlot->xAxis2->setTickPen(pen);
     ui.customPlot->xAxis2->setSubTickPen(pen);
@@ -222,14 +202,14 @@ void Oscilloscope::setGridColor(QColor color)
     ui.customPlot->yAxis2->setTickPen(pen);
     ui.customPlot->yAxis2->setSubTickPen(pen);
 
-    // Íø¸ñÑÕÉ«
+    // ç½‘æ ¼é¢œè‰²
     color.setAlpha(0x30);
     pen.setColor(color);
     ui.customPlot->xAxis->grid()->setSubGridPen(pen);
     ui.customPlot->yAxis->grid()->setSubGridPen(pen);
 }
 
-// ÉèÖÃÍ¨µÀÑÕÉ«
+// è®¾ç½®é€šé“é¢œè‰²
 void Oscilloscope::setChannelColor(int chanel, const QColor &color)
 {
     ChannelItem *item = (ChannelItem *)(
@@ -238,16 +218,14 @@ void Oscilloscope::setChannelColor(int chanel, const QColor &color)
     ui.customPlot->graph(chanel)->setPen(QPen(item->color()));
 }
 
-// ÉèÖÃÍ¨µÀÊÇ·ñ¿É¼û
-void Oscilloscope::setChannelVisible(int chanel, bool visible)
+// è®¾ç½®é€šé“æ˜¯å¦å¯è§
+void Oscilloscope::setChannelVisible(int channel, bool visible)
 {
-    ChannelItem *item = (ChannelItem *)(
-        ui.channelList->itemWidget(ui.channelList->item(chanel)));
-    item->setChecked(visible);
-    ui.customPlot->graph(chanel)->setVisible(visible);
+    channelWidget(channel)->setChecked(visible);
+    ui.customPlot->graph(channel)->setVisible(visible);
 }
 
-// Ìí¼ÓÊı¾İ
+// æ·»åŠ æ•°æ®
 void Oscilloscope::addData(const WaveDataType& data)
 {
     if (data.mode == WaveValueMode) {
@@ -260,7 +238,7 @@ void Oscilloscope::addData(const WaveDataType& data)
     }
 }
 
-// Çå¿ÕÊı¾İ
+// æ¸…ç©ºæ•°æ®
 void Oscilloscope::clear()
 {
     for (int i = 0; i < CH_NUM; ++i) {
@@ -286,25 +264,25 @@ uint64_t Oscilloscope::maxCount()
     return max;
 }
 
-// ±£´æPNGÎÄ¼ş
+// ä¿å­˜PNGæ–‡ä»¶
 void Oscilloscope::savePng(const QString &fileName)
 {
     ui.customPlot->savePng(fileName);
 }
 
-// ±£´æBMPÎÄ¼ş
+// ä¿å­˜BMPæ–‡ä»¶
 void Oscilloscope::saveBmp(const QString &fileName)
 {
     ui.customPlot->saveBmp(fileName);
 }
 
-// ±£´æPDFÎÄ¼ş
+// ä¿å­˜PDFæ–‡ä»¶
 void Oscilloscope::savePdf(const QString &fileName)
 {
     ui.customPlot->savePdf(fileName);
 }
 
-// Í¨µÀÏÔÊ¾·ç¸ñ¸Ä±ä
+// é€šé“æ˜¾ç¤ºé£æ ¼æ”¹å˜
 void Oscilloscope::channelStyleChanged(ChannelItem *item)
 {
     int ch = item->channel();
@@ -313,15 +291,15 @@ void Oscilloscope::channelStyleChanged(ChannelItem *item)
     ui.customPlot->replot();
 }
 
-// xÖá·¢Éú±ä»¯
+// xè½´å‘ç”Ÿå˜åŒ–
 void Oscilloscope::xAxisChanged(QCPRange range)
 {
-    // ÉèÖÃxÖá·¶Î§
+    // è®¾ç½®xè½´èŒƒå›´
     if (_xRange != range.size()) {
         _xRange = range.size();
         ui.xRangeBox->setEditText(QString::number(_xRange));
     }
-    // ÉèÖÃ¹ö¶¯Ìõ
+    // è®¾ç½®æ»šåŠ¨æ¡
     if (qAbs(range.lower * SCALE - ui.horizontalScrollBar->value()) > 1.0 / SCALE) {
         int key = qRound(range.lower * SCALE);
         ui.horizontalScrollBar->setValue(key);
@@ -329,20 +307,20 @@ void Oscilloscope::xAxisChanged(QCPRange range)
     }
 }
 
-// yÖá·¢Éú±ä»¯
+// yè½´å‘ç”Ÿå˜åŒ–
 void Oscilloscope::yAxisChanged(QCPRange range)
 {
-    // Ö»ÓĞµ±ÓÃ»§ÍÏ×§customPlot¿Ø¼şÊ±²Å»áÉèÖÃÆ«ÒÆÖµ
+    // åªæœ‰å½“ç”¨æˆ·æ‹–æ‹½customPlotæ§ä»¶æ—¶æ‰ä¼šè®¾ç½®åç§»å€¼
     if (range.center() != ui.yOffsetBox->value()) {
         ui.yOffsetBox->setValue(range.center());
     }
-    // Ö»ÓĞµ±ÓÃ»§ÍÏ×§customPlot¿Ø¼şÊ±²Å»áÉèÖÃÆ«ÒÆÖµ
+    // åªæœ‰å½“ç”¨æˆ·æ‹–æ‹½customPlotæ§ä»¶æ—¶æ‰ä¼šè®¾ç½®åç§»å€¼
     if (range.size() != ui.yRangeBox->value()) {
         ui.yRangeBox->setValue(range.size());
     }
 }
 
-// ¹ö¶¯Ìõ»¬¿éÒÆ¶¯Ê±´¥·¢
+// æ»šåŠ¨æ¡æ»‘å—ç§»åŠ¨æ—¶è§¦å‘
 void Oscilloscope::horzScrollBarChanged(int value)
 {
     if (ui.horizontalScrollBar->maximum() == value) {
@@ -356,7 +334,7 @@ void Oscilloscope::horzScrollBarChanged(int value)
     }
 }
 
-// YÖáÆ«ÖÃ¸Ä±ä
+// Yè½´åç½®æ”¹å˜
 void Oscilloscope::yOffsetChanged(double offset)
 {
     double range = ui.customPlot->yAxis->range().size();
@@ -364,7 +342,7 @@ void Oscilloscope::yOffsetChanged(double offset)
     ui.customPlot->replot();
 }
 
-// YÖá·¶Î§¸Ä±ä
+// Yè½´èŒƒå›´æ”¹å˜
 void Oscilloscope::yRangeChanged(double range)
 {
     double offset = ui.customPlot->yAxis->range().center();
@@ -372,7 +350,7 @@ void Oscilloscope::yRangeChanged(double range)
     ui.customPlot->replot();
 }
 
-// XÖá·¶Î§¸Ä±ä
+// Xè½´èŒƒå›´æ”¹å˜
 void Oscilloscope::xRangeChanged(const QString &str)
 {
     double upper = ui.customPlot->xAxis->range().upper;
@@ -391,10 +369,10 @@ void Oscilloscope::xRangeChanged(const QString &str)
     ui.customPlot->replot();
 }
 
-// ¸üĞÂ¶¨Ê±Æ÷´¥·¢
+// æ›´æ–°å®šæ—¶å™¨è§¦å‘
 void Oscilloscope::timeUpdata()
 {
-    // ÏÔÊ¾¸üĞÂ
+    // æ˜¾ç¤ºæ›´æ–°
     uint64_t key = count[0];
     for (int i = 0; i < CH_NUM; ++i) {
         key = key > count[i] ? key : count[i];
@@ -408,7 +386,7 @@ void Oscilloscope::timeUpdata()
     ui.customPlot->replot();
 }
 
-// ±£´ætxtÎÄ¼ş
+// ä¿å­˜txtæ–‡ä»¶
 void Oscilloscope::saveText(const QString &fname)
 {
     QFile file(fname);

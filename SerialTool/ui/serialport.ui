@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>SerialPort</class>
+ <widget class="QWidget" name="SerialPort">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>300</width>
+    <height>20</height>
+   </rect>
+  </property>
+  <layout class="QHBoxLayout" name="horizontalLayout_1">
+   <property name="leftMargin">
+    <number>2</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>2</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <item>
+    <widget class="QLabel" name="labelPort">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>Port</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QComboBox" name="portNameBox">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>120</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>120</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QComboBox { width: 120px }</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="labelBaudRate">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>Baud Rate</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QComboBox" name="baudRateBox">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>80</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>80</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="focusPolicy">
+      <enum>Qt::ClickFocus</enum>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QComboBox { width: 80px }</string>
+     </property>
+     <property name="editable">
+      <bool>true</bool>
+     </property>
+     <property name="currentText">
+      <string notr="true">1200</string>
+     </property>
+     <property name="maxVisibleItems">
+      <number>20</number>
+     </property>
+     <item>
+      <property name="text">
+       <string notr="true">1200</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string notr="true">2400</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string notr="true">4800</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string notr="true">9600</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string notr="true">14400</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string notr="true">19200</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string notr="true">28800</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string notr="true">38400</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string notr="true">57600</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string notr="true">115200</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string notr="true">230400</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string notr="true">460800</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

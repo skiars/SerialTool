@@ -45,7 +45,9 @@ SOURCES += \
     source/vediobox.cpp \
     source/tcpudpport.cpp \
     source/defaultconfig.cpp \
-    source/oscopetimestamp.cpp
+    source/oscopetimestamp.cpp \
+    source/terminalview.cpp \
+    source/serialport.cpp
 
 HEADERS  += \
     include/aboutbox.h \
@@ -65,7 +67,9 @@ HEADERS  += \
     include/vediobox.h \
     include/tcpudpport.h \
     include/defaultconfig.h \
-    include/oscopetimestamp.h
+    include/oscopetimestamp.h \
+    include/terminalview.h \
+    include/serialport.h
 
 DISTFILES += \
     resource/images/clear.png \
@@ -90,6 +94,8 @@ FORMS += \
     ui/oscilloscope.ui \
     ui/filetransferview.ui \
     ui/vediobox.ui \
-    ui/tcpudpport.ui
+    ui/tcpudpport.ui \
+    ui/terminalview.ui \
+    ui/serialport.ui
 
 LIBS += -lqscintilla2

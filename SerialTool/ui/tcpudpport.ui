@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>364</width>
+    <width>390</width>
     <height>20</height>
    </rect>
   </property>
@@ -65,12 +65,12 @@
      </property>
      <item>
       <property name="text">
-       <string notr="true">TCP Client</string>
+       <string notr="true">TCP Server</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string notr="true">TCP Server</string>
+       <string notr="true">TCP Client</string>
       </property>
      </item>
      <item>

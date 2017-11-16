@@ -11,6 +11,7 @@
 
 class TcpUdpPort;
 class WaveDecode;
+class SerialPort;
 
 class SerialTool : public QMainWindow
 {
@@ -35,25 +36,17 @@ private slots:
     void tabIndexChanged(int index);
     void tabActionGroupTriggered(QAction *action);
     void changeRunFlag();
-    void scanPort();
     void onSecTimerTimeout();
     void openPort();
     void closePort();
     void onPortSwitchActionTriggered();
     void openSetPortInfoBox();
-    void setPortBaudRate(const QString &string);
-    void onSendButtonClicked();
     void readPortData();
-    void writePortData();
     void writePort(const QByteArray &array);
-    void onResendBoxChanged(int status);
-    void resendTimeChange(int msc);
     void cleanData();
     void setOptions();
     void saveFile();
     void about();
-    void onComboBoxChanged(const QString &string);
-    void onWrapBoxChanged(int status);
     void onVedioBoxTriggered();
     void onVedioBoxDelete();
     void currentTabChanged(int index);
@@ -65,26 +58,23 @@ private:
     bool openComPort();
     bool openTcpUdpPort();
     void loadPortTool();
-    void dispComPortStatus(QLabel *label);
-    void dispTcpUdpPortStatus(QLabel *label);
+    void setTabActionIndex(int index);
 
 private:
     Ui_SerialTool ui;
     QString docPath;
-    QTimer resendTimer; // 重发时间
     QTimer secTimer;   // 秒定时器
     TcpUdpPort *tcpUdpPort; // TCP/UDP端口
-    QSerialPort *serialPort;
     QSettings *config;
     bool runFlag = true;
     QActionGroup *tabActionGroup;
     int rxCount, txCount;
     QLabel *rxCntLabel, *txCntLabel, *portInfoLabel;
-    QByteArray asciiBuf;
     QVector<QTranslator*> translator;
     VedioBox *vedioBox = NULL;
     PortType portType;
     WaveDecode* waveDecode;
+    SerialPort *serialPort;
 };
 
 #endif // SERIALTOOL_H

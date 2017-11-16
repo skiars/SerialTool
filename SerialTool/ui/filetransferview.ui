@@ -6,12 +6,9 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>592</width>
+    <width>569</width>
     <height>246</height>
    </rect>
-  </property>
-  <property name="windowTitle">
-   <string>Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <property name="leftMargin">
@@ -107,7 +104,7 @@
            </sizepolicy>
           </property>
           <property name="text">
-           <string>Enable Berfor Send</string>
+           <string>Use Berfor Send</string>
           </property>
          </widget>
         </item>
@@ -130,7 +127,7 @@
           </property>
           <property name="minimumSize">
            <size>
-            <width>100</width>
+            <width>90</width>
             <height>0</height>
            </size>
           </property>
@@ -160,7 +157,7 @@
            </sizepolicy>
           </property>
           <property name="text">
-           <string>File:</string>
+           <string>File</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -170,7 +167,7 @@
         <item row="2" column="0">
          <widget class="QLabel" name="label_2">
           <property name="text">
-           <string>Protocol:</string>
+           <string>Protocol</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -215,7 +212,7 @@
            </sizepolicy>
           </property>
           <property name="text">
-           <string>Progress:</string>
+           <string>Progress</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>

@@ -19,26 +19,18 @@ public:
     ~Oscilloscope();
 
     void retranslate();
+    void loadConfig(QSettings *config);
+    void saveConfig(QSettings *config);
 
     void start();
     void stop();
-    double yOffset();
-    double yRange();
-    double xRange();
-    bool channelVisible(int channel);
-    QColor channelColor(int channel);
     bool holdReceive();
 
-    void setYOffset(double offset);
-    void setYRange(double range);
-    void setXRange(double range);
-    void setXRange(const QString &str);
     void setPlotAntialiased(bool status);
     void setGridAntialiased(bool status);
     void setBackground(QColor color);
     void setGridColor(QColor color);
     void setChannelColor(int channel, const QColor &color);
-    void setChannelVisible(int chanel, bool visible);
     void addData(const WaveDataType& data);
     void clear();
 
@@ -52,6 +44,11 @@ private:
     void setupChannel();
     void listViewInit();
     uint64_t maxCount();
+    void setChannelVisible(int channel, bool visible);
+
+    ChannelItem* channelWidget(int channel) {
+        return (ChannelItem *)(ui.channelList->itemWidget(ui.channelList->item(channel)));
+    }
 
 private slots:
     void yOffsetChanged(double offset);
@@ -67,7 +64,7 @@ private:
     Ui_Oscilloscope ui;
     bool replotFlag = 1;
     uint64_t count[CH_NUM], _xRange;
-    QTimer updataTimer; // 更新定时器
+    QTimer updataTimer;
     OscopeTimeStamp* timeStamp;
 };
 
