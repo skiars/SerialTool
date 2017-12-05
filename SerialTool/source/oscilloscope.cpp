@@ -34,7 +34,6 @@ Oscilloscope::Oscilloscope(QWidget *parent)
     connect(&updataTimer, &QTimer::timeout, this, &Oscilloscope::timeUpdata);
 
     clear();
-    ui.channelList->setVisible(false);
 }
 
 Oscilloscope::~Oscilloscope()
