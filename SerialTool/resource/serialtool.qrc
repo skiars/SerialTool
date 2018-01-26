@@ -17,4 +17,7 @@
     <qresource prefix="/config">
         <file>default.ini</file>
     </qresource>
+    <qresource prefix="/doc">
+        <file>doc.html</file>
+    </qresource>
 </RCC>

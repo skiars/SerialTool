@@ -47,7 +47,8 @@ SOURCES += \
     source/defaultconfig.cpp \
     source/oscopetimestamp.cpp \
     source/terminalview.cpp \
-    source/serialport.cpp
+    source/serialport.cpp \
+    source/docmentdialog.cpp
 
 HEADERS  += \
     include/aboutbox.h \
@@ -69,7 +70,8 @@ HEADERS  += \
     include/defaultconfig.h \
     include/oscopetimestamp.h \
     include/terminalview.h \
-    include/serialport.h
+    include/serialport.h \
+    include/docmentdialog.h
 
 DISTFILES += \
     resource/images/clear.png \
@@ -96,6 +98,7 @@ FORMS += \
     ui/vediobox.ui \
     ui/tcpudpport.ui \
     ui/terminalview.ui \
-    ui/serialport.ui
+    ui/serialport.ui \
+    ui/docmentdialog.ui
 
 LIBS += -lqscintilla2

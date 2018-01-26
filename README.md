@@ -32,3 +32,7 @@ SerialTool是一个实用的串口调试工具，这款工具支持串口调试�
  * QScintilla: [Documentation](http://pyqt.sourceforge.net/Docs/QScintilla2), [Download](https://riverbankcomputing.com/software/qscintilla/download)
  * [QCustomPlot](http://www.qcustomplot.com/): 源码已经包含到项目中
 * 其他信息参看[readme.txt](https://github.com/Le-Seul/SerialTool/blob/master/readme.txt)文件
+
+## 文档
+
+[串口示波器协议说明](./SerialTool/doc/doc.md)

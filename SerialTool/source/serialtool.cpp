@@ -7,6 +7,7 @@
 #include "tcpudpport.h"
 #include "defaultconfig.h"
 #include "serialport.h"
+#include "docmentdialog.h"
 
 SerialTool::SerialTool(QWidget *parent)
     : QMainWindow(parent)
@@ -64,6 +65,7 @@ SerialTool::SerialTool(QWidget *parent)
     connect(ui.tabWidget, SIGNAL(currentChanged(int)), this, SLOT(tabIndexChanged(int)));
     connect(tabActionGroup, SIGNAL(triggered(QAction*)), this, SLOT(tabActionGroupTriggered(QAction*)));
     connect(ui.actionAbout, SIGNAL(triggered()), this, SLOT(about()));
+    connect(ui.actionDocment, SIGNAL(triggered()), this, SLOT(docment()));
     connect(ui.fileTransfer, &FileTransferView::sendData, this, &SerialTool::writePort);
     connect(ui.actionVedioBox, SIGNAL(triggered()), this, SLOT(onVedioBoxTriggered()));
     connect(ui.tabWidget, SIGNAL(currentChanged(int)), this, SLOT(currentTabChanged(int)));
@@ -507,8 +509,15 @@ void SerialTool::cleanData()
 void SerialTool::about()
 {
     AboutBox aboutBox(this);
-    
+
     aboutBox.exec();
+}
+
+void SerialTool::docment()
+{
+    DocmentDialog doc(this);
+
+    doc.exec();
 }
 
 void SerialTool::loadPortTool()

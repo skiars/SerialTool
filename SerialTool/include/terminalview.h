@@ -32,6 +32,7 @@ signals:
     void sendDataRequest(const QByteArray &array);
 
 private:
+    void keyPressEvent(QKeyEvent  *event);
     void setSendButtonEnabled(bool status);
     void arrayToHex(QString &str, const QByteArray &arr, int countOfLine);
     void arrayToAscii(QString &str, const QByteArray &arr);

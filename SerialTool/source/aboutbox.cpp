@@ -1,4 +1,4 @@
-﻿#include "aboutbox.h"
+#include "aboutbox.h"
 #include <QFile>
 #include "version.h"
 

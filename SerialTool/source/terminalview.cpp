@@ -2,6 +2,7 @@
 #include <QSettings>
 #include <QTextCodec>
 #include <QTimer>
+#include <QKeyEvent>
 #include "ui_terminalview.h"
 
 TerminalView::TerminalView(QWidget *parent) :
@@ -34,6 +35,15 @@ TerminalView::~TerminalView()
     delete ui;
     delete resendTimer;
     delete asciiBuf;
+}
+
+void TerminalView::keyPressEvent(QKeyEvent *event)
+{
+    if (event->modifiers() == Qt::ControlModifier) {
+        if (event->key() == Qt::Key_Return) {
+            onSendButtonClicked(); // Ctrl + Enter to send.
+        }
+    }
 }
 
 void TerminalView::retranslate()

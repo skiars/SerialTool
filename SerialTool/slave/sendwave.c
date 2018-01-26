@@ -157,7 +157,7 @@ char ws_add_int8(char *buffer, char channel, int8_t value)
     char *p = buffer + count + 3; // 跳过前面数据
 
     count += 2;
-    if (count < 69) { // 帧最大字节数
+    if (count <= 80) { // 帧最大字节数
         buffer[2] = count;
         *p++ = channel | Format_Int8; // 通道及数据格式信息
         *p = value; // 数据添加到帧
@@ -179,7 +179,7 @@ char ws_add_int16(char *buffer, char channel, int16_t value)
     char *p = buffer + count + 3; // 跳过前面数据
 
     count += 3;
-    if (count < 69) { // 帧最大字节数
+    if (count <= 80) { // 帧最大字节数
         buffer[2] = count;
         *p++ = channel | Format_Int16; // 通道及数据格式信息
         // 数据添加到帧
@@ -203,7 +203,7 @@ char ws_add_int32(char *buffer, char channel, int32_t value)
     char *p = buffer + count + 3; // 跳过前面数据
 
     count += 5;
-    if (count < 69) { // 帧最大字节数
+    if (count <= 80) { // 帧最大字节数
         buffer[2] = count;
         *p++ = channel | Format_Int32; // 通道及数据格式信息
         // 数据添加到帧
@@ -229,7 +229,7 @@ char ws_add_float(char *buffer, char channel, float value)
     char *p = buffer + count + 3; // 跳过前面数据
 
     count += 5;
-    if (count < 69) { // 帧最大字节数
+    if (count <= 80) { // 帧最大字节数
         union {
             float f;
             uint32_t i;

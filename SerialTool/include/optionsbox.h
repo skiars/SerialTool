@@ -33,7 +33,7 @@ private slots:
     void setLanguage(int index);
 
 private:
-    Ui_optionsBox ui;
+    Ui_OptionsBox ui;
     SerialTool *serialTool;
     QString fontFamily, fontStyle;
     int fontSize;

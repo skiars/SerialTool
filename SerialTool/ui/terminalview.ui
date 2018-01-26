@@ -227,9 +227,6 @@
            <property name="text">
             <string>Send</string>
            </property>
-           <property name="shortcut">
-            <string notr="true">Ctrl+Return</string>
-           </property>
           </widget>
          </item>
          <item row="2" column="0">

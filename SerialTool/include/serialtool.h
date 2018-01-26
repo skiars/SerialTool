@@ -1,4 +1,4 @@
-﻿#ifndef __SERIALTOOL_H
+#ifndef __SERIALTOOL_H
 #define __SERIALTOOL_H
 
 #include <QtWidgets/QMainWindow>
@@ -47,6 +47,7 @@ private slots:
     void setOptions();
     void saveFile();
     void about();
+    void docment();
     void onVedioBoxTriggered();
     void onVedioBoxDelete();
     void currentTabChanged(int index);
