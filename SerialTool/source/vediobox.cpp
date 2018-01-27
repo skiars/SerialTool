@@ -5,20 +5,20 @@
 
 VedioBox::VedioBox(QWidget *parent) : QDialog(parent)
 {
-    // ²»ÏÔÊ¾ÎÊºÅ
+    // ä¸æ˜¾ç¤ºé—®å·
     Qt::WindowFlags flags = Qt::Dialog;
     flags |= Qt::WindowCloseButtonHint;
     setWindowFlags(flags);
 
     ui.setupUi(this);
     ui.label->setFixedSize(325, 245);
-    setFixedSize(330, 279); // ²»ÄÜÉìËõµÄ¶Ô»°¿ò
+    setFixedSize(330, 279); // ä¸èƒ½ä¼¸ç¼©çš„å¯¹è¯æ¡†
 
     connect(ui.saveButton, SIGNAL(clicked()), this, SLOT(saveImage()));
     connect(ui.copyButton, SIGNAL(clicked()), this, SLOT(copyImage()));
 }
 
-// Ìí¼ÓÒ»×Ö½ÚÊı¾İ
+// æ·»åŠ ä¸€å­—èŠ‚æ•°æ®
 void VedioBox::addData(const QByteArray &arr)
 {
     array.append(arr);
@@ -30,10 +30,10 @@ void VedioBox::addData(const QByteArray &arr)
             break;
         }
     }
-    if (i != 0 && i < len) { // Æ¥Åäµ½ÄÚÈİ
-        array = array.mid(i); // ±£ÁôÓàÏÂÄÚÈİ
+    if (i != 0 && i < len) { // åŒ¹é…åˆ°å†…å®¹
+        array = array.mid(i); // ä¿ç•™ä½™ä¸‹å†…å®¹
     }
-    // ¼ì²éÊÇ·ñ½ÓÊÕµ½Ò»·ùÍ¼Ïñ
+    // æ£€æŸ¥æ˜¯å¦æ¥æ”¶åˆ°ä¸€å¹…å›¾åƒ
     if ((quint8)array.data()[0] == 0x0B
         && (quint8)array.data()[1] == 0xBB
         && array.size() >= 602) {
@@ -53,13 +53,13 @@ void VedioBox::addData(const QByteArray &arr)
             }
         }
         ui.label->setPixmap(pixmap.scaled(QSize(320, 240)));
-        image = pixmap; // ±£´æÍ¼Ïñ
-        memcpy(imageData, array.data() + 2, 600); // ¸´ÖÆµ½»º³åÇø
-        array = array.mid(602); // ±£ÁôÓàÏÂÄÚÈİ
+        image = pixmap; // ä¿å­˜å›¾åƒ
+        memcpy(imageData, array.data() + 2, 600); // å¤åˆ¶åˆ°ç¼“å†²åŒº
+        array = array.mid(602); // ä¿ç•™ä½™ä¸‹å†…å®¹
     }
 }
 
-// ±£´æÍ¼Ïñ
+// ä¿å­˜å›¾åƒ
 void VedioBox::saveImage()
 {
     QString str = QDateTime::currentDateTime().toString("yyMMddhhmmssz");
@@ -89,7 +89,7 @@ void VedioBox::copyImage()
     board->setText(str);
 }
 
-// ÉèÖÃÎÄ¼şÂ·¾¶
+// è®¾ç½®æ–‡ä»¶è·¯å¾„
 void VedioBox::setFilePath(const QString &path)
 {
     if (path.isEmpty()) {

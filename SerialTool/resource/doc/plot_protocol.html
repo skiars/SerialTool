@@ -1,0 +1,153 @@
+<style type="text/css"> @import url(./doc/style.css); </style>
+<h1 id="串口示波器协议">串口示波器协议</h1>
+<h2 id="概述">概述</h2>
+<p>为了使用串口示波器，用户需要按照SerialTool软件的协议发送数据，我们提供了sendwave.c以及sendwave.h这两个文件来封装这些协议，这两个文件在源码目录的<a href="https://github.com/Le-Seul/SerialTool/tree/master/SerialTool/slave">slave</a>文件夹下。用户如果需要修改或者扩充协议可自行阅读源码。</p>
+<p>串口示波器分为两种传输模式：点发送模式和同步发送模式。点发送模式每个点都是独立发送的，而同步发送模式是将所有待发送的通道数据一起发送。因此，相比同步发送模式，点发送模式各通道之间的时间轴可能存在一些偏差，一般在±1个单位时间之间。但是点发送模式使用起来可能更为灵活。</p>
+<p>SerialTool还支持时间戳的发送，以方便数据分析。</p>
+<h2 id="点发送模式">点发送模式</h2>
+<p>点发送模式由以下函数来实现：</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="dt">char</span> ws_point_int8(<span class="dt">char</span> *buffer, <span class="dt">char</span> channel, <span class="dt">int8_t</span> value);</a>
+<a class="sourceLine" id="cb1-2" data-line-number="2"><span class="dt">char</span> ws_point_int16(<span class="dt">char</span> *buffer, <span class="dt">char</span> channel, <span class="dt">int16_t</span> value);</a>
+<a class="sourceLine" id="cb1-3" data-line-number="3"><span class="dt">char</span> ws_point_int32(<span class="dt">char</span> *buffer, <span class="dt">char</span> channel, <span class="dt">int32_t</span> value);</a>
+<a class="sourceLine" id="cb1-4" data-line-number="4"><span class="dt">char</span> ws_point_float(<span class="dt">char</span> *buffer, <span class="dt">char</span> channel, <span class="dt">float</span> value);</a></code></pre></div>
+<p>这些函数的参数说明：</p>
+<ul>
+<li><p><code>buffer</code>:</p>
+<blockquote>
+<p>工作缓冲区，它最多可能需要7bytes空间。</p>
+</blockquote></li>
+<li><p><code>channle</code>:</p>
+<blockquote>
+<p>发送的通道，取值为CH1 ~ CH16。</p>
+</blockquote></li>
+<li><p><code>value</code>:</p>
+<blockquote>
+<p>要发送的数值，其类型由使用的函数决定（包括<code>int8_t</code>, <code>int16_t</code>, <code>int32_t</code>或者<code>float</code>）。</p>
+</blockquote></li>
+</ul>
+<p>这些函数在sendwave.c中有详细的说明。以<code>ws_point_int16()</code>为例，调用方式如下：</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="dt">char</span> buffer[<span class="dv">7</span>], len;</a>
+<a class="sourceLine" id="cb2-2" data-line-number="2"><span class="dt">int16_t</span> value = <span class="dv">100</span>; <span class="co">// a test value</span></a>
+<a class="sourceLine" id="cb2-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb2-4" data-line-number="4">len = ws_point_int16(buffer, CH1, value);</a>
+<a class="sourceLine" id="cb2-5" data-line-number="5">sendBuffer(buffer, len); <span class="co">// serial port send data</span></a></code></pre></div>
+<h2 id="同步发送模式">同步发送模式</h2>
+<p>同步发送模式由以下函数实现：</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="dt">void</span> ws_frame_init(<span class="dt">char</span> *buffer);</a>
+<a class="sourceLine" id="cb3-2" data-line-number="2"><span class="dt">char</span> ws_frame_length(<span class="dt">const</span> <span class="dt">char</span> *buffer);</a>
+<a class="sourceLine" id="cb3-3" data-line-number="3"><span class="dt">char</span> ws_add_int8(<span class="dt">char</span> *buffer, <span class="dt">char</span> channel, <span class="dt">int8_t</span> value);</a>
+<a class="sourceLine" id="cb3-4" data-line-number="4"><span class="dt">char</span> ws_add_int16(<span class="dt">char</span> *buffer, <span class="dt">char</span> channel, <span class="dt">int16_t</span> value);</a>
+<a class="sourceLine" id="cb3-5" data-line-number="5"><span class="dt">char</span> ws_add_int32(<span class="dt">char</span> *buffer, <span class="dt">char</span> channel, <span class="dt">int32_t</span> value);</a>
+<a class="sourceLine" id="cb3-6" data-line-number="6"><span class="dt">char</span> ws_add_float(<span class="dt">char</span> *buffer, <span class="dt">char</span> channel, <span class="dt">float</span> value);</a></code></pre></div>
+<p>首先要调用<code>ws_frame_init()</code>函数来初始化缓冲区。调用<code>ws_frame_length()</code>可以获取缓冲区占用的字节数。</p>
+<p><code>ws_add_xxx()</code>函数用于向缓冲区中添加一个数据点，参数列表如下：</p>
+<ul>
+<li><p><code>buffer</code>:</p>
+<blockquote>
+<p>已经初始化的帧缓冲区。</p>
+</blockquote></li>
+<li><p><code>channle</code>:</p>
+<blockquote>
+<p>发送的通道，取值为CH1 ~ CH16。</p>
+</blockquote></li>
+<li><p><code>value</code>:</p>
+<blockquote>
+<p>要发送的数值，其类型由使用的函数决定（包括<code>int8_t</code>, <code>int16_t</code>, <code>int32_t</code>或者<code>float</code>）。</p>
+</blockquote></li>
+</ul>
+<p>这些函数如果返回1就表示数据点添加成功，0表示添加失败（缓冲区达到最大长度）。</p>
+<p>同步发送模式的例程如下：</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="dt">char</span> buffer[<span class="dv">83</span>]; <span class="co">// maximum use of 83 bytes</span></a>
+<a class="sourceLine" id="cb4-2" data-line-number="2"><span class="dt">int</span> value = <span class="dv">10000</span>; <span class="co">// a test value</span></a>
+<a class="sourceLine" id="cb4-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb4-4" data-line-number="4">ws_frame_init(buffer);</a>
+<a class="sourceLine" id="cb4-5" data-line-number="5">ws_add_int8(buffer, CH1, (<span class="dt">int8_t</span>)(value / <span class="dv">100</span>));</a>
+<a class="sourceLine" id="cb4-6" data-line-number="6">ws_add_int16(buffer, CH2, (<span class="dt">int16_t</span>)(value / <span class="dv">20</span>));</a>
+<a class="sourceLine" id="cb4-7" data-line-number="7">ws_add_float(buffer, CH3, (<span class="dt">float</span>)value * <span class="fl">0.1f</span>);</a>
+<a class="sourceLine" id="cb4-8" data-line-number="8">sendBuffer(buffer, ws_frame_length(buffer)); <span class="co">// serial port send data</span></a></code></pre></div>
+<p>使用同步模式发送时，可以在同一帧中使用不同的数据类型，但是不建议使用重复的通道，因为这样可能会使缓冲区很快用完并导致时间轴错乱。</p>
+<h2 id="时间戳">时间戳</h2>
+<p>利用时间戳，可以将下位机的时间信息发送至上位机。上位机收到时间戳并不会显示，但是在存储波形文件时会记录时间戳，因此时间戳可以方便地进行数据分析。</p>
+<p>下位机要发送时间戳，需要使用下列函数：</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="dt">char</span> ws_send_timestamp(<span class="dt">char</span> *buffer, ws_timestamp_t* ts);</a></code></pre></div>
+<p><code>ws_timestamp_t</code>结构体的定义如下：</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="kw">typedef</span> <span class="kw">struct</span> {</a>
+<a class="sourceLine" id="cb6-2" data-line-number="2">    <span class="dt">uint8_t</span> year;           <span class="co">// 0~99 -&gt; 2000 ~ 2099, 7 bit</span></a>
+<a class="sourceLine" id="cb6-3" data-line-number="3">    <span class="dt">uint8_t</span> month;          <span class="co">// month, 1 ~ 12</span></a>
+<a class="sourceLine" id="cb6-4" data-line-number="4">    <span class="dt">uint8_t</span> day;            <span class="co">// day, 1 ~ 31</span></a>
+<a class="sourceLine" id="cb6-5" data-line-number="5">    <span class="dt">uint8_t</span> hour;           <span class="co">// hour, 0 ~ 23</span></a>
+<a class="sourceLine" id="cb6-6" data-line-number="6">    <span class="dt">uint8_t</span> min;            <span class="co">// minute, 0 ~ 59</span></a>
+<a class="sourceLine" id="cb6-7" data-line-number="7">    <span class="dt">uint8_t</span> sec;            <span class="co">// second, 0 ~ 59</span></a>
+<a class="sourceLine" id="cb6-8" data-line-number="8">    <span class="dt">uint16_t</span> msec;          <span class="co">// millisecond, 0 ~ 1000</span></a>
+<a class="sourceLine" id="cb6-9" data-line-number="9">    <span class="dt">uint32_t</span> sampleRate;    <span class="co">// sample rate, 0 ~ 2000000</span></a>
+<a class="sourceLine" id="cb6-10" data-line-number="10">} ws_timestamp_t;</a></code></pre></div>
+<p>发送时间戳的例程如下：</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="dt">char</span> buffer[<span class="dv">10</span>], len;</a>
+<a class="sourceLine" id="cb7-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb7-3" data-line-number="3">len = ws_send_timestamp(buffer, &amp;ts);</a>
+<a class="sourceLine" id="cb7-4" data-line-number="4">sendBuffer(buffer, len); <span class="co">// serial port send data</span></a></code></pre></div>
+<p>下位机通常不需要重复发送时间戳，因为这个时间信息一般只用于记录或者辨识，相比而言，采样率可能在数据分析时会更有用。因此我建议下位机在以下时机发送一次时间戳：</p>
+<ul>
+<li>下位机运行之初。</li>
+<li>数据采样率发生变化之后。</li>
+<li>中断波形传输后准备再次发送波形数据前。</li>
+</ul>
+<h2 id="完整示例代码">完整示例代码</h2>
+<div class="sourceCode" id="cb8"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="co">// include file</span></a>
+<a class="sourceLine" id="cb8-2" data-line-number="2"><span class="pp">#include </span><span class="im">&lt;math.h&gt;</span></a>
+<a class="sourceLine" id="cb8-3" data-line-number="3"><span class="pp">#include </span><span class="im">&quot;sendwave.h&quot;</span></a>
+<a class="sourceLine" id="cb8-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb8-5" data-line-number="5"><span class="co">// 串口示波器测试函数</span></a>
+<a class="sourceLine" id="cb8-6" data-line-number="6"><span class="dt">void</span> plotTest(<span class="dt">void</span>)</a>
+<a class="sourceLine" id="cb8-7" data-line-number="7">{</a>
+<a class="sourceLine" id="cb8-8" data-line-number="8">    <span class="dt">char</span> buffer[<span class="dv">100</span>], len; <span class="co">// 缓冲区最大需要83bytes</span></a>
+<a class="sourceLine" id="cb8-9" data-line-number="9">    <span class="dt">static</span> <span class="dt">float</span> key = <span class="fl">0.0f</span>;</a>
+<a class="sourceLine" id="cb8-10" data-line-number="10">    <span class="dt">static</span> ws_timestamp_t ts = { <span class="co">// 时间戳</span></a>
+<a class="sourceLine" id="cb8-11" data-line-number="11">        <span class="dv">17</span>, <span class="dv">11</span>, <span class="dv">20</span>,      <span class="co">// year, month, day</span></a>
+<a class="sourceLine" id="cb8-12" data-line-number="12">        <span class="dv">12</span>, <span class="dv">30</span>, <span class="dv">45</span>,      <span class="co">// hour, minute, second</span></a>
+<a class="sourceLine" id="cb8-13" data-line-number="13">        <span class="dv">120</span>, <span class="dv">50</span>          <span class="co">// msec, sample rate</span></a>
+<a class="sourceLine" id="cb8-14" data-line-number="14">    };</a>
+<a class="sourceLine" id="cb8-15" data-line-number="15"></a>
+<a class="sourceLine" id="cb8-16" data-line-number="16">    <span class="co">// 每秒钟发送一次时间戳</span></a>
+<a class="sourceLine" id="cb8-17" data-line-number="17">    <span class="cf">if</span> ((<span class="dt">int64_t</span>)(key * <span class="fl">50.0</span>) % <span class="dv">100</span> == <span class="dv">0</span>) {</a>
+<a class="sourceLine" id="cb8-18" data-line-number="18">        len = ws_send_timestamp(buffer, &amp;ts);</a>
+<a class="sourceLine" id="cb8-19" data-line-number="19">        sendBuffer(buffer, len); <span class="co">// 串口发送数据</span></a>
+<a class="sourceLine" id="cb8-20" data-line-number="20">    }</a>
+<a class="sourceLine" id="cb8-21" data-line-number="21"></a>
+<a class="sourceLine" id="cb8-22" data-line-number="22">    <span class="co">// 点发送模式 int8类型（8位有符号整形）</span></a>
+<a class="sourceLine" id="cb8-23" data-line-number="23">    len = ws_point_int8(buffer, CH1, (<span class="dt">int8_t</span>)(sinf(key) * <span class="dv">64</span>));</a>
+<a class="sourceLine" id="cb8-24" data-line-number="24">    sendBuffer(buffer, len); <span class="co">// 串口发送数据</span></a>
+<a class="sourceLine" id="cb8-25" data-line-number="25"></a>
+<a class="sourceLine" id="cb8-26" data-line-number="26">    <span class="co">// 点发送模式 int16类型（16位有符号整形）</span></a>
+<a class="sourceLine" id="cb8-27" data-line-number="27">    len = ws_point_int16(buffer, CH2, (<span class="dt">int16_t</span>)(sinf(key) * <span class="dv">4096</span>));</a>
+<a class="sourceLine" id="cb8-28" data-line-number="28">    sendBuffer(buffer, len); <span class="co">// 串口发送数据</span></a>
+<a class="sourceLine" id="cb8-29" data-line-number="29"></a>
+<a class="sourceLine" id="cb8-30" data-line-number="30">    <span class="co">// 点发送模式 int32类型（32位有符号整形）</span></a>
+<a class="sourceLine" id="cb8-31" data-line-number="31">    len = ws_point_int32(buffer, CH3, (<span class="dt">int32_t</span>)(sinf(key) * <span class="dv">2048</span>));</a>
+<a class="sourceLine" id="cb8-32" data-line-number="32">    sendBuffer(buffer, len); <span class="co">// 串口发送数据</span></a>
+<a class="sourceLine" id="cb8-33" data-line-number="33"></a>
+<a class="sourceLine" id="cb8-34" data-line-number="34">    <span class="co">// 点发送模式 float类型（单精度浮点型）</span></a>
+<a class="sourceLine" id="cb8-35" data-line-number="35">    len = ws_point_float(buffer, CH4, (<span class="dt">float</span>)(sinf(key) * <span class="dv">512</span>));</a>
+<a class="sourceLine" id="cb8-36" data-line-number="36">    sendBuffer(buffer, len); <span class="co">// 串口发送数据</span></a>
+<a class="sourceLine" id="cb8-37" data-line-number="37"></a>
+<a class="sourceLine" id="cb8-38" data-line-number="38">    <span class="co">// 同步模式(帧发送模式)</span></a>
+<a class="sourceLine" id="cb8-39" data-line-number="39">    ws_frame_init(buffer);</a>
+<a class="sourceLine" id="cb8-40" data-line-number="40">    ws_add_int8(buffer, CH5, (<span class="dt">int8_t</span>)(sinf(key) * <span class="dv">128</span>));</a>
+<a class="sourceLine" id="cb8-41" data-line-number="41">    ws_add_int16(buffer, CH6, (<span class="dt">int16_t</span>)(sinf(key) * <span class="dv">700</span>));</a>
+<a class="sourceLine" id="cb8-42" data-line-number="42">    ws_add_int32(buffer, CH7, (<span class="dt">int32_t</span>)(sinf(key) * <span class="dv">1024</span>));</a>
+<a class="sourceLine" id="cb8-43" data-line-number="43">    ws_add_float(buffer, CH9, (<span class="dt">float</span>)(sinf(key) * <span class="dv">256</span>));</a>
+<a class="sourceLine" id="cb8-44" data-line-number="44">    sendBuffer(buffer, ws_frame_length(buffer)); <span class="co">// 串口发送数据</span></a>
+<a class="sourceLine" id="cb8-45" data-line-number="45"></a>
+<a class="sourceLine" id="cb8-46" data-line-number="46">    <span class="co">// 更新时间计数</span></a>
+<a class="sourceLine" id="cb8-47" data-line-number="47">    key += <span class="fl">0.02f</span>;</a>
+<a class="sourceLine" id="cb8-48" data-line-number="48">}</a></code></pre></div>
+<h2 id="移植">移植</h2>
+<p>sendwave.c和sendwave.h中的代码在gcc和KEIL for ARM中可以编译通过，但是我们不能保证它可以在所有编译器下编译成功。这些代码需要标准库中包含stdint.h文件，如果没有这个文件，您可以使用以下代码来替换:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="co">// #include &lt;stdint.h&gt;</span></a>
+<a class="sourceLine" id="cb9-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb9-3" data-line-number="3"><span class="kw">typedef</span> <span class="dt">signed</span> <span class="dt">char</span>  <span class="dt">int8_t</span>;</a>
+<a class="sourceLine" id="cb9-4" data-line-number="4"><span class="kw">typedef</span> <span class="dt">signed</span> <span class="dt">short</span> <span class="dt">int16_t</span>;</a>
+<a class="sourceLine" id="cb9-5" data-line-number="5"><span class="kw">typedef</span> <span class="dt">signed</span> <span class="dt">long</span>  <span class="dt">int32_t</span>;</a></code></pre></div>
+<p>用户一般不会使用到所有的API，例如您可能不需要使用<code>ws_point_float()</code>以及<code>ws_add_float()</code>函数。通常，编译器不会连接未用到的函数。编译器如果会连接从未被调用的函数，并且要保证目标代码最少，您应当删除这些函数的源码。</p>
+<p>如果您在移植串口示波器的协议时遇到了任何问题，您也可以向作者咨询。</p>
+<p><a href="./doc/index.html">Return to Index</a></p>

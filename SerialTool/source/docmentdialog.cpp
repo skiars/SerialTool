@@ -12,11 +12,18 @@ DocmentDialog::DocmentDialog(QWidget *parent) :
     setWindowFlags(flags);
 
     ui->setupUi(this);
-    QFile doc(":/doc/doc.html");
-    doc.open(QFile::ReadOnly);
-    ui->textBrowser->setHtml(doc.readAll());
+
     ui->textBrowser->setOpenExternalLinks(true); // 允许访问链接
-    doc.close();
+    QFile doc("./doc/index.html");
+    if (doc.open(QFile::ReadOnly)) {
+        ui->textBrowser->setHtml(doc.readAll());
+        doc.close();
+    } else {
+        ui->textBrowser->setHtml("<p>Cannot open the docments file.</p>\n"
+                                 "<p><a href=\"https://github.com/Le-Seul/SerialTool"
+                                 "/blob/master/SerialTool/doc/index.md\">View Docments"
+                                 " On GitHub</a></p>");
+    }
 }
 
 DocmentDialog::~DocmentDialog()

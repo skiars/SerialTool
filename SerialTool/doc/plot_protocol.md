@@ -2,15 +2,9 @@
 
 ## 概述
 
-为了使用串口示波器，用户需要按照SerialTool软件的协议发送数据，我们提供了
-sendwave.c以及sendwave.h这两个文件来封装这些协议，这两个文件在源码目录的
-[slave](https://github.com/Le-Seul/SerialTool/tree/master/SerialTool/slave)
-文件夹下。用户如果需要修改或者扩充协议可自行阅读源码。
+为了使用串口示波器，用户需要按照SerialTool软件的协议发送数据，我们提供了sendwave.c以及sendwave.h这两个文件来封装这些协议，这两个文件在源码目录的[slave](https://github.com/Le-Seul/SerialTool/tree/master/SerialTool/slave)文件夹下。用户如果需要修改或者扩充协议可自行阅读源码。
 
-串口示波器分为两种传输模式：点发送模式和同步发送模式。点发送模式每个点都是独
-立发送的，而同步发送模式是将所有待发送的通道数据一起发送。因此，相比同步发送
-模式，点发送那个模式各通道之间的时间轴可能存在一些偏差，一般在±1个单位时间之
-间。但是点发送模式使用起来可能更为灵活。
+串口示波器分为两种传输模式：点发送模式和同步发送模式。点发送模式每个点都是独立发送的，而同步发送模式是将所有待发送的通道数据一起发送。因此，相比同步发送模式，点发送模式各通道之间的时间轴可能存在一些偏差，一般在±1个单位时间之间。但是点发送模式使用起来可能更为灵活。
 
 SerialTool还支持时间戳的发送，以方便数据分析。
 
@@ -29,7 +23,7 @@ char ws_point_float(char *buffer, char channel, float value);
 
 * `buffer`:
 
-  > 为工作缓冲区，它最多可能需要7bytes空间。
+  > 工作缓冲区，它最多可能需要7bytes空间。
 
 * `channle`:
 
@@ -61,8 +55,7 @@ char ws_add_int32(char *buffer, char channel, int32_t value);
 char ws_add_float(char *buffer, char channel, float value);
 ```
 
-首先要调用`ws_frame_init()`函数来初始化缓冲区。调用`ws_frame_length()`
-可以获取缓冲区占用的字节数。
+首先要调用`ws_frame_init()`函数来初始化缓冲区。调用`ws_frame_length()`可以获取缓冲区占用的字节数。
 
 `ws_add_xxx()`函数用于向缓冲区中添加一个数据点，参数列表如下：
 
@@ -93,13 +86,11 @@ ws_add_float(buffer, CH3, (float)value * 0.1f);
 sendBuffer(buffer, ws_frame_length(buffer)); // serial port send data
 ```
 
-使用同步模式发送时，可以在同一帧中使用不同的数据类型，但是不建议使用重复的通道，
-因为这样可能会使缓冲区很快用完并导致时间轴错乱。
+使用同步模式发送时，可以在同一帧中使用不同的数据类型，但是不建议使用重复的通道，因为这样可能会使缓冲区很快用完并导致时间轴错乱。
 
 ## 时间戳
 
-利用时间戳，可以将下位机的时间信息发送至上位机。上位机收到时间戳并不会显示，但是
-在存储波形文件时会记录时间戳，因此时间戳可以方便地进行数据分析。
+利用时间戳，可以将下位机的时间信息发送至上位机。上位机收到时间戳并不会显示，但是在存储波形文件时会记录时间戳，因此时间戳可以方便地进行数据分析。
 
 下位机要发送时间戳，需要使用下列函数：
 ``` C
@@ -127,8 +118,7 @@ char buffer[10], len;
 len = ws_send_timestamp(buffer, &ts);
 sendBuffer(buffer, len); // serial port send data
 ```
-下位机通常不需要重复发送时间戳，因为这个时间信息一般只用于记录或者辨识，相比而
-言，采样率可能在数据分析时会更有用。因此我建议下位机在以下时机发送一次时间戳：
+下位机通常不需要重复发送时间戳，因为这个时间信息一般只用于记录或者辨识，相比而言，采样率可能在数据分析时会更有用。因此我建议下位机在以下时机发送一次时间戳：
 
 * 下位机运行之初。
 * 数据采样率发生变化之后。
@@ -138,6 +128,7 @@ sendBuffer(buffer, len); // serial port send data
 
 ``` C
 // include file
+#include <math.h>
 #include "sendwave.h"
 
 // 串口示波器测试函数
@@ -188,9 +179,7 @@ void plotTest(void)
 
 ## 移植
 
-sendwave.c和sendwave.h中的代码在gcc和KEIL for ARM中可以编译通过，但是
-我们不能保证它可以在所有编译器下编译成功。这些代码需要标准库中包含stdint.h
-文件，如果没有这个文件，您可以使用以下代码来替换:
+sendwave.c和sendwave.h中的代码在gcc和KEIL for ARM中可以编译通过，但是我们不能保证它可以在所有编译器下编译成功。这些代码需要标准库中包含stdint.h文件，如果没有这个文件，您可以使用以下代码来替换:
 ``` C
 // #include <stdint.h>
 
@@ -199,8 +188,8 @@ typedef signed short int16_t;
 typedef signed long  int32_t;
 ```
 
-用户一般不会使用到所有的API，例如您可能不需要使用`ws_point_float()`以及
-`ws_add_float()`函数。通常，编译器不会连接未用到的函数。编译器如果会连接从未
-被调用的函数，并且要保证目标代码最少，您应当删除这些函数的源码。
+用户一般不会使用到所有的API，例如您可能不需要使用`ws_point_float()`以及`ws_add_float()`函数。通常，编译器不会连接未用到的函数。编译器如果会连接从未被调用的函数，并且要保证目标代码最少，您应当删除这些函数的源码。
 
 如果您在移植串口示波器的协议时遇到了任何问题，您也可以向作者咨询。
+
+[Return to Index](./index.md)

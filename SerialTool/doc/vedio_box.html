@@ -1,0 +1,24 @@
+<meta charset="utf-8" />
+<style type="text/css">
+  @import url(./doc/style.css);
+</style>
+<h1 id="视频图传">视频图传</h1>
+<p>视频图传的功能通过Tools -&gt; Vedio Box菜单打开。该界面中，Save Image按钮会保存一张BMP格式的图片到当前的工作路径（该路径就是SerialTool保存文件的路径）中并自动命名，Copy C Array按钮会将该图片的C语言风格数组拷贝到剪切板中。</p>
+<p>Vedio Box只能传输黑白图片，并且图像分辨率必须是80x60像素。</p>
+<h2 id="协议说明">协议说明</h2>
+<p>下位机传输图像的协议非常简单，步骤如下：</p>
+<ol type="1">
+<li>下位机发送字符<code>0x0B</code>。</li>
+<li>下位机发送字符<code>0xBB</code>。</li>
+<li>下位机发送图像数据，共600字节。</li>
+</ol>
+<p>图像分辨率为80x60像素，图像数据的格式为：每个像素占用1bit，列优先编址，即每行80像素（10bytes），60行共600字节顺序发送。</p>
+<h2 id="代码示例">代码示例</h2>
+<p>下面代码示范了下位机发送一副图像的过程：</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="dt">char</span> data[] = { <span class="bn">0x0b</span>, <span class="bn">0xBB</span> };</a>
+<a class="sourceLine" id="cb1-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb1-3" data-line-number="3">uart_senddata(data, <span class="dv">2</span>);</a>
+<a class="sourceLine" id="cb1-4" data-line-number="4">uart_senddata((<span class="dt">const</span> <span class="dt">char</span> *)image_buff, <span class="dv">600</span>);</a></code></pre></div>
+<p>其中<code>uart_senddata()</code>为串口发送函数，其声明如下：</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="dt">void</span> uart_senddata(<span class="dt">const</span> <span class="dt">char</span> *buffer, <span class="dt">int</span> size);</a></code></pre></div>
+<p><a href="./doc/index.html">Return to Index</a></p>
