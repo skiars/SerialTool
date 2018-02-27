@@ -35,4 +35,4 @@ SerialTool是一个实用的串口调试工具，这款工具支持串口调试�
 
 ## 文档
 
-[串口示波器协议说明](./SerialTool/doc/doc.md)
+[SerialTool使用说明](./SerialTool/doc/index.md)
