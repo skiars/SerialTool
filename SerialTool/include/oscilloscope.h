@@ -3,13 +3,21 @@
 
 #include "ui_oscilloscope.h"
 
+#include <QTimer>
+
 #ifndef  CH_NUM
 #define CH_NUM 16
 #endif
 
 struct WaveDataType;
 class OscopeTimeStamp;
+class PointDataBuffer;
 class ChannelItem;
+class QSettings;
+namespace QtCharts {
+class QLineSeries;
+class QChart;
+}
 
 class Oscilloscope : public QWidget {
     Q_OBJECT
@@ -26,26 +34,26 @@ public:
     void stop();
     bool holdReceive();
 
-    void setPlotAntialiased(bool status);
-    void setGridAntialiased(bool status);
+    void setUseOpenGL(bool status);
+    void setUseAntialiased(bool status);
     void setBackground(QColor color);
     void setGridColor(QColor color);
-    void setChannelColor(int channel, const QColor &color);
+    void setUpdateInterval(int msec);
     void addData(const WaveDataType& data);
     void clear();
 
     void savePng(const QString &fileName);
     void saveBmp(const QString &fileName);
-    void savePdf(const QString &fileName);
-    void saveText(const QString &fname);
+    void saveWave(const QString &fname);
+    void loadWave(const QString &fname);
 
 private:
     void setupPlot();
-    void setupChannel();
     void listViewInit();
-    uint64_t maxCount();
-    void setChannelVisible(int channel, bool visible);
-
+    bool loadWave_p(const QString &fname);
+    QStringList csvSplitLine(const QString &line) {
+        return line.split(", ");
+    }
     ChannelItem* channelWidget(int channel) {
         return (ChannelItem *)(ui.channelList->itemWidget(ui.channelList->item(channel)));
     }
@@ -55,17 +63,18 @@ private slots:
     void yRangeChanged(double range);
     void xRangeChanged(const QString &str);
     void channelStyleChanged(ChannelItem *item);
-    void xAxisChanged(QCPRange range);
-    void yAxisChanged(QCPRange range);
     void horzScrollBarChanged(int value);
     void timeUpdata();
 
 private:
     Ui_Oscilloscope ui;
     bool replotFlag = 1;
-    uint64_t count[CH_NUM], _xRange;
+    QVector<QtCharts::QLineSeries*> m_series;
+    QtCharts::QChart *m_chart;
+    int m_count, m_xRange;
     QTimer updataTimer;
     OscopeTimeStamp* timeStamp;
+    PointDataBuffer *m_buffer;
 };
 
 #endif

@@ -1,4 +1,9 @@
 #include "serialtool.h"
+#include <QStandardPaths>
+#include <QDir>
+#include <QFileInfo>
+#include <QTranslator>
+#include <QFileDialog>
 #include "portsetbox.h"
 #include "optionsbox.h"
 #include "aboutbox.h"
@@ -58,6 +63,7 @@ SerialTool::SerialTool(QWidget *parent)
     connect(ui.portSetAction, SIGNAL(triggered()), this, SLOT(openSetPortInfoBox()));
     connect(ui.actionOption, SIGNAL(triggered()), this, SLOT(setOptions()));
     connect(ui.actionSave, SIGNAL(triggered()), this, SLOT(saveFile()));
+    connect(ui.actionOpen, SIGNAL(triggered()), this, SLOT(openFile()));
     connect(ui.actionClose, SIGNAL(triggered()), this, SLOT(close()));
     connect(ui.actionVisibleToolbar, SIGNAL(triggered(bool)), ui.toolBar1, SLOT(setVisible(bool)));
     connect(ui.actionVisibleStatusBar, SIGNAL(triggered(bool)), ui.statusBar, SLOT(setVisible(bool)));
@@ -90,13 +96,10 @@ SerialTool::~SerialTool()
 }
 
 // 关闭事件
-#ifdef __GNUC__
-void SerialTool::closeEvent(__attribute__((unused)) QCloseEvent *event)
-#else
 void SerialTool::closeEvent(QCloseEvent *event)
-#endif
 {
     saveConfig();
+    QMainWindow::closeEvent(event);
 }
 
 // 加载语言
@@ -154,10 +157,12 @@ void SerialTool::loadSettings()
 
     ui.oscPlot->setBackground(QColor(config->value("PlotBackground").toString()));
     ui.oscPlot->setGridColor(QColor(config->value("AxisColor").toString()));
-    // 绘制时波形抗锯齿
-    ui.oscPlot->setPlotAntialiased(config->value("PlotAntialiased").toBool());
-    // 绘制时网格抗锯齿
-    ui.oscPlot->setGridAntialiased(config->value("GridAntialiased").toBool());
+    // 绘制使用OpenGL加速
+    ui.oscPlot->setUseOpenGL(config->value("UseOpenGL").toBool());
+    // 绘制时抗锯齿
+    ui.oscPlot->setUseAntialiased(config->value("UseAntialias").toBool());
+    // 示波器刷新速度
+    ui.oscPlot->setUpdateInterval(config->value("UpdateInterval").toInt());
     PortType type = (PortType)config->value("PortType").toInt();
 
     // 语言设置
@@ -253,24 +258,40 @@ void SerialTool::setOptions()
 void SerialTool::saveFile()
 {
     QString filter;
-    QString fname = QFileDialog::getSaveFileName(this, "Save", docPath,
-        tr("Portable Network Graphic Format (*.png);;"
-           "Bitmap (*.bmp);;"
-           "Portable Document Format (*.pdf);;"
-           "Wave Plain Text File (*.txt)"), &filter,
+    QString fname = QFileDialog::getSaveFileName(this, tr("Save"), docPath,
+        tr("Portable Network Graphic Format (*.png)") + ";;" +
+        tr("Bitmap (*.bmp)") + ";;" +
+        tr("Wave Plain Text File (*.txt)") + ";;" +
+        tr("Terminal Text File (*.txt)"), &filter,
         QFileDialog::HideNameFilterDetails);
     if (fname.isNull()) {
         return;
     }
     docPath = QFileInfo(fname).path();
-    if (filter.indexOf("(*.png)", 0) != -1) {
+    if (filter == tr("Portable Network Graphic Format (*.png)")) {
         ui.oscPlot->savePng(fname);
-    } else if (filter.indexOf("(*.bmp)", 0) != -1) {
+    } else if (filter == tr("Bitmap (*.bmp)")) {
         ui.oscPlot->saveBmp(fname);
-    } else if (filter.indexOf("(*.pdf)", 0) != -1) {
-        ui.oscPlot->savePdf(fname);
-    } else if (filter.indexOf("(*.txt)", 0) != -1) {
-        ui.oscPlot->saveText(fname);
+    } else if (filter == tr("Wave Plain Text File (*.txt)")) {
+        ui.oscPlot->saveWave(fname);
+    } else if (filter == tr("Terminal Text File (*.txt)")) {
+        ui.terminal->saveText(fname);
+    }
+}
+
+// 打开文件
+void SerialTool::openFile()
+{
+    QString filter;
+    QString fname = QFileDialog::getOpenFileName(this, tr("Open"), docPath,
+        tr("Wave Plain Text File (*.txt)"), &filter,
+        QFileDialog::HideNameFilterDetails);
+    if (fname.isNull()) {
+        return;
+    }
+    docPath = QFileInfo(fname).path();
+    if (filter.indexOf("(*.txt)", 0) != -1) {
+        ui.oscPlot->loadWave(fname);
     }
 }
 
@@ -515,9 +536,18 @@ void SerialTool::about()
 
 void SerialTool::docment()
 {
-    DocmentDialog doc(this);
+    if (m_docDialog == NULL) {
+        m_docDialog = new DocmentDialog(this);
+        m_docDialog->setModal(false);
+        m_docDialog->setAttribute(Qt::WA_DeleteOnClose);
+        connect(m_docDialog, SIGNAL(destroyed()), this, SLOT(onDocDialogDelete()));
+        m_docDialog->show();
+    }
+}
 
-    doc.exec();
+void SerialTool::onDocDialogDelete()
+{
+    m_docDialog = NULL;
 }
 
 void SerialTool::loadPortTool()

@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core widgets printsupport serialport gui network
+QT       += core gui widgets serialport network charts
 
 TARGET = SerialTool
 TEMPLATE = app
@@ -34,7 +34,6 @@ SOURCES += \
     source/main.cpp \
     source/optionsbox.cpp \
     source/portsetbox.cpp \
-    source/qcustomplot.cpp \
     source/serialtool.cpp\
     source/textedit.cpp \
     source/wavedecode.cpp \
@@ -48,14 +47,14 @@ SOURCES += \
     source/oscopetimestamp.cpp \
     source/terminalview.cpp \
     source/serialport.cpp \
-    source/docmentdialog.cpp
+    source/docmentdialog.cpp \
+    source/pointdatabuffer.cpp
 
 HEADERS  += \
     include/aboutbox.h \
     include/channelitem.h \
     include/optionsbox.h \
     include/portsetbox.h \
-    include/qcustomplot.h \
     include/serialtool.h \
     include/textedit.h \
     include/version.h \
@@ -71,7 +70,8 @@ HEADERS  += \
     include/oscopetimestamp.h \
     include/terminalview.h \
     include/serialport.h \
-    include/docmentdialog.h
+    include/docmentdialog.h \
+    include/pointdatabuffer.h
 
 DISTFILES += \
     resource/images/clear.png \
@@ -101,4 +101,4 @@ FORMS += \
     ui/serialport.ui \
     ui/docmentdialog.ui
 
-LIBS += -lqscintilla2
+LIBS += -lqscintilla2_qt5

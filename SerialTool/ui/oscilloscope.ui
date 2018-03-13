@@ -48,10 +48,13 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="QCustomPlot" name="customPlot" native="true"/>
+       <widget class="QtCharts::QChartView" name="chartView" native="true"/>
       </item>
       <item>
        <widget class="QScrollBar" name="horizontalScrollBar">
+        <property name="maximum">
+         <number>0</number>
+        </property>
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
@@ -157,9 +160,6 @@
        <property name="editable">
         <bool>true</bool>
        </property>
-       <property name="currentText">
-        <string notr="true">10</string>
-       </property>
        <property name="maxVisibleItems">
         <number>20</number>
        </property>
@@ -252,9 +252,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QCustomPlot</class>
+   <class>QtCharts::QChartView</class>
    <extends>QWidget</extends>
-   <header>qcustomplot.h</header>
+   <header location="global">QtCharts/QChartView.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

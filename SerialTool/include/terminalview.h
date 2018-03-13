@@ -27,6 +27,7 @@ public:
     void setFontFamily(QString fonts, int size, QString style);
     void setEnabled(bool status);
     void setPaused(bool status);
+    void saveText(const QString &fname);
 
 signals:
     void sendDataRequest(const QByteArray &array);

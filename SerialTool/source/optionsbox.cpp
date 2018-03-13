@@ -1,6 +1,10 @@
-﻿#include "optionsbox.h"
+#include "optionsbox.h"
 #include <QFontDialog>
 #include <QColorDialog>
+#include <QDir>
+#include <QFileInfo>
+#include <QStandardPaths>
+#include <QTextStream>
 #include "serialtool.h"
 
 static QString languageName(const QString &path)
@@ -74,6 +78,7 @@ OptionsBox::OptionsBox(SerialTool *parent) : QDialog(parent)
     connect(ui.cmdDelete, SIGNAL(clicked()), this, SLOT(onCmdDeleteClick()));
     connect(ui.cmdList, SIGNAL(itemChanged(QListWidgetItem *)), this, SLOT(setCmdItemColor()));
     connect(ui.languageBox, SIGNAL(currentIndexChanged(int)), this, SLOT(setLanguage(int)));
+    connect(ui.useOpenGLBox, SIGNAL(clicked(bool)), this, SLOT(onUseOpenGLClick(bool)));
 }
 
 OptionsBox::~OptionsBox()
@@ -96,8 +101,9 @@ void OptionsBox::setup()
     txColor = config->value("TransmitTextColor").toString();
     bgColor = config->value("PlotBackground").toString();
     axColor = config->value("AxisColor").toString();
-    ui.plotAntiBox->setChecked(config->value("PlotAntialiased").toBool());
-    ui.gridAntiBox->setChecked(config->value("GridAntialiased").toBool());
+    ui.useOpenGLBox->setChecked(config->value("UseOpenGL").toBool());
+    ui.useAntiBox->setChecked(config->value("UseAntialias").toBool());
+    ui.updateIntervalBox->setValue(config->value("UpdateInterval").toInt());
     ui.portTypeBox->setCurrentIndex(config->value("PortType").toInt());
     language = config->value("Language").toString();
     theme = config->value("Theme").toString();
@@ -115,6 +121,11 @@ void OptionsBox::setup()
 
     ui.languageBox->setCurrentText(languageName("language/" + language));
     ui.themeBox->setCurrentText(theme);
+
+    // 使用OpenGL时不能使用抗锯齿
+    if (ui.useOpenGLBox->isChecked()) {
+        ui.useAntiBox->setEnabled(false);
+    }
 }
 
 // 保存配置
@@ -135,8 +146,9 @@ void OptionsBox::processOptions(QAbstractButton *button)
         config->setValue("TransmitTextColor", QVariant(txColor));
         config->setValue("PlotBackground", QVariant(bgColor));
         config->setValue("AxisColor", QVariant(axColor));
-        config->setValue("PlotAntialiased", QVariant(ui.plotAntiBox->isChecked()));
-        config->setValue("GridAntialiased", QVariant(ui.gridAntiBox->isChecked()));
+        config->setValue("UseOpenGL", QVariant(ui.useOpenGLBox->isChecked()));
+        config->setValue("UseAntialias", QVariant(ui.useAntiBox->isChecked()));
+        config->setValue("UpdateInterval", QVariant(ui.updateIntervalBox->value()));
         config->setValue("PortType", QVariant(ui.portTypeBox->currentIndex()));
         config->setValue("Language", QVariant(language));
         config->setValue("Theme", QVariant(ui.themeBox->currentText()));
@@ -251,6 +263,11 @@ void OptionsBox::onCmdDeleteClick()
 {
     delete ui.cmdList->currentItem();
     setCmdItemColor(); // 上色
+}
+
+void OptionsBox::onUseOpenGLClick(bool status)
+{
+    ui.useAntiBox->setEnabled(!status);
 }
 
 void OptionsBox::setCmdItemColor()

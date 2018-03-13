@@ -24,14 +24,20 @@ SerialTool是一个实用的串口调试工具，这款工具支持串口调试�
 
 ## 项目信息
 
-* 下位机示例代码在[.\SerialTool\slave](https://github.com/Le-Seul/SerialTool/tree/master/SerialTool/slave)目录下，该目录有两个文件：
- * [sendwave.c](https://github.com/Le-Seul/SerialTool/blob/master/SerialTool/slave/sendwave.c)
- * [sendwave.h](https://github.com/Le-Seul/SerialTool/blob/master/SerialTool/slave/sendwave.h)
-* 本项目使用的Qt库为Qt 5.6.1 for Visual Studio 2015和Qt 5.6.2 for MinGW 
+* 下位机示例代码在[./SerialTool/slave](./SerialTool/slave)目录下，该目录有两个文件：
+ * [sendwave.c](./SerialTool/slave/sendwave.c)
+ * [sendwave.h](./SerialTool/slave/sendwave.h)
+* 跟随本项目发布的可执行文件安装包使用Qt 5.6.3 for MinGW编译。
 * 使用的插件:
  * QScintilla: [Documentation](http://pyqt.sourceforge.net/Docs/QScintilla2), [Download](https://riverbankcomputing.com/software/qscintilla/download)
- * [QCustomPlot](http://www.qcustomplot.com/): 源码已经包含到项目中
+ * Qt Charts: 此插件在Qt 5.7以及更高的版本中包含在Qt安装文件中，使用Qt 5.6时需要自行编译。
 * 其他信息参看[readme.txt](https://github.com/Le-Seul/SerialTool/blob/master/readme.txt)文件
+
+## 开源协议
+
+本程序使用GPL协议发布，但是[./SerialTool/slave](./SerialTool/slave)目录下的源码受该协议约束，用户可以随意使用。
+
+[License](./LICENSE)
 
 ## 文档
 

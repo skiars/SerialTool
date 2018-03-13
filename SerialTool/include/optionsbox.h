@@ -29,6 +29,7 @@ private slots:
     void onCmdNewClick();
     void onCmdEditClick();
     void onCmdDeleteClick();
+    void onUseOpenGLClick(bool status);
     void setCmdItemColor();
     void setLanguage(int index);
 

@@ -10,6 +10,7 @@
         <file>images/port config.png</file>
         <file>images/save.ico</file>
         <file>images/start.ico</file>
+        <file>images/open.ico</file>
     </qresource>
     <qresource prefix="/license">
         <file>license.html</file>

@@ -49,8 +49,8 @@ typedef struct {
     uint8_t hour;           // 0 ~ 23, 5 bit
     uint8_t min;            // 0 ~ 59, 6 bit
     uint8_t sec;            // 0 ~ 59, 6 bit
-    uint16_t msec;          // 0 ~ 1000, 10 bit
-    uint32_t sampleRate;    // 21 bit
+    uint16_t msec;          // 0 ~ 999, 10 bit
+    uint32_t sampleRate;    // 0 ~ 2000000,21 bit
 } ws_timestamp_t;
 
 /* 公共函数声明 */

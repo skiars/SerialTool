@@ -24,7 +24,7 @@ void TextEdit::append(const QString &text)
 {
     bool posEnd = SendScintilla(SCI_GETLENGTH) == SendScintilla(SCI_GETCURRENTPOS);
     QsciScintilla::append(text);
-    // Èç¹û¹â±êÖ®Ç°¾ÍÔÚÄ©Î²Ê±½«¹â±êÒÆ¶¯µ½×îºó
+    // å¦‚æœå…‰æ ‡ä¹‹å‰å°±åœ¨æœ«å°¾æ—¶å°†å…‰æ ‡ç§»åŠ¨åˆ°æœ€å
     if (posEnd) {
         long pos = SendScintilla(SCI_GETLENGTH);
         SendScintilla(SCI_SETANCHOR, pos);
@@ -37,26 +37,26 @@ void TextEdit::setFonts(QString fonts, int size, QColor color, QString style)
     fontFamily = fonts;
     fontSize = size;
     lineNumFont = QFont(fonts.section(',', 0, 0), size);
-    // ÎÄ±¾ÏÔÊ¾
+    // æ–‡æœ¬æ˜¾ç¤º
     SendScintilla(SCI_STYLESETFONT, STYLE_DEFAULT, fonts.toStdString().c_str());
     SendScintilla(SCI_STYLESETSIZE, STYLE_DEFAULT, size);
     SendScintilla(SCI_STYLESETFORE, STYLE_DEFAULT, color);
-    if (style.indexOf("bold") != -1) { // ´ÖÌå×Ö
+    if (style.indexOf("bold") != -1) { // ç²—ä½“å­—
         SendScintilla(SCI_STYLESETBOLD, (int)0, true);
     } else {
         SendScintilla(SCI_STYLESETBOLD, (int)0, (long)false);
     }
-    if (style.indexOf("italic") != -1) { // Ğ±Ìå×Ö
+    if (style.indexOf("italic") != -1) { // æ–œä½“å­—
         SendScintilla(SCI_STYLESETITALIC, (int)0, true);
     } else {
         SendScintilla(SCI_STYLESETITALIC, (int)0, (long)false);
     }
-    SendScintilla(SCI_STYLECLEARALL); // ÉèÖÃÈ«¾Ö·ç¸ñ
+    SendScintilla(SCI_STYLECLEARALL); // è®¾ç½®å…¨å±€é£æ ¼
 
-    // ¹â±êÑÕÉ«
+    // å…‰æ ‡é¢œè‰²
     SendScintilla(SCI_SETCARETFORE, color);
 
-    // Ò³±ßÏÔÊ¾ĞĞºÅ
+    // é¡µè¾¹æ˜¾ç¤ºè¡Œå·
     SendScintilla(SCI_STYLESETFONT, STYLE_LINENUMBER,
         fonts.section(',', 0, 0).toStdString().c_str());
     SendScintilla(SCI_STYLESETSIZE, STYLE_LINENUMBER, size);
@@ -71,7 +71,7 @@ void TextEdit::setFonts(QString fonts, int size, QColor color, QString style)
        */
     SendScintilla(SCI_SETSCROLLWIDTHTRACKING, true);
 
-    if (highLight) { // ÖØĞÂÉèÖÃÓï·¨¸ßÁÁ
+    if (highLight) { // é‡æ–°è®¾ç½®è¯­æ³•é«˜äº®
         setHighLight(true);
     }
 }
@@ -89,15 +89,15 @@ void TextEdit::onTextChanged()
     if (text().isEmpty()) {
         SendScintilla(SCI_SETSCROLLWIDTH, 1);
     }
-    // Èç¹ûÊ¹ÓÃÁË×Ô¶¯»»ĞĞ¹¦ÄÜ²¢ÇÒ¹ö¶¯ÌõÔÚµ×²¿Ôò°Ñ¹ö¶¯ÌõÖØĞÂÒÆ¶¯µ½µ×²¿
+    // å¦‚æœä½¿ç”¨äº†è‡ªåŠ¨æ¢è¡ŒåŠŸèƒ½å¹¶ä¸”æ»šåŠ¨æ¡åœ¨åº•éƒ¨åˆ™æŠŠæ»šåŠ¨æ¡é‡æ–°ç§»åŠ¨åˆ°åº•éƒ¨
     if (scrollEnd && isWrap) {
-        int lineEnd = lineCount - 1; // Ä©ĞĞ
+        int lineEnd = lineCount - 1; // æœ«è¡Œ
         int lineLen = SendScintilla(SCI_LINELENGTH, lineEnd);
         SendScintilla(SCI_LINESCROLL, lineLen, lineEnd);
     }
 }
 
-// ¼ÆËãÒ»¸öÊ®½øÖÆÊı×ÖµÄÎ»Êı
+// è®¡ç®—ä¸€ä¸ªåè¿›åˆ¶æ•°å­—çš„ä½æ•°
 static int countOrder(int value)
 {
     int order = 0;
@@ -148,7 +148,7 @@ void TextEdit::setWrap(bool wrap)
     isWrap = wrap;
 }
 
-// ÉèÖÃÓï·¨¸ßÁÁ
+// è®¾ç½®è¯­æ³•é«˜äº®
 void TextEdit::setHighLight(bool mode)
 {
     if (mode) {
@@ -170,17 +170,17 @@ void TextEdit::setHighLight(bool mode)
         file.close();
     }
     //NULL
-    SendScintilla(SCI_SETLEXER, SCLEX_BASH); // bash½âÎöÆ÷
-    SendScintilla(SCI_SETKEYWORDS, (unsigned long)0, keyWords.data());// ÉèÖÃ¹Ø¼ü×Ö
-    // ÏÂÃæÉèÖÃ¸÷ÖÖÓï·¨ÔªËØÇ°¾°É«
-    SendScintilla(SCI_STYLESETFORE, QsciLexerBash::Default, 0x38312A); // Ä¬ÈÏ
-    SendScintilla(SCI_STYLESETFORE, QsciLexerBash::Keyword, 0x8B8B00);   // ¹Ø¼ü×Ö
-    SendScintilla(SCI_STYLESETFORE, QsciLexerBash::DoubleQuotedString, 0x6666D4); // ×Ö·û´®
-    SendScintilla(SCI_STYLESETFORE, QsciLexerBash::SingleQuotedString, 0x6666D4); // ×Ö·û
-    SendScintilla(SCI_STYLESETFORE, QsciLexerBash::Operator, 0xB48246); // ÔËËã·û
-    SendScintilla(SCI_STYLESETFORE, QsciLexerBash::Number, 0x006F7F); // Êı×Ö
-    SendScintilla(SCI_STYLESETFORE, QsciLexerBash::Comment, 0x008000); // ĞĞ×¢ÊÍ
-    SendScintilla(SCI_STYLESETFORE, QsciLexerBash::Identifier, 0x38312A); // Ê¶±ğ·û
+    SendScintilla(SCI_SETLEXER, SCLEX_BASH); // bashè§£æå™¨
+    SendScintilla(SCI_SETKEYWORDS, (unsigned long)0, keyWords.data());// è®¾ç½®å…³é”®å­—
+    // ä¸‹é¢è®¾ç½®å„ç§è¯­æ³•å…ƒç´ å‰æ™¯è‰²
+    SendScintilla(SCI_STYLESETFORE, QsciLexerBash::Default, 0x38312A); // é»˜è®¤
+    SendScintilla(SCI_STYLESETFORE, QsciLexerBash::Keyword, 0x8B8B00);   // å…³é”®å­—
+    SendScintilla(SCI_STYLESETFORE, QsciLexerBash::DoubleQuotedString, 0x6666D4); // å­—ç¬¦ä¸²
+    SendScintilla(SCI_STYLESETFORE, QsciLexerBash::SingleQuotedString, 0x6666D4); // å­—ç¬¦
+    SendScintilla(SCI_STYLESETFORE, QsciLexerBash::Operator, 0xB48246); // è¿ç®—ç¬¦
+    SendScintilla(SCI_STYLESETFORE, QsciLexerBash::Number, 0x006F7F); // æ•°å­—
+    SendScintilla(SCI_STYLESETFORE, QsciLexerBash::Comment, 0x008000); // è¡Œæ³¨é‡Š
+    SendScintilla(SCI_STYLESETFORE, QsciLexerBash::Identifier, 0x38312A); // è¯†åˆ«ç¬¦
 #else
     const char* g_szKeywords =
         "asm auto bool break case catch char class const "
@@ -194,23 +194,23 @@ void TextEdit::setHighLight(bool mode)
         "union unsigned using virtual void volatile "
         "wchar_t while";
 
-    SendScintilla(SCI_SETLEXER, SCLEX_CPP); // C++½âÎöÆ÷
-    SendScintilla(SCI_SETKEYWORDS, (unsigned long)0, g_szKeywords);// ÉèÖÃ¹Ø¼ü×Ö
+    SendScintilla(SCI_SETLEXER, SCLEX_CPP); // C++è§£æå™¨
+    SendScintilla(SCI_SETKEYWORDS, (unsigned long)0, g_szKeywords);// è®¾ç½®å…³é”®å­—
 
-    // ÏÂÃæÉèÖÃ¸÷ÖÖÓï·¨ÔªËØÇ°¾°É«
-    SendScintilla(SCI_STYLESETFORE, QsciLexerCPP::Keyword, 0xFF4030);   // ¹Ø¼ü×Ö
-    SendScintilla(SCI_STYLESETFORE, QsciLexerCPP::DoubleQuotedString, 0x1515A3); // ×Ö·û´®
-    SendScintilla(SCI_STYLESETFORE, QsciLexerCPP::SingleQuotedString, 0x1515A3); // ×Ö·û
-    SendScintilla(SCI_STYLESETFORE, QsciLexerCPP::Operator, 0xB48246); // ÔËËã·û
-    SendScintilla(SCI_STYLESETFORE, QsciLexerCPP::Number, 0x4F4F2F); // Êı×Ö
-    SendScintilla(SCI_STYLESETFORE, QsciLexerCPP::PreProcessor, 0x808080); // Ô¤´¦ÀíÖ¸Áî
-    SendScintilla(SCI_STYLESETFORE, QsciLexerCPP::Comment, 0x008000); // ¿é×¢ÊÍ
-    SendScintilla(SCI_STYLESETFORE, QsciLexerCPP::CommentLine, 0x008000); // ĞĞ×¢ÊÍ
-    SendScintilla(SCI_STYLESETFORE, QsciLexerCPP::CommentDoc, 0x008000); // ÎÄµµ×¢ÊÍ£¨/**¿ªÍ·£©
+    // ä¸‹é¢è®¾ç½®å„ç§è¯­æ³•å…ƒç´ å‰æ™¯è‰²
+    SendScintilla(SCI_STYLESETFORE, QsciLexerCPP::Keyword, 0xFF4030);   // å…³é”®å­—
+    SendScintilla(SCI_STYLESETFORE, QsciLexerCPP::DoubleQuotedString, 0x1515A3); // å­—ç¬¦ä¸²
+    SendScintilla(SCI_STYLESETFORE, QsciLexerCPP::SingleQuotedString, 0x1515A3); // å­—ç¬¦
+    SendScintilla(SCI_STYLESETFORE, QsciLexerCPP::Operator, 0xB48246); // è¿ç®—ç¬¦
+    SendScintilla(SCI_STYLESETFORE, QsciLexerCPP::Number, 0x4F4F2F); // æ•°å­—
+    SendScintilla(SCI_STYLESETFORE, QsciLexerCPP::PreProcessor, 0x808080); // é¢„å¤„ç†æŒ‡ä»¤
+    SendScintilla(SCI_STYLESETFORE, QsciLexerCPP::Comment, 0x008000); // å—æ³¨é‡Š
+    SendScintilla(SCI_STYLESETFORE, QsciLexerCPP::CommentLine, 0x008000); // è¡Œæ³¨é‡Š
+    SendScintilla(SCI_STYLESETFORE, QsciLexerCPP::CommentDoc, 0x008000); // æ–‡æ¡£æ³¨é‡Šï¼ˆ/**å¼€å¤´ï¼‰
 #endif
 
-    SendScintilla(SCI_SETTABWIDTH, 4); // Tab¿í¶È
-    // µ±Ç°ĞĞ¸ßÁÁ
+    SendScintilla(SCI_SETTABWIDTH, 4); // Tabå®½åº¦
+    // å½“å‰è¡Œé«˜äº®
     SendScintilla(SCI_SETCARETLINEVISIBLE, true);
     SendScintilla(SCI_SETCARETLINEBACK, 0xE0E0E0);
 }

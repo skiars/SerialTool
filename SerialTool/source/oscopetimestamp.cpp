@@ -1,5 +1,7 @@
 #include "oscopetimestamp.h"
 #include "wavedecode.h"
+#include <QDate>
+#include <QTime>
 
 void OscopeTimeStamp::append(const WaveDataType &data, uint64_t count)
 {
@@ -14,6 +16,27 @@ void OscopeTimeStamp::append(const WaveDataType &data, uint64_t count)
     ts.sec = data.sec;
     ts.msec = data.msec;
     ts.sampleRate = data.sampleRate;
+
+    timeStamp.append(ts);
+}
+
+
+void OscopeTimeStamp::append(const QString &string, uint64_t count)
+{
+    TimeStamp_p ts;
+    QStringList strList = string.split(' ');
+    QDate date(QDate::fromString(strList[0], "yyyy-M-d"));
+    QTime time(QTime::fromString(strList[1], "h:m:s.z"));
+
+    ts.count = count;
+    ts.year = (uint8_t)(date.year() - 2000);
+    ts.month = (uint8_t)(date.month());
+    ts.day = (uint8_t)(date.day());
+    ts.hour = (uint8_t)(time.hour());
+    ts.day = (uint8_t)(time.minute());
+    ts.day = (uint8_t)(time.second());
+    ts.day = (uint8_t)(time.msec());
+    ts.sampleRate = (uint32_t)strList[2].replace("bps", "").toInt();
 
     timeStamp.append(ts);
 }

@@ -11,8 +11,8 @@ class OscopeTimeStamp {
 public:
     OscopeTimeStamp() { timeStamp.clear(); }
     void printTextStream(QTextStream &stream, uint64_t count);
-
     void append(const WaveDataType &data, uint64_t count);
+    void append(const QString &string, uint64_t count);
     void clear() { timeStamp.clear(); }
 
 private:

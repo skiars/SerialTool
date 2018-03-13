@@ -32,10 +32,6 @@ public:
         return Channel;
     }
 
-    void setCheckState(Qt::CheckState state) {
-        checkBox->setCheckState(state);
-    }
-
     void setChecked(bool stats) {
         checkBox->setChecked(stats);
     }

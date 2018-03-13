@@ -286,3 +286,14 @@ void TerminalView::arrayToAscii(QString &str, const QByteArray &array)
         asciiBuf->clear();
     }
 }
+
+// 保存文件
+void TerminalView::saveText(const QString &fname)
+{
+    QFile file(fname);
+
+    if (file.open(QFile::WriteOnly)) {
+        file.write(ui->textEditRx->text().toUtf8());
+        file.close();
+    }
+}

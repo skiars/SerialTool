@@ -106,7 +106,7 @@ typedef struct {
     uint8_t hour;           // hour, 0 ~ 23
     uint8_t min;            // minute, 0 ~ 59
     uint8_t sec;            // second, 0 ~ 59
-    uint16_t msec;          // millisecond, 0 ~ 1000
+    uint16_t msec;          // millisecond, 0 ~ 999
     uint32_t sampleRate;    // sample rate, 0 ~ 2000000
 } ws_timestamp_t;
 ```
@@ -188,7 +188,7 @@ typedef signed short int16_t;
 typedef signed long  int32_t;
 ```
 
-用户一般不会使用到所有的API，例如您可能不需要使用`ws_point_float()`以及`ws_add_float()`函数。通常，编译器不会连接未用到的函数。编译器如果会连接从未被调用的函数，并且要保证目标代码最少，您应当删除这些函数的源码。
+用户一般不会使用到所有的API，例如您可能不需要使用`ws_point_float()`以及`ws_add_float()`函数。通常，编译器不会链接未用到的函数。编译器如果会链接从未被调用的函数，并且要保证目标代码最少，您应当删除这些函数的源码。
 
 如果您在移植串口示波器的协议时遇到了任何问题，您也可以向作者咨询。
 

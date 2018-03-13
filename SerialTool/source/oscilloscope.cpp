@@ -1,21 +1,32 @@
 #include "oscilloscope.h"
 #include <QTextStream>
-#include <QSettings.h>
+#include <QSettings>
+#include <QLineSeries>
+#include <QChart>
+#include <QValueAxis>
+#include <QLineEdit>
+#include <QScreen>
+#include <QMessageBox>
 #include "channelitem.h"
 #include "wavedecode.h"
 #include "oscopetimestamp.h"
+#include "pointdatabuffer.h"
 
 #define SCALE   (1000.0 / _xRange)
 
-Oscilloscope::Oscilloscope(QWidget *parent)
+QT_CHARTS_USE_NAMESPACE
+
+Oscilloscope::Oscilloscope(QWidget *parent) :
+    QWidget(parent),
+    m_chart(0)
 {
+    m_chart = new QChart;
     ui.setupUi(parent);
 
     timeStamp = new OscopeTimeStamp();
-    _xRange = 0;
+    m_xRange = 0;
 
     setupPlot();
-    setupChannel();
     listViewInit();
 
     QRegExpValidator *pReg = new QRegExpValidator(QRegExp("^\\d{2,7}$"));
@@ -23,9 +34,7 @@ Oscilloscope::Oscilloscope(QWidget *parent)
 
     updataTimer.setInterval(25);
 
-    connect(ui.customPlot->xAxis, SIGNAL(rangeChanged(QCPRange)), this, SLOT(xAxisChanged(QCPRange)));
-    connect(ui.customPlot->yAxis, SIGNAL(rangeChanged(QCPRange)), this, SLOT(yAxisChanged(QCPRange)));
-    connect(ui.horizontalScrollBar, &QAbstractSlider::valueChanged, this, &Oscilloscope::horzScrollBarChanged);
+    connect(ui.horizontalScrollBar, &QAbstractSlider::sliderMoved, this, &Oscilloscope::horzScrollBarChanged);
     connect(ui.yOffsetBox, static_cast<void (QDoubleSpinBox::*)(double)>
         (&QDoubleSpinBox::valueChanged), this, &Oscilloscope::yOffsetChanged);
     connect(ui.yRangeBox, static_cast<void (QDoubleSpinBox::*)(double)>
@@ -39,6 +48,7 @@ Oscilloscope::Oscilloscope(QWidget *parent)
 Oscilloscope::~Oscilloscope()
 {
     delete timeStamp;
+    delete m_chart;
 }
 
 // 重新设置语言
@@ -51,19 +61,26 @@ void Oscilloscope::retranslate()
 void Oscilloscope::loadConfig(QSettings *config)
 {
     config->beginGroup("Oscillograph");
-    ui.xRangeBox->setCurrentText(config->value("XRange").toString());
-    ui.yOffsetBox->setValue(config->value("YOffset").toDouble());
-    ui.yRangeBox->setValue(config->value("YRange").toDouble());
+    QString xRange = config->value("XRange").toString();
+    double yRange = config->value("YRange").toDouble();
+    double yOffset = config->value("YOffset").toDouble();
+    ui.xRangeBox->setCurrentIndex(ui.xRangeBox->findText(xRange));
+    ui.xRangeBox->setCurrentText(xRange);
+    ui.yRangeBox->setValue(yRange);
+    ui.yOffsetBox->setValue(yOffset);
+    xRangeChanged(xRange);
+    yRangeChanged(yRange);
+    yOffsetChanged(yOffset);
     ui.holdReceiveBox->setChecked(config->value("HoldReceive").toBool());
     // load channels settings
     config->beginReadArray("Channels");
     for (int i = 0; i < CH_NUM; ++i) {
         config->setArrayIndex(i);
-        setChannelVisible(i, config->value("Visible").toBool());
         QColor color(config->value("Color").toString());
         ChannelItem *item = channelWidget(i);
+        item->setChecked(config->value("Visible").toBool());
         item->setColor(color);
-        ui.customPlot->graph(i)->setPen(QPen(color));
+        channelStyleChanged(item);
     }
     config->endArray();
     config->endGroup();
@@ -91,35 +108,29 @@ void Oscilloscope::saveConfig(QSettings *config)
 // 初始化示波器界面
 void Oscilloscope::setupPlot()
 {
-    // 拖动时不抗锯齿
-    ui.customPlot->setNoAntialiasingOnDrag(true);
-
-    // 设置刻度线
-    QSharedPointer<QCPAxisTicker> xTicker(new QCPAxisTicker);
-    QSharedPointer<QCPAxisTicker> yTicker(new QCPAxisTicker);
-    xTicker->setTickCount(5);
-    ui.customPlot->xAxis->setTicker(xTicker);
-    ui.customPlot->xAxis2->setTicker(xTicker);
-    yTicker->setTickCount(5);
-    ui.customPlot->yAxis->setTicker(yTicker);
-    ui.customPlot->yAxis2->setTicker(yTicker);
-    // 显示小网格
-    ui.customPlot->xAxis->grid()->setSubGridVisible(true);
-    ui.customPlot->yAxis->grid()->setSubGridVisible(true);
-}
-
-// 初始化通道
-void Oscilloscope::setupChannel()
-{
+    ui.chartView->setChart(m_chart);
+    m_chart->createDefaultAxes();
+    QValueAxis *xAxis = new QValueAxis;
+    QValueAxis *yAxis = new QValueAxis;
+    xAxis->setLabelFormat("%d");
+    xAxis->setTickCount(6);
+    xAxis->setMinorTickCount(1);
+    yAxis->setTickCount(5);
+    yAxis->setMinorTickCount(1);
     // 初始化通道
     for (int i = 0; i < CH_NUM; ++i) {
-        count[i] = 0;
-        ui.customPlot->addGraph();
+        QLineSeries *series = new QLineSeries(this);
+        m_series.append(series);
+        m_chart->addSeries(series);
+        m_chart->setAxisX(xAxis, series);
+        m_chart->setAxisY(yAxis, series);
     }
+    m_chart->legend()->hide(); // 隐藏图例
+    m_chart->setMargins(QMargins(0, 0, 0, 0)); // set margins
+    m_chart->setContentsMargins(-9, -9, -8, -8);
+    m_chart->setBackgroundRoundness(0);
 
-    ui.customPlot->axisRect()->setupFullAxesBox(true);
-    ui.customPlot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom); // 允许拖拽和缩放
-    ui.customPlot->yAxis->setRange(0, 2, Qt::AlignCenter);
+    m_buffer = new PointDataBuffer(&m_series);
 }
 
 // 通道列表初始化
@@ -156,167 +167,95 @@ bool Oscilloscope::holdReceive()
     return ui.holdReceiveBox->isChecked();
 }
 
-// 设置波形绘制抗锯齿
-void Oscilloscope::setPlotAntialiased(bool status)
+// 设置是否使用OpenGL加速
+void Oscilloscope::setUseOpenGL(bool status)
 {
-    ui.customPlot->setNotAntialiasedElement(QCP::aePlottables, !status);
+    for (int i = 0; i < CH_NUM; ++i) {
+        m_series[i]->setUseOpenGL(status);
+    }
+    if (status) {
+        setUseAntialiased(false);
+    }
 }
 
-// 设置网格抗锯齿
-void Oscilloscope::setGridAntialiased(bool status)
+// 设置是否使用抗锯齿
+void Oscilloscope::setUseAntialiased(bool status)
 {
-    ui.customPlot->setAntialiasedElement(QCP::aeGrid, status);
-    ui.customPlot->setAntialiasedElement(QCP::aeAxes, status);
+    status &= !m_series[0]->useOpenGL(); // 不适用OpenGL时才可以打开抗锯齿
+    ui.chartView->setRenderHint(QPainter::Antialiasing, status);
 }
 
 // 设置背景颜色
 void Oscilloscope::setBackground(QColor color)
 {
-    ui.customPlot->setBackground(QBrush(color));
+    m_chart->setBackgroundPen(QPen(color));
+    m_chart->setBackgroundBrush(QBrush(color));
 }
 
 // 设置网格和图例颜色
 void Oscilloscope::setGridColor(QColor color)
 {
-    QPen pen(color);
-
-    ui.customPlot->xAxis->setBasePen(pen);
-    ui.customPlot->xAxis->setTickPen(pen);
-    ui.customPlot->xAxis->grid()->setPen(pen);
-    ui.customPlot->xAxis->setSubTickPen(pen);
-    ui.customPlot->xAxis->setTickLabelColor(color);
-    ui.customPlot->xAxis->setLabelColor(color);
-    ui.customPlot->xAxis->grid()->setZeroLinePen(pen); // 零点画笔
-    ui.customPlot->yAxis->setBasePen(pen);
-    ui.customPlot->yAxis->setTickPen(pen);
-    ui.customPlot->yAxis->grid()->setPen(pen);
-    ui.customPlot->yAxis->setSubTickPen(pen);
-    ui.customPlot->yAxis->setTickLabelColor(color);
-    ui.customPlot->yAxis->setLabelColor(color);
-    ui.customPlot->yAxis->grid()->setZeroLinePen(pen); // 零点画笔
-    ui.customPlot->xAxis2->setBasePen(pen);
-    ui.customPlot->xAxis2->setTickPen(pen);
-    ui.customPlot->xAxis2->setSubTickPen(pen);
-    ui.customPlot->yAxis2->setBasePen(pen);
-    ui.customPlot->yAxis2->setTickPen(pen);
-    ui.customPlot->yAxis2->setSubTickPen(pen);
-
-    // 网格颜色
-    color.setAlpha(0x30);
-    pen.setColor(color);
-    ui.customPlot->xAxis->grid()->setSubGridPen(pen);
-    ui.customPlot->yAxis->grid()->setSubGridPen(pen);
+    m_chart->axisX()->setLinePen(QPen(color));
+    m_chart->axisX()->setGridLineColor(color);
+    m_chart->axisX()->setLabelsColor(color);
+    m_chart->axisX()->setMinorGridLineColor(color);
+    m_chart->axisY()->setLinePen(QPen(color));
+    m_chart->axisY()->setGridLineColor(color);
+    m_chart->axisY()->setLabelsColor(color);
+    m_chart->axisY()->setMinorGridLineColor(color);
 }
 
-// 设置通道颜色
-void Oscilloscope::setChannelColor(int chanel, const QColor &color)
+// 设置更新时间
+void Oscilloscope::setUpdateInterval(int msec)
 {
-    ChannelItem *item = (ChannelItem *)(
-        ui.channelList->itemWidget(ui.channelList->item(chanel)));
-    item->setColor(color);
-    ui.customPlot->graph(chanel)->setPen(QPen(item->color()));
-}
-
-// 设置通道是否可见
-void Oscilloscope::setChannelVisible(int channel, bool visible)
-{
-    channelWidget(channel)->setChecked(visible);
-    ui.customPlot->graph(channel)->setVisible(visible);
+    updataTimer.setInterval(msec);
 }
 
 // 添加数据
 void Oscilloscope::addData(const WaveDataType& data)
 {
     if (data.mode == WaveValueMode) {
-        uint8_t channel = data.channel;
-
-        ui.customPlot->graph(channel)->addData(count[channel], data.value);
-        count[channel] += 1;
-    } else { // WaveTimeStampMode
-        timeStamp->append(data, maxCount());
+        m_buffer->append(data.channel, data.value); // 先将数据暂存到缓冲区
+    } else { // Wave Time StampMode
+        timeStamp->append(data, m_buffer->maximumCount());
     }
 }
 
 // 清空数据
 void Oscilloscope::clear()
 {
-    for (int i = 0; i < CH_NUM; ++i) {
-        ui.customPlot->graph(i)->data()->clear();
-        count[i] = 0;
-    }
+    m_buffer->clear();
     timeStamp->clear();
-    ui.horizontalScrollBar->setValue(0);
-    ui.horizontalScrollBar->setRange(0, 0);
-    ui.customPlot->xAxis->setRange(0, _xRange, Qt::AlignLeft);
-    ui.customPlot->replot();
-}
-
-uint64_t Oscilloscope::maxCount()
-{
-    uint64_t max = 0;
-
-    for (int i = 0; i < CH_NUM; ++i) {
-        if (count[i] > max) {
-            max = count[i];
-        }
-    }
-    return max;
+    ui.horizontalScrollBar->setMaximum(0);
+    m_chart->axisX()->setRange(0, m_xRange);
 }
 
 // 保存PNG文件
 void Oscilloscope::savePng(const QString &fileName)
 {
-    ui.customPlot->savePng(fileName);
+    QScreen *screen = QGuiApplication::primaryScreen();
+
+    QPixmap p = screen->grabWindow(ui.chartView->winId());
+    QImage image = p.toImage();
+    image.save(fileName);
 }
 
 // 保存BMP文件
 void Oscilloscope::saveBmp(const QString &fileName)
 {
-    ui.customPlot->saveBmp(fileName);
-}
+    QScreen *screen = QGuiApplication::primaryScreen();
 
-// 保存PDF文件
-void Oscilloscope::savePdf(const QString &fileName)
-{
-    ui.customPlot->savePdf(fileName);
+    QPixmap p = screen->grabWindow(ui.chartView->winId());
+    QImage image = p.toImage();
+    image.save(fileName);
 }
 
 // 通道显示风格改变
 void Oscilloscope::channelStyleChanged(ChannelItem *item)
 {
     int ch = item->channel();
-    ui.customPlot->graph(ch)->setVisible(item->isChecked());
-    ui.customPlot->graph(ch)->setPen(QPen(item->color()));
-    ui.customPlot->replot();
-}
-
-// x轴发生变化
-void Oscilloscope::xAxisChanged(QCPRange range)
-{
-    // 设置x轴范围
-    if (_xRange != range.size()) {
-        _xRange = range.size();
-        ui.xRangeBox->setEditText(QString::number(_xRange));
-    }
-    // 设置滚动条
-    if (qAbs(range.lower * SCALE - ui.horizontalScrollBar->value()) > 1.0 / SCALE) {
-        int key = qRound(range.lower * SCALE);
-        ui.horizontalScrollBar->setValue(key);
-        replotFlag = false;
-    }
-}
-
-// y轴发生变化
-void Oscilloscope::yAxisChanged(QCPRange range)
-{
-    // 只有当用户拖拽customPlot控件时才会设置偏移值
-    if (range.center() != ui.yOffsetBox->value()) {
-        ui.yOffsetBox->setValue(range.center());
-    }
-    // 只有当用户拖拽customPlot控件时才会设置偏移值
-    if (range.size() != ui.yRangeBox->value()) {
-        ui.yRangeBox->setValue(range.size());
-    }
+    m_series[ch]->setVisible(item->isChecked());
+    m_series[ch]->setPen(QPen(item->color(), 1.1));
 }
 
 // 滚动条滑块移动时触发
@@ -327,75 +266,86 @@ void Oscilloscope::horzScrollBarChanged(int value)
     } else {
         replotFlag = false;
     }
-    if (ui.customPlot->xAxis->range().lower < value / SCALE || ui.horizontalScrollBar->maximum() != ui.horizontalScrollBar->value()) {
-        ui.customPlot->xAxis->setRange(value / SCALE,
-            _xRange, Qt::AlignLeft);
-    }
+    m_chart->axisX()->setRange(value, value + m_xRange);
 }
 
 // Y轴偏置改变
 void Oscilloscope::yOffsetChanged(double offset)
 {
-    double range = ui.customPlot->yAxis->range().size();
-    ui.customPlot->yAxis->setRange(offset, range, Qt::AlignCenter);
-    ui.customPlot->replot();
+    double range = ui.yRangeBox->value();
+
+    m_chart->axisY()->setRange(offset - range * 0.5, offset + range * 0.5);
 }
 
 // Y轴范围改变
 void Oscilloscope::yRangeChanged(double range)
 {
-    double offset = ui.customPlot->yAxis->range().center();
-    ui.customPlot->yAxis->setRange(offset, range, Qt::AlignCenter);
-    ui.customPlot->replot();
+    double offset = ui.yOffsetBox->value();
+
+    m_chart->axisY()->setRange(offset - range * 0.5, offset + range * 0.5);
 }
 
 // X轴范围改变
 void Oscilloscope::xRangeChanged(const QString &str)
 {
-    double upper = ui.customPlot->xAxis->range().upper;
+    m_count = m_buffer->update();
+    m_xRange = str.toDouble();
+    ui.horizontalScrollBar->setPageStep(m_xRange);
 
-    _xRange = str.toDouble();
-    if (upper < _xRange) {
-        ui.horizontalScrollBar->setRange(0, 0);
-        ui.horizontalScrollBar->setValue(0);
-        ui.customPlot->xAxis->setRange(0, _xRange);
+    int count = m_count - 1;
+    if (count > m_xRange) {
+        int lower = count - m_xRange;
+        m_chart->axisX()->setRange(lower, count);
+        bool req = ui.horizontalScrollBar->value()
+                == ui.horizontalScrollBar->maximum();
+        ui.horizontalScrollBar->setMaximum(lower);
+        if (req) {
+            ui.horizontalScrollBar->setValue(lower);
+        }
     } else {
-        ui.horizontalScrollBar->setRange(0, (int)((upper - _xRange) * SCALE));
-        ui.horizontalScrollBar->setValue((int)((upper - _xRange) * SCALE));
-        ui.customPlot->xAxis->setRange(upper, _xRange, Qt::AlignRight);
+        m_chart->axisX()->setRange(0, m_xRange);
+        ui.horizontalScrollBar->setMaximum(0);
     }
-    ui.horizontalScrollBar->setPageStep(_xRange * SCALE);
-    ui.customPlot->replot();
 }
 
 // 更新定时器触发
 void Oscilloscope::timeUpdata()
 {
-    // 显示更新
-    uint64_t key = count[0];
-    for (int i = 0; i < CH_NUM; ++i) {
-        key = key > count[i] ? key : count[i];
-    }
-    if (key > _xRange) {
-        ui.horizontalScrollBar->setRange(0, (int)((key - _xRange) * SCALE));
-        if (replotFlag || key <= ui.customPlot->xAxis->range().upper) {
-            ui.horizontalScrollBar->setValue((int)((key - _xRange) * SCALE));
+
+    int count = m_buffer->update();
+    if (count > m_xRange + 1 && count > m_count) {
+        if (replotFlag) {
+            qreal dx = m_chart->plotArea().width() / m_xRange;
+            dx *= count - m_count;
+            m_chart->scroll(dx, 0);
+        }
+        // update scroll bar
+        int lower = count - m_xRange - 1;
+        bool req = ui.horizontalScrollBar->value()
+                == ui.horizontalScrollBar->maximum();
+        ui.horizontalScrollBar->setMaximum(lower);
+        if (req) {
+            ui.horizontalScrollBar->setValue(lower);
         }
     }
-    ui.customPlot->replot();
+    m_count = count;
 }
 
 // 保存txt文件
-void Oscilloscope::saveText(const QString &fname)
+void Oscilloscope::saveWave(const QString &fname)
 {
     QFile file(fname);
-    uint64_t dataCountMax = maxCount();
+    int dataCountMax = m_buffer->maximumCount();
+
+    m_buffer->update();
 
     file.open(QFile::WriteOnly);
     QTextStream out(&file);
+    int count[CH_NUM];
 
     out << "Index";
     for (int i = 0; i < CH_NUM; ++i) {
+        count[i] = m_series[i]->count();
         if (count[i]) {
             out << ", CH" << i + 1;
         }
@@ -403,16 +353,104 @@ void Oscilloscope::saveText(const QString &fname)
     out << endl;
 
     out.setRealNumberPrecision(8);
-    for (uint64_t i = 0; i < dataCountMax; ++i) {
+    for (int i = 0; i < dataCountMax; ++i) {
         timeStamp->printTextStream(out, i);
         out << i;
         for (int j = 0; j < CH_NUM; ++j) {
             if (i < count[j]) {
-                double value = ui.customPlot->graph(j)->dataMainValue(i);
+                double value = m_series[j]->at(i).y();
                 out << ", " << value;
             }
         }
         out << endl;
     }
     file.close();
+}
+
+// 读取txt文件, 私有函数
+bool Oscilloscope::loadWave_p(const QString &fname)
+{
+    bool ok = true;
+    int channelCount = 0, lineCount = 0;
+    int channelIndex[CH_NUM];
+
+    clear();
+
+    QFile file(fname);
+    file.open(QFile::ReadOnly);
+    QByteArray line = file.readLine();
+    // load table header
+    QStringList lineList = csvSplitLine(line);
+    int listSize = lineList.size();
+    for (int i = 1; i < listSize && ok; ++i) {
+        QString str = lineList[i];
+        if (str.mid(0, 2) == "CH") {
+            int index = str.mid(2).toInt(&ok) - 1; // CH1 -> 0 ... CH16 -> 15
+            if (ok && index < CH_NUM) {
+                channelIndex[channelCount++] = index;
+            } else {
+                ok = false;
+            }
+        }
+    }
+    ok &= (channelCount < CH_NUM) & (channelCount + 1 == listSize);
+    while (!file.atEnd() && ok) {
+        line = file.readLine();
+        lineList = csvSplitLine(line);
+        if (lineList[0][0] == '#') { // time stamp
+            timeStamp->append(lineList[0].mid(2), lineCount);
+        } else if (lineList.size() == listSize) {
+            if (lineList[0].toInt() == lineCount++) { // 行号检查
+                for (int i = 1; i < listSize && ok; ++i) {
+                    int channel = channelIndex[i - 1];
+                    if (!lineList[i].isEmpty()) {
+                        double value = lineList[i].toDouble(&ok);
+                        m_buffer->append(channel, value);
+                    }
+                }
+            } else {
+                ok = false;
+            }
+        } else {
+            ok = false;
+        }
+    }
+
+    m_buffer->update();
+    if (ok) {
+        // update scroll bar
+        if ((int)lineCount > m_xRange) {
+            int lower = lineCount - m_xRange - 1;
+
+            ui.horizontalScrollBar->setMaximum(lower);
+            ui.horizontalScrollBar->setValue(lower);
+            m_chart->axisX()->setRange(lower, lineCount - 1);
+        } else {
+            ui.horizontalScrollBar->setMaximum(0);
+            m_chart->axisX()->setRange(0, m_xRange);
+        }
+    }
+
+    file.close();
+    return ok;
+}
+
+// d打开波形文件, 公有函数
+void Oscilloscope::loadWave(const QString &fname)
+{
+    if (m_buffer->maximumCount() > 0) {
+        QMessageBox::StandardButton button;
+
+        button = QMessageBox::warning(this, tr("Warning"),
+            tr("The current window has data not saved, "
+               "Still open the file?"),
+            QMessageBox::Yes | QMessageBox::Cancel);
+        if (button != QMessageBox::Yes) {
+            return;
+        }
+    }
+    if (loadWave_p(fname) == false) {
+        QMessageBox::critical(this, tr("Error"),
+            tr("File parsing error."));
+    }
 }

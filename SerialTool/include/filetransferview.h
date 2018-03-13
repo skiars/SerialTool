@@ -35,7 +35,7 @@ signals:
 private:
     Ui_FileTransferView ui;
     FileThread thread;
-    QByteArray receiveArray; // ½ÓÊÕ»º³åÇø
+    QByteArray receiveArray; // æ¥æ”¶ç¼“å†²åŒº
 };
 
 #endif
