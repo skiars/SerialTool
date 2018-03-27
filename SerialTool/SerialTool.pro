@@ -47,8 +47,8 @@ SOURCES += \
     source/oscopetimestamp.cpp \
     source/terminalview.cpp \
     source/serialport.cpp \
-    source/docmentdialog.cpp \
-    source/pointdatabuffer.cpp
+    source/pointdatabuffer.cpp \
+    source/valuedisplay.cpp
 
 HEADERS  += \
     include/aboutbox.h \
@@ -70,8 +70,8 @@ HEADERS  += \
     include/oscopetimestamp.h \
     include/terminalview.h \
     include/serialport.h \
-    include/docmentdialog.h \
-    include/pointdatabuffer.h
+    include/pointdatabuffer.h \
+    include/valuedisplay.h
 
 DISTFILES += \
     resource/images/clear.png \
@@ -99,6 +99,6 @@ FORMS += \
     ui/tcpudpport.ui \
     ui/terminalview.ui \
     ui/serialport.ui \
-    ui/docmentdialog.ui
+    ui/valuedisplay.ui
 
 LIBS += -lqscintilla2_qt5

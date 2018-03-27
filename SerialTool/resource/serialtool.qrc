@@ -11,6 +11,8 @@
         <file>images/save.ico</file>
         <file>images/start.ico</file>
         <file>images/open.ico</file>
+        <file>images/pin_down.png</file>
+        <file>images/pin_up.png</file>
     </qresource>
     <qresource prefix="/license">
         <file>license.html</file>

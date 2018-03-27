@@ -156,6 +156,7 @@
      <string>Tools</string>
     </property>
     <addaction name="actionOption"/>
+    <addaction name="actionValueDisplay"/>
     <addaction name="actionVedioBox"/>
    </widget>
    <widget class="QMenu" name="menu_3">
@@ -178,12 +179,14 @@
     <addaction name="separator"/>
     <addaction name="actionVisibleToolbar"/>
     <addaction name="actionVisibleStatusBar"/>
+    <addaction name="separator"/>
+    <addaction name="actionStaysOnTop"/>
    </widget>
    <widget class="QMenu" name="menu_5">
     <property name="title">
      <string>Help</string>
     </property>
-    <addaction name="actionDocment"/>
+    <addaction name="actionWiki"/>
     <addaction name="actionAbout"/>
    </widget>
    <addaction name="menu"/>
@@ -355,9 +358,12 @@
     <string>File Transmit</string>
    </property>
   </action>
-  <action name="actionDocment">
+  <action name="actionWiki">
    <property name="text">
-    <string>Docment</string>
+    <string>Wiki</string>
+   </property>
+   <property name="toolTip">
+    <string>Wiki</string>
    </property>
   </action>
   <action name="actionOpen">
@@ -373,6 +379,20 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>
+   </property>
+  </action>
+  <action name="actionValueDisplay">
+   <property name="text">
+    <string>Value Display</string>
+   </property>
+  </action>
+  <action name="actionStaysOnTop">
+   <property name="icon">
+    <iconset resource="../resource/serialtool.qrc">
+     <normaloff>:/SerialTool/images/pin_up.png</normaloff>:/SerialTool/images/pin_up.png</iconset>
+   </property>
+   <property name="text">
+    <string>Stays On Top</string>
    </property>
   </action>
  </widget>

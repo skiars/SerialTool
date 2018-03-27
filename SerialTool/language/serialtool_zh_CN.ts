@@ -20,9 +20,8 @@
 <context>
     <name>DocmentDialog</name>
     <message>
-        <location filename="../ui/docmentdialog.ui" line="14"/>
         <source>Docment</source>
-        <translation>文档
+        <translation type="vanished">文档
 </translation>
     </message>
 </context>
@@ -176,121 +175,126 @@
         <translation>系统</translation>
     </message>
     <message>
-        <location filename="../ui/optionsbox.ui" line="81"/>
+        <location filename="../ui/optionsbox.ui" line="91"/>
         <source>Language</source>
         <translation>语言</translation>
     </message>
     <message>
-        <location filename="../ui/optionsbox.ui" line="111"/>
+        <location filename="../ui/optionsbox.ui" line="81"/>
         <source>Theme</source>
         <translation>主题</translation>
     </message>
     <message>
-        <location filename="../ui/optionsbox.ui" line="138"/>
+        <location filename="../ui/optionsbox.ui" line="101"/>
+        <source>Opacity</source>
+        <translation>不透明度</translation>
+    </message>
+    <message>
+        <location filename="../ui/optionsbox.ui" line="177"/>
         <source>Terminal</source>
         <translation>终端</translation>
     </message>
     <message>
-        <location filename="../ui/optionsbox.ui" line="156"/>
+        <location filename="../ui/optionsbox.ui" line="195"/>
         <source>Font</source>
         <translation>字体</translation>
     </message>
     <message>
-        <location filename="../ui/optionsbox.ui" line="162"/>
-        <location filename="../ui/optionsbox.ui" line="179"/>
+        <location filename="../ui/optionsbox.ui" line="201"/>
+        <location filename="../ui/optionsbox.ui" line="218"/>
         <source>Fonts...</source>
         <translation>字体...</translation>
     </message>
     <message>
-        <location filename="../ui/optionsbox.ui" line="169"/>
+        <location filename="../ui/optionsbox.ui" line="208"/>
         <source>Multi-Byte</source>
         <translation>多字节字符</translation>
     </message>
     <message>
-        <location filename="../ui/optionsbox.ui" line="206"/>
+        <location filename="../ui/optionsbox.ui" line="245"/>
         <source>ASCII</source>
         <translation>ASCII字符</translation>
     </message>
     <message>
-        <location filename="../ui/optionsbox.ui" line="219"/>
+        <location filename="../ui/optionsbox.ui" line="258"/>
         <source>Text Color</source>
         <translation>文本颜色</translation>
     </message>
     <message>
-        <location filename="../ui/optionsbox.ui" line="225"/>
-        <location filename="../ui/optionsbox.ui" line="272"/>
-        <location filename="../ui/optionsbox.ui" line="337"/>
-        <location filename="../ui/optionsbox.ui" line="364"/>
+        <location filename="../ui/optionsbox.ui" line="264"/>
+        <location filename="../ui/optionsbox.ui" line="311"/>
+        <location filename="../ui/optionsbox.ui" line="376"/>
+        <location filename="../ui/optionsbox.ui" line="403"/>
         <source>Color...</source>
         <translation>颜色...</translation>
     </message>
     <message>
-        <location filename="../ui/optionsbox.ui" line="242"/>
+        <location filename="../ui/optionsbox.ui" line="281"/>
         <source>Rx Area</source>
         <translation>接收区</translation>
     </message>
     <message>
-        <location filename="../ui/optionsbox.ui" line="252"/>
+        <location filename="../ui/optionsbox.ui" line="291"/>
         <source>Tx Area</source>
         <translation>发送区</translation>
     </message>
     <message>
-        <location filename="../ui/optionsbox.ui" line="296"/>
+        <location filename="../ui/optionsbox.ui" line="335"/>
         <source>Plot</source>
         <translation>波形绘制</translation>
     </message>
     <message>
-        <location filename="../ui/optionsbox.ui" line="311"/>
+        <location filename="../ui/optionsbox.ui" line="350"/>
         <source>Color</source>
         <translation>颜色</translation>
     </message>
     <message>
-        <location filename="../ui/optionsbox.ui" line="317"/>
+        <location filename="../ui/optionsbox.ui" line="356"/>
         <source>Background</source>
         <translation>背景颜色</translation>
     </message>
     <message>
-        <location filename="../ui/optionsbox.ui" line="344"/>
+        <location filename="../ui/optionsbox.ui" line="383"/>
         <source>Grid</source>
         <translation>网格颜色</translation>
     </message>
     <message>
-        <location filename="../ui/optionsbox.ui" line="374"/>
+        <location filename="../ui/optionsbox.ui" line="413"/>
         <source>Graphics Options</source>
         <translation>图形选项</translation>
     </message>
     <message>
-        <location filename="../ui/optionsbox.ui" line="383"/>
+        <location filename="../ui/optionsbox.ui" line="422"/>
         <source>Update Interval (ms)</source>
         <translation>刷新时间(ms)</translation>
     </message>
     <message>
-        <location filename="../ui/optionsbox.ui" line="390"/>
+        <location filename="../ui/optionsbox.ui" line="429"/>
         <source>Use Antialias</source>
         <translation>抗锯齿</translation>
     </message>
     <message>
-        <location filename="../ui/optionsbox.ui" line="397"/>
+        <location filename="../ui/optionsbox.ui" line="436"/>
         <source>Use OpenGL</source>
         <translation>使用OpenGL</translation>
     </message>
     <message>
-        <location filename="../ui/optionsbox.ui" line="453"/>
+        <location filename="../ui/optionsbox.ui" line="492"/>
         <source>Command</source>
         <translation>命令</translation>
     </message>
     <message>
-        <location filename="../ui/optionsbox.ui" line="483"/>
+        <location filename="../ui/optionsbox.ui" line="522"/>
         <source>New</source>
         <translation>新建</translation>
     </message>
     <message>
-        <location filename="../ui/optionsbox.ui" line="490"/>
+        <location filename="../ui/optionsbox.ui" line="529"/>
         <source>Edit</source>
         <translation>编辑</translation>
     </message>
     <message>
-        <location filename="../ui/optionsbox.ui" line="497"/>
+        <location filename="../ui/optionsbox.ui" line="536"/>
         <source> Delete</source>
         <translation>删除</translation>
     </message>
@@ -318,22 +322,22 @@
         <translation>保持接收</translation>
     </message>
     <message>
-        <location filename="../source/oscilloscope.cpp" line="467"/>
+        <location filename="../source/oscilloscope.cpp" line="444"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../source/oscilloscope.cpp" line="468"/>
+        <location filename="../source/oscilloscope.cpp" line="445"/>
         <source>The current window has data not saved, Still open the file?</source>
         <translation>当前窗口数据未保存，仍然打开文件？</translation>
     </message>
     <message>
-        <location filename="../source/oscilloscope.cpp" line="476"/>
+        <location filename="../source/oscilloscope.cpp" line="453"/>
         <source>Error</source>
         <translation>错误</translation>
     </message>
     <message>
-        <location filename="../source/oscilloscope.cpp" line="477"/>
+        <location filename="../source/oscilloscope.cpp" line="454"/>
         <source>File parsing error.</source>
         <translation>文件解析错误。</translation>
     </message>
@@ -394,66 +398,66 @@ Port may be occupied or configured incorrectly!</source>
 <context>
     <name>SerialTool</name>
     <message>
-        <location filename="../source/serialtool.cpp" line="262"/>
-        <location filename="../source/serialtool.cpp" line="271"/>
+        <location filename="../source/serialtool.cpp" line="278"/>
+        <location filename="../source/serialtool.cpp" line="287"/>
         <source>Portable Network Graphic Format (*.png)</source>
         <translation>图像文件存储格式 (*.png)</translation>
     </message>
     <message>
-        <location filename="../source/serialtool.cpp" line="263"/>
-        <location filename="../source/serialtool.cpp" line="273"/>
+        <location filename="../source/serialtool.cpp" line="279"/>
+        <location filename="../source/serialtool.cpp" line="289"/>
         <source>Bitmap (*.bmp)</source>
         <translation>位图文件 (*.bmp)</translation>
     </message>
     <message>
-        <location filename="../source/serialtool.cpp" line="264"/>
-        <location filename="../source/serialtool.cpp" line="275"/>
-        <location filename="../source/serialtool.cpp" line="287"/>
+        <location filename="../source/serialtool.cpp" line="280"/>
+        <location filename="../source/serialtool.cpp" line="291"/>
+        <location filename="../source/serialtool.cpp" line="303"/>
         <source>Wave Plain Text File (*.txt)</source>
         <translation>波形纯文本文件 (*.txt)</translation>
     </message>
     <message>
-        <location filename="../source/serialtool.cpp" line="265"/>
-        <location filename="../source/serialtool.cpp" line="277"/>
+        <location filename="../source/serialtool.cpp" line="281"/>
+        <location filename="../source/serialtool.cpp" line="293"/>
         <source>Terminal Text File (*.txt)</source>
         <translation>终端文本文件 (*.txt)</translation>
     </message>
     <message>
-        <location filename="../source/serialtool.cpp" line="345"/>
+        <location filename="../source/serialtool.cpp" line="361"/>
         <source>Start Tx/Rx</source>
         <translation>开始发送/接收</translation>
     </message>
     <message>
-        <location filename="../ui/serialtool.ui" line="260"/>
-        <location filename="../source/serialtool.cpp" line="352"/>
+        <location filename="../ui/serialtool.ui" line="263"/>
+        <location filename="../source/serialtool.cpp" line="368"/>
         <source>Pause Tx/Rx</source>
         <translation>暂停发送/接收</translation>
     </message>
     <message>
-        <location filename="../ui/serialtool.ui" line="244"/>
-        <location filename="../source/serialtool.cpp" line="443"/>
+        <location filename="../ui/serialtool.ui" line="247"/>
+        <location filename="../source/serialtool.cpp" line="459"/>
         <source>Open Port</source>
         <translation>打开端口</translation>
     </message>
     <message>
-        <location filename="../source/serialtool.cpp" line="422"/>
+        <location filename="../source/serialtool.cpp" line="438"/>
         <source>Close Port</source>
         <translation>关闭端口</translation>
     </message>
     <message>
         <location filename="../ui/serialtool.ui" line="69"/>
-        <location filename="../ui/serialtool.ui" line="312"/>
+        <location filename="../ui/serialtool.ui" line="315"/>
         <source>Terminal</source>
         <translation>终端</translation>
     </message>
     <message>
-        <location filename="../ui/serialtool.ui" line="315"/>
+        <location filename="../ui/serialtool.ui" line="318"/>
         <source>Tester</source>
         <translation>调试助手</translation>
     </message>
     <message>
         <location filename="../ui/serialtool.ui" line="94"/>
-        <location filename="../ui/serialtool.ui" line="323"/>
+        <location filename="../ui/serialtool.ui" line="326"/>
         <source>Plot</source>
         <translation>波形绘制</translation>
     </message>
@@ -468,17 +472,17 @@ Port may be occupied or configured incorrectly!</source>
         <translation>工具</translation>
     </message>
     <message>
-        <location filename="../ui/serialtool.ui" line="163"/>
+        <location filename="../ui/serialtool.ui" line="164"/>
         <source>Edit</source>
         <translation>编辑</translation>
     </message>
     <message>
-        <location filename="../ui/serialtool.ui" line="173"/>
+        <location filename="../ui/serialtool.ui" line="174"/>
         <source>View</source>
         <translation>视图</translation>
     </message>
     <message>
-        <location filename="../ui/serialtool.ui" line="184"/>
+        <location filename="../ui/serialtool.ui" line="187"/>
         <source>Help</source>
         <translation>帮助</translation>
     </message>
@@ -487,97 +491,112 @@ Port may be occupied or configured incorrectly!</source>
         <translation type="vanished">端口工具栏</translation>
     </message>
     <message>
-        <location filename="../ui/serialtool.ui" line="223"/>
-        <location filename="../source/serialtool.cpp" line="261"/>
+        <location filename="../ui/serialtool.ui" line="226"/>
+        <location filename="../source/serialtool.cpp" line="277"/>
         <source>Save</source>
         <translation>保存</translation>
     </message>
     <message>
-        <location filename="../ui/serialtool.ui" line="226"/>
+        <location filename="../ui/serialtool.ui" line="229"/>
         <source>Ctrl+S</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ui/serialtool.ui" line="235"/>
+        <location filename="../ui/serialtool.ui" line="238"/>
         <source>Options</source>
         <translation>选项</translation>
     </message>
     <message>
-        <location filename="../ui/serialtool.ui" line="247"/>
+        <location filename="../ui/serialtool.ui" line="250"/>
         <source>Alt+S</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ui/serialtool.ui" line="263"/>
+        <location filename="../ui/serialtool.ui" line="266"/>
         <source>Alt+R</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ui/serialtool.ui" line="272"/>
+        <location filename="../ui/serialtool.ui" line="275"/>
         <source>Clear Buffer</source>
         <translation>清空缓冲</translation>
     </message>
     <message>
-        <location filename="../ui/serialtool.ui" line="275"/>
+        <location filename="../ui/serialtool.ui" line="278"/>
         <source>Alt+C</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ui/serialtool.ui" line="284"/>
+        <location filename="../ui/serialtool.ui" line="287"/>
         <source>Port Settings</source>
         <translation>端口设置</translation>
     </message>
     <message>
-        <location filename="../ui/serialtool.ui" line="293"/>
+        <location filename="../ui/serialtool.ui" line="296"/>
         <source>Close</source>
         <translation>关闭</translation>
     </message>
     <message>
-        <location filename="../ui/serialtool.ui" line="347"/>
+        <location filename="../ui/serialtool.ui" line="350"/>
         <source>Vedio Box</source>
         <translation>视频图传</translation>
     </message>
     <message>
-        <location filename="../ui/serialtool.ui" line="360"/>
-        <source>Docment</source>
-        <translation>文档</translation>
+        <location filename="../ui/serialtool.ui" line="363"/>
+        <location filename="../ui/serialtool.ui" line="366"/>
+        <source>Wiki</source>
+        <translation></translation>
     </message>
     <message>
-        <location filename="../ui/serialtool.ui" line="369"/>
-        <location filename="../ui/serialtool.ui" line="372"/>
-        <location filename="../source/serialtool.cpp" line="286"/>
+        <location filename="../ui/serialtool.ui" line="395"/>
+        <source>Stays On Top</source>
+        <translation>置于顶层</translation>
+    </message>
+    <message>
+        <source>Docment</source>
+        <translation type="vanished">文档</translation>
+    </message>
+    <message>
+        <location filename="../ui/serialtool.ui" line="375"/>
+        <location filename="../ui/serialtool.ui" line="378"/>
+        <location filename="../source/serialtool.cpp" line="302"/>
         <source>Open</source>
         <translation>打开</translation>
     </message>
     <message>
-        <location filename="../ui/serialtool.ui" line="375"/>
+        <location filename="../ui/serialtool.ui" line="381"/>
         <source>Ctrl+O</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ui/serialtool.ui" line="197"/>
-        <location filename="../ui/serialtool.ui" line="304"/>
+        <location filename="../ui/serialtool.ui" line="386"/>
+        <source>Value Display</source>
+        <translation>数值显示器</translation>
+    </message>
+    <message>
+        <location filename="../ui/serialtool.ui" line="200"/>
+        <location filename="../ui/serialtool.ui" line="307"/>
         <source>Tool Bar</source>
         <translation>工具栏</translation>
     </message>
     <message>
         <location filename="../ui/serialtool.ui" line="109"/>
-        <location filename="../ui/serialtool.ui" line="355"/>
+        <location filename="../ui/serialtool.ui" line="358"/>
         <source>File Transmit</source>
         <translation>文件传输</translation>
     </message>
     <message>
-        <location filename="../ui/serialtool.ui" line="334"/>
+        <location filename="../ui/serialtool.ui" line="337"/>
         <source>Status Bar</source>
         <translation>状态栏</translation>
     </message>
     <message>
-        <location filename="../ui/serialtool.ui" line="339"/>
+        <location filename="../ui/serialtool.ui" line="342"/>
         <source>About</source>
         <translation>关于</translation>
     </message>
     <message>
-        <location filename="../ui/serialtool.ui" line="342"/>
+        <location filename="../ui/serialtool.ui" line="345"/>
         <source>F1</source>
         <translation></translation>
     </message>
@@ -694,6 +713,29 @@ Please check the port number.</source>
         <location filename="../source/terminalview.cpp" line="173"/>
         <source>Connect port and start transmission to enable this button</source>
         <translation>连接端口并开启传输来启用此按钮</translation>
+    </message>
+</context>
+<context>
+    <name>ValueDisplay</name>
+    <message>
+        <location filename="../ui/valuedisplay.ui" line="14"/>
+        <source>Value Display</source>
+        <translation>数值显示器</translation>
+    </message>
+    <message>
+        <location filename="../ui/valuedisplay.ui" line="33"/>
+        <source>Name</source>
+        <translation>名称</translation>
+    </message>
+    <message>
+        <location filename="../ui/valuedisplay.ui" line="38"/>
+        <source>Value</source>
+        <translation>值</translation>
+    </message>
+    <message>
+        <location filename="../ui/valuedisplay.ui" line="43"/>
+        <source>Additional</source>
+        <translation>附加值</translation>
     </message>
 </context>
 <context>

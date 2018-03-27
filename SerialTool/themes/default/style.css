@@ -1,4 +1,4 @@
-﻿* {
+* {
   font-family: 'Microsoft YaHei UI', '微软雅黑', '宋体';
   outline: none; /* 去掉虚线 */
 }
@@ -297,9 +297,23 @@ QProgressBar {
 }
 
 QProgressBar::chunk{  
-    background-color: #05B8CC;
+  background-color: #05B8CC;
 }
 
 QComboBox#protocolBox {
   width: 100px;
+}
+
+QSlider::groove:horizontal {
+  height: 3px;
+  background: #D1D1D1;
+  border: 1px solid grey;
+  border-radius: 2px;
+}
+QSlider::handle:horizontal {
+  background: rgb(37, 128, 255);
+  width: 15px;
+  height: 13px;
+  margin: -6px 0px;
+  border-radius: 7px;
 }

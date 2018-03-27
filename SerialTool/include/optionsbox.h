@@ -30,6 +30,8 @@ private slots:
     void onCmdEditClick();
     void onCmdDeleteClick();
     void onUseOpenGLClick(bool status);
+    void onOpacitySilderChanged(int value);
+    void onOpacitySpinBoxEdited();
     void setCmdItemColor();
     void setLanguage(int index);
 

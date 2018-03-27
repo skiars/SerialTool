@@ -12,7 +12,7 @@
 class TcpUdpPort;
 class WaveDecode;
 class SerialPort;
-class DocmentDialog;
+class ValueDisplay;
 
 class SerialTool : public QMainWindow
 {
@@ -49,10 +49,12 @@ private slots:
     void saveFile();
     void openFile();
     void about();
-    void docment();
+    void openWiki();
     void onVedioBoxTriggered();
     void onVedioBoxDelete();
-    void onDocDialogDelete();
+    void onValueDisplayTriggered();
+    void onValueDisplayDelete();
+    void onStaysOnTopTriggered();
     void currentTabChanged(int index);
     void dispPortStatus();
 
@@ -63,6 +65,7 @@ private:
     bool openTcpUdpPort();
     void loadPortTool();
     void setTabActionIndex(int index);
+    void setWindowStaysOnTop(bool enabled);
 
 private:
     Ui_SerialTool ui;
@@ -75,8 +78,8 @@ private:
     int rxCount, txCount;
     QLabel *rxCntLabel, *txCntLabel, *portInfoLabel;
     QVector<QTranslator*> translator;
-    VedioBox *vedioBox = NULL;
-    DocmentDialog *m_docDialog = NULL;
+    VedioBox *m_vedioBox = NULL;
+    ValueDisplay *m_valueDisplay = NULL;
     PortType portType;
     WaveDecode* waveDecode;
     SerialPort *serialPort;

@@ -79,6 +79,8 @@ OptionsBox::OptionsBox(SerialTool *parent) : QDialog(parent)
     connect(ui.cmdList, SIGNAL(itemChanged(QListWidgetItem *)), this, SLOT(setCmdItemColor()));
     connect(ui.languageBox, SIGNAL(currentIndexChanged(int)), this, SLOT(setLanguage(int)));
     connect(ui.useOpenGLBox, SIGNAL(clicked(bool)), this, SLOT(onUseOpenGLClick(bool)));
+    connect(ui.opacitySlider, SIGNAL(valueChanged(int)), this, SLOT(onOpacitySilderChanged(int)));
+    connect(ui.opacitySpinBox, SIGNAL(editingFinished()), this, SLOT(onOpacitySpinBoxEdited()));
 }
 
 OptionsBox::~OptionsBox()
@@ -101,6 +103,8 @@ void OptionsBox::setup()
     txColor = config->value("TransmitTextColor").toString();
     bgColor = config->value("PlotBackground").toString();
     axColor = config->value("AxisColor").toString();
+    ui.opacitySlider->setValue(config->value("WindowOpacity").toInt());
+    ui.opacitySpinBox->setValue(ui.opacitySlider->value());
     ui.useOpenGLBox->setChecked(config->value("UseOpenGL").toBool());
     ui.useAntiBox->setChecked(config->value("UseAntialias").toBool());
     ui.updateIntervalBox->setValue(config->value("UpdateInterval").toInt());
@@ -146,6 +150,7 @@ void OptionsBox::processOptions(QAbstractButton *button)
         config->setValue("TransmitTextColor", QVariant(txColor));
         config->setValue("PlotBackground", QVariant(bgColor));
         config->setValue("AxisColor", QVariant(axColor));
+        config->setValue("WindowOpacity", QVariant(ui.opacitySpinBox->value()));
         config->setValue("UseOpenGL", QVariant(ui.useOpenGLBox->isChecked()));
         config->setValue("UseAntialias", QVariant(ui.useAntiBox->isChecked()));
         config->setValue("UpdateInterval", QVariant(ui.updateIntervalBox->value()));
@@ -315,6 +320,16 @@ void OptionsBox::loadCommand()
             setCmdItemColor(); // 上色
         }
     }
+}
+
+void OptionsBox::onOpacitySilderChanged(int value)
+{
+    ui.opacitySpinBox->setValue(value);
+}
+
+void OptionsBox::onOpacitySpinBoxEdited()
+{
+    ui.opacitySlider->setValue(ui.opacitySpinBox->value());
 }
 
 void OptionsBox::saveCommand()

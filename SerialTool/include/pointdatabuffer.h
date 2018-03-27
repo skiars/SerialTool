@@ -20,7 +20,7 @@ public:
 
 private:
     const QVector<QtCharts::QLineSeries*> *m_series;
-    QVector<QList<QPointF>> m_data;
+    QVector<QVector<QPointF>> m_data;
     QVector<int> m_count;
 };
 

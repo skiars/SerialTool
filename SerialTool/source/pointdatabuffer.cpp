@@ -23,8 +23,7 @@ int PointDataBuffer::update()
 
     for (int i = 0; i < size; ++i) {
         if (m_data[i].size()) {
-            m_series->at(i)->append(m_data[i]); // append data
-            m_data[i].clear(); // clear buffer
+            m_series->at(i)->replace(m_data[i]);
         }
     }
     return maximumCount();

@@ -4,6 +4,7 @@
 #include <QFileInfo>
 #include <QTranslator>
 #include <QFileDialog>
+#include <QDesktopServices>
 #include "portsetbox.h"
 #include "optionsbox.h"
 #include "aboutbox.h"
@@ -12,7 +13,7 @@
 #include "tcpudpport.h"
 #include "defaultconfig.h"
 #include "serialport.h"
-#include "docmentdialog.h"
+#include "valuedisplay.h"
 
 SerialTool::SerialTool(QWidget *parent)
     : QMainWindow(parent)
@@ -71,14 +72,16 @@ SerialTool::SerialTool(QWidget *parent)
     connect(ui.tabWidget, SIGNAL(currentChanged(int)), this, SLOT(tabIndexChanged(int)));
     connect(tabActionGroup, SIGNAL(triggered(QAction*)), this, SLOT(tabActionGroupTriggered(QAction*)));
     connect(ui.actionAbout, SIGNAL(triggered()), this, SLOT(about()));
-    connect(ui.actionDocment, SIGNAL(triggered()), this, SLOT(docment()));
+    connect(ui.actionWiki, SIGNAL(triggered()), this, SLOT(openWiki()));
     connect(ui.fileTransfer, &FileTransferView::sendData, this, &SerialTool::writePort);
     connect(ui.actionVedioBox, SIGNAL(triggered()), this, SLOT(onVedioBoxTriggered()));
+    connect(ui.actionValueDisplay, SIGNAL(triggered()), this, SLOT(onValueDisplayTriggered()));
     connect(ui.tabWidget, SIGNAL(currentChanged(int)), this, SLOT(currentTabChanged(int)));
     connect(serialPort, SIGNAL(portChanged()), this, SLOT(dispPortStatus()));
     connect(serialPort, SIGNAL(portError()), this, SLOT(closePort()));
     connect(tcpUdpPort, SIGNAL(protocolChanged()), this, SLOT(dispPortStatus()));
     connect(tcpUdpPort, SIGNAL(connectionError()), this, SLOT(closePort()));
+    connect(ui.actionStaysOnTop, SIGNAL(triggered()), this, SLOT(onStaysOnTopTriggered()));
 
     secTimer.start(1000);
 }
@@ -165,6 +168,17 @@ void SerialTool::loadSettings()
     ui.oscPlot->setUpdateInterval(config->value("UpdateInterval").toInt());
     PortType type = (PortType)config->value("PortType").toInt();
 
+    // 窗口透明度
+    int opacity = config->value("WindowOpacity").toInt();
+    opacity = opacity < 30 ? 100 : opacity <= 100 ? opacity : 100;
+    setWindowOpacity(opacity / 100.0);
+    if (m_valueDisplay != NULL) {
+        m_valueDisplay->setWindowOpacity(windowOpacity());
+    }
+    if (m_vedioBox != NULL) {
+        m_vedioBox->setWindowOpacity(windowOpacity());
+    }
+
     // 语言设置
     setLanguage(config->value("Language").toString());
     setStyleSheet(config->value("Theme").toString());
@@ -202,6 +216,7 @@ void SerialTool::loadConfig()
     ui.statusBar->setVisible(config->value("StatusBarVisible").toBool());
     // 这里如果直接速读取ui.statusBar->isVisible()会是false,原因不明
     ui.actionVisibleStatusBar->setChecked(config->value("StatusBarVisible").toBool());
+    setWindowStaysOnTop(config->value("WindowStaysOnTop").toBool());
     config->endGroup();
 
     // 调试终端配置
@@ -232,6 +247,7 @@ void SerialTool::saveConfig()
         QVariant(ui.tabWidget->currentIndex()));
     config->setValue("ToolBarVisible", QVariant(ui.toolBar1->isVisible()));
     config->setValue("StatusBarVisible", QVariant(ui.statusBar->isVisible()));
+    config->setValue("WindowStaysOnTop", QVariant(windowFlags() & Qt::WindowStaysOnTopHint));
     config->endGroup();
 
     // 调试终端配置
@@ -494,8 +510,11 @@ void SerialTool::readPortData()
         if (ui.tabWidget->currentIndex() == 2) {
             ui.fileTransfer->readData(buf);
         }
-        if (vedioBox != NULL) {
-            vedioBox->addData(buf);
+        if (m_vedioBox != NULL) {
+            m_vedioBox->addData(buf);
+        }
+        if (m_valueDisplay != NULL) {
+            m_valueDisplay->addData(buf);
         }
     }
     buf.clear();
@@ -534,20 +553,21 @@ void SerialTool::about()
     aboutBox.exec();
 }
 
-void SerialTool::docment()
+void SerialTool::onValueDisplayTriggered()
 {
-    if (m_docDialog == NULL) {
-        m_docDialog = new DocmentDialog(this);
-        m_docDialog->setModal(false);
-        m_docDialog->setAttribute(Qt::WA_DeleteOnClose);
-        connect(m_docDialog, SIGNAL(destroyed()), this, SLOT(onDocDialogDelete()));
-        m_docDialog->show();
+    if (m_valueDisplay == NULL) {
+        m_valueDisplay = new ValueDisplay(this);
+        m_valueDisplay->setModal(false);
+        m_valueDisplay->setAttribute(Qt::WA_DeleteOnClose);
+        m_valueDisplay->setWindowOpacity(windowOpacity());
+        connect(m_valueDisplay, SIGNAL(destroyed()), this, SLOT(onValueDisplayDelete()));
+        m_valueDisplay->show();
     }
 }
 
-void SerialTool::onDocDialogDelete()
+void SerialTool::onValueDisplayDelete()
 {
-    m_docDialog = NULL;
+    m_valueDisplay = NULL;
 }
 
 void SerialTool::loadPortTool()
@@ -565,19 +585,43 @@ void SerialTool::loadPortTool()
 
 void SerialTool::onVedioBoxTriggered()
 {
-    if (vedioBox == NULL) { // 当对话框没有创建时创建
-        vedioBox = new VedioBox(this);
-        connect(vedioBox, SIGNAL(destroyed()), this, SLOT(onVedioBoxDelete()));
-        vedioBox->setModal(false); // 非模态对话框
-        vedioBox->setAttribute(Qt::WA_DeleteOnClose);
-        vedioBox->setFilePath(docPath);
-        vedioBox->show();
+    if (m_vedioBox == NULL) { // 当对话框没有创建时创建
+        m_vedioBox = new VedioBox(this);
+        connect(m_vedioBox, SIGNAL(destroyed()), this, SLOT(onVedioBoxDelete()));
+        m_vedioBox->setModal(false); // 非模态对话框
+        m_vedioBox->setAttribute(Qt::WA_DeleteOnClose);
+        m_vedioBox->setWindowOpacity(windowOpacity());
+        m_vedioBox->setFilePath(docPath);
+        m_vedioBox->show();
     }
 }
 
 void SerialTool::onVedioBoxDelete()
 {
-    vedioBox = NULL;
+    m_vedioBox = NULL;
+}
+
+void SerialTool::setWindowStaysOnTop(bool enabled)
+{
+    Qt::WindowFlags flags = enabled ?
+                 Qt::WindowStaysOnTopHint : Qt::Window;
+    QString str = enabled ? ":/SerialTool/images/pin_down.png"
+                          : ":/SerialTool/images/pin_up.png";
+
+    hide();
+    setWindowFlags(flags);
+    ui.actionStaysOnTop->setIcon(QIcon(str));
+    show();
+}
+
+void SerialTool::onStaysOnTopTriggered()
+{
+    setWindowStaysOnTop(!(windowFlags() & Qt::WindowStaysOnTopHint));
+}
+
+void SerialTool::openWiki()
+{
+    QDesktopServices::openUrl(QUrl("https://github.com/Le-Seul/SerialTool/wiki"));
 }
 
 void SerialTool::currentTabChanged(int index)
