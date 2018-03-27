@@ -37,7 +37,3 @@ SerialTool是一个实用的串口调试工具，这款工具支持串口调试�
 本程序使用GPL协议发布，但是[./SerialTool/slave](./SerialTool/slave)目录下的源码不受GPL协议约束，用户可以随意使用。
 
 [License](./LICENSE)
-
-## 文档
-
-[SerialTool使用说明](./SerialTool/doc/index.md)
