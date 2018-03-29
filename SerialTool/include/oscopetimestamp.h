@@ -1,19 +1,17 @@
 #ifndef __OSCOPE_TIME_STAMP_H
 #define __OSCOPE_TIME_STAMP_H
 
-
 #include <QVector>
 #include <QTextStream>
-
-struct WaveDataType;
+#include "wavedecode.h"
 
 class OscopeTimeStamp {
 public:
-    OscopeTimeStamp() { timeStamp.clear(); }
+    OscopeTimeStamp() { m_timeStampVector.clear(); }
     void printTextStream(QTextStream &stream, uint64_t count);
-    void append(const WaveDataType &data, uint64_t count);
+    void append(const WaveDecode::DataType &data, uint64_t count);
     void append(const QString &string, uint64_t count);
-    void clear() { timeStamp.clear(); }
+    void clear() { m_timeStampVector.clear(); }
 
 private:
     struct TimeStamp_p {
@@ -28,7 +26,7 @@ private:
         uint32_t sampleRate;
     };
 
-    QVector<TimeStamp_p> timeStamp;
+    QVector<TimeStamp_p> m_timeStampVector;
 };
 
 #endif

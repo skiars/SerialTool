@@ -25,7 +25,7 @@ ValueDisplay::~ValueDisplay()
     delete ui;
 }
 
-void ValueDisplay::addData(const QByteArray &array)
+void ValueDisplay::append(const QByteArray &array)
 {
     m_array.append(array);
 

@@ -1,18 +1,19 @@
 #ifndef __OSCILLOSCOPE_H
 #define __OSCILLOSCOPE_H
 
-#include "ui_oscilloscope.h"
-
-#include <QTimer>
+#include <QWidget>
 
 #ifndef  CH_NUM
 #define CH_NUM 16
 #endif
 
-struct WaveDataType;
+namespace Ui {
+class Oscilloscope;
+}
 class OscopeTimeStamp;
 class PointDataBuffer;
 class ChannelItem;
+class WaveDecode;
 class QSettings;
 namespace QtCharts {
 class QLineSeries;
@@ -39,7 +40,7 @@ public:
     void setBackground(QColor color);
     void setGridColor(QColor color);
     void setUpdateInterval(int msec);
-    void addData(const WaveDataType& data);
+    void append(const QByteArray &array);
     void clear();
 
     void savePng(const QString &fileName);
@@ -54,9 +55,7 @@ private:
     QStringList csvSplitLine(const QString &line) {
         return line.split(", ");
     }
-    ChannelItem* channelWidget(int channel) {
-        return (ChannelItem *)(ui.channelList->itemWidget(ui.channelList->item(channel)));
-    }
+    ChannelItem* channelWidget(int channel);
 
 private slots:
     void yOffsetChanged(double offset);
@@ -67,14 +66,15 @@ private slots:
     void timeUpdata();
 
 private:
-    Ui_Oscilloscope ui;
+    Ui::Oscilloscope *ui;
     bool replotFlag = 1;
     QVector<QtCharts::QLineSeries*> m_series;
     QtCharts::QChart *m_chart;
     int m_count, m_xRange;
-    QTimer updataTimer;
-    OscopeTimeStamp* timeStamp;
+    QTimer *m_timer;
+    OscopeTimeStamp *m_timeStamp;
     PointDataBuffer *m_buffer;
+    WaveDecode *m_decode;
 };
 
 #endif

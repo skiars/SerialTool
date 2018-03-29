@@ -1,4 +1,5 @@
-﻿#include "portsetbox.h"
+#include "portsetbox.h"
+#include "ui_portsetbox.h"
 
 #define _size(x) (sizeof(x) / sizeof(x[0]))
 
@@ -29,7 +30,9 @@ static const QSerialPort::FlowControl FlowControl[] = {
     QSerialPort::SoftwareControl
 };
 
-PortSetBox::PortSetBox(QSerialPort *port, QWidget *parent) : QDialog(parent)
+PortSetBox::PortSetBox(QSerialPort *port, QWidget *parent) :
+    QDialog(parent),
+    ui(new Ui::PortSetBox)
 {
     unsigned int i;
 
@@ -38,29 +41,29 @@ PortSetBox::PortSetBox(QSerialPort *port, QWidget *parent) : QDialog(parent)
     flags |= Qt::WindowCloseButtonHint;
     setWindowFlags(flags);
 
-    ui.setupUi(this);
+    ui->setupUi(this);
     setFixedSize(200, 150); // 不能伸缩的对话框
 
     serialPort = port;
 
     for (i = 0; port->dataBits() != DataBits[i] && i < _size(DataBits); ++i);
-    ui.dataBitsBox->setCurrentIndex(i);
+    ui->dataBitsBox->setCurrentIndex(i);
     for (i = 0; port->parity() != Parity[i] && i < _size(Parity); ++i);
-    ui.paritBox->setCurrentIndex(i);
+    ui->paritBox->setCurrentIndex(i);
     for (i = 0; port->stopBits() != StopBits[i] && i < _size(StopBits); ++i);
-    ui.stopBitsBox->setCurrentIndex(i);
+    ui->stopBitsBox->setCurrentIndex(i);
     for (i = 0; port->flowControl() != FlowControl[i] && i < _size(StopBits); ++i);
-    ui.flowControlBox->setCurrentIndex(i);
+    ui->flowControlBox->setCurrentIndex(i);
 
-    connect(ui.dataBitsBox, SIGNAL(currentIndexChanged(int)), this, SLOT(setDataBits(int)));
-    connect(ui.paritBox, SIGNAL(currentIndexChanged(int)), this, SLOT(setParity(int)));
-    connect(ui.stopBitsBox, SIGNAL(currentIndexChanged(int)), this, SLOT(setStopBits(int)));
-    connect(ui.flowControlBox, SIGNAL(currentIndexChanged(int)), this, SLOT(setFlowControl(int)));
+    connect(ui->dataBitsBox, SIGNAL(currentIndexChanged(int)), this, SLOT(setDataBits(int)));
+    connect(ui->paritBox, SIGNAL(currentIndexChanged(int)), this, SLOT(setParity(int)));
+    connect(ui->stopBitsBox, SIGNAL(currentIndexChanged(int)), this, SLOT(setStopBits(int)));
+    connect(ui->flowControlBox, SIGNAL(currentIndexChanged(int)), this, SLOT(setFlowControl(int)));
 }
 
 PortSetBox::~PortSetBox()
 {
-
+    delete ui;
 }
 
 void PortSetBox::setDataBits(int index)

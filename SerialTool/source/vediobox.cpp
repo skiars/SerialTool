@@ -1,25 +1,33 @@
 #include "vediobox.h"
+#include "ui_vediobox.h"
 #include <QtCore>
 #include <QPainter>
 #include <QClipboard>
 
-VedioBox::VedioBox(QWidget *parent) : QDialog(parent)
+VedioBox::VedioBox(QWidget *parent) :
+    QDialog(parent),
+    ui(new Ui::VedioBox)
 {
     // 不显示问号
     Qt::WindowFlags flags = Qt::Dialog;
     flags |= Qt::WindowCloseButtonHint;
     setWindowFlags(flags);
 
-    ui.setupUi(this);
-    ui.label->setFixedSize(325, 245);
+    ui->setupUi(this);
+    ui->label->setFixedSize(325, 245);
     setFixedSize(330, 279); // 不能伸缩的对话框
 
-    connect(ui.saveButton, SIGNAL(clicked()), this, SLOT(saveImage()));
-    connect(ui.copyButton, SIGNAL(clicked()), this, SLOT(copyImage()));
+    connect(ui->saveButton, SIGNAL(clicked()), this, SLOT(saveImage()));
+    connect(ui->copyButton, SIGNAL(clicked()), this, SLOT(copyImage()));
+}
+
+VedioBox::~VedioBox()
+{
+    delete ui;
 }
 
 // 添加一字节数据
-void VedioBox::addData(const QByteArray &arr)
+void VedioBox::append(const QByteArray &arr)
 {
     array.append(arr);
     qint32 i, len = array.size() - 1;
@@ -52,7 +60,7 @@ void VedioBox::addData(const QByteArray &arr)
                 }
             }
         }
-        ui.label->setPixmap(pixmap.scaled(QSize(320, 240)));
+        ui->label->setPixmap(pixmap.scaled(QSize(320, 240)));
         image = pixmap; // 保存图像
         memcpy(imageData, array.data() + 2, 600); // 复制到缓冲区
         array = array.mid(602); // 保留余下内容

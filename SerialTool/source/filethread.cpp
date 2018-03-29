@@ -1,5 +1,7 @@
 #include "filethread.h"
 #include "xmodem.h"
+#include <QMutexLocker>
+#include <QDebug>
 
 static XModemClass xmodem;
 
@@ -7,89 +9,56 @@ FileThread::FileThread()
 {
     xmodem.setThread(this);
     transMode = StopMode;
+    start();
+
+    connect(&m_timer, SIGNAL(timeout()), this, SLOT(onTimerUpdate()));
+
+    m_timer.setInterval(500);
 }
 
-// ·¢ËÍÎÄ¼þ
+// å‘é€æ–‡ä»¶
 void FileThread::setFileName(const QString &fileName)
 {
     this->fileName = fileName;
 }
 
-// ÉèÖÃ´«ÊäÐ­Òé
+// è®¾ç½®ä¼ è¾“åè®®
 void FileThread::setProtocol(Protocol mode)
 {
     protocol = mode;
 }
 
-// ÉèÖÃÊÕ·¢Ä£Ê½
+// è®¾ç½®æ”¶å‘æ¨¡å¼
 void FileThread::setTransMode(TransMode mode)
 {
     transMode = mode;
 }
 
-// Æô¶¯´«Êä
-bool FileThread::startTransfer()
+// å¯åŠ¨ä¼ è¾“
+void FileThread::startTransmit()
 {
-    bool res;
-    file = new QFile(fileName);
-    if (transMode == SendMode) {
-        res = file->open(QFile::ReadOnly);
-        switch (protocol) {
-        case XModem:
-            xmodem.startTransmit();
-            break;
-        default:
-            break;
-        }
-    } else {
-        res = file->open(QFile::WriteOnly);
-        switch (protocol) {
-        case XModem:
-            xmodem.startReceive();
-            break;
-        default:
-            break;
-        }
-    }
-    fSize = file->size();
-    fPos = 0;
-    return res;
+    setStatus(StartTrans);
 }
 
-// È¡Ïû´«Êä
-bool FileThread::cancelTransfer()
+// å–æ¶ˆä¼ è¾“
+void FileThread::cancelTransmit()
 {
-    bool res = true;
-
-    switch (protocol) {
-    case XModem:
-        res = xmodem.cancelTrans();
-        break;
-    default:
-        break;
-    }
-    if (res) {
-        file->close();
-        delete file;
-        file = nullptr;
-        transMode = StopMode;
-    }
-    return res;
+    setStatus(CancelTrans);
 }
 
-// »ñÈ¡ÎÄ¼þ´óÐ¡
+// èŽ·å–æ–‡ä»¶å¤§å°
 qint64 FileThread::fileSize()
 {
     return fSize;
 }
 
-// »ñÈ¡ÎÄ¼þÆ«ÒÆ
+// èŽ·å–æ–‡ä»¶åç§»
 qint64 FileThread::filePos()
 {
     return fPos;
 }
 
-// »ñÈ¡´«Êä½ø¶È
+// èŽ·å–ä¼ è¾“è¿›åº¦
 char FileThread::progress()
 {
     if (fSize == 0) {
@@ -98,12 +67,74 @@ char FileThread::progress()
     return (char)(fPos * 100 / fSize);
 }
 
-// ¶ÁÈ¡Êý¾Ý²Ûº¯Êý
+// è¯»å–æ•°æ®æ§½å‡½æ•°
 void FileThread::readData(const QByteArray &array)
+{
+    m_mutex.lock();
+    m_rxbuffer = array;
+    m_mutex.unlock();
+    setStatus(ReadData);
+}
+
+void FileThread::setStatus(Status status)
+{
+    m_mutex.lock();
+    m_status = status;
+    m_mutex.unlock();
+    m_sem.release();
+}
+
+// å‘é€æ•°æ®
+void FileThread::sendPortData(const QByteArray &array)
+{
+    emit sendData(array);
+}
+
+// çº¿ç¨‹å‡½æ•°
+void FileThread::run()
+{
+    forever {
+        m_sem.acquire();
+        m_mutex.lock();
+        Status status = m_status;
+        QByteArray array = m_rxbuffer;
+        m_status = None;
+        m_mutex.unlock();
+
+        QTimer::singleShot(0, &m_timer,SLOT(stop()));
+
+        switch (status) {
+        case ReadData:
+            receivePack_p(array);
+            break;
+        case StartTrans:
+            m_timeoutCount = 0;
+            startTransmit_p();
+            break;
+        case CancelTrans:
+            cancelTransmit_p();
+            break;
+        default:
+            break;
+        }
+    }
+}
+
+void FileThread::writeFile(const char* buffer, int size)
+{
+    m_file->write(buffer, size);
+}
+
+int FileThread::readFile(char* buffer, int size)
+{
+    return m_file->read(buffer, size);
+}
+
+void FileThread::receivePack_p(const QByteArray &array)
 {
     char result = 0;
 
-    if (transMode == SendMode) { // ·¢ËÍÄ£Ê½
+    if (transMode == SendMode) { // å‘é€æ¨¡å¼
         switch (protocol) {
         case XModem:
             result = xmodem.transmit(array[0], fPos);
@@ -111,7 +142,7 @@ void FileThread::readData(const QByteArray &array)
         default:
             break;
         }
-    } else if (transMode == ReceiveMode) { // ½ÓÊÕÄ£Ê½
+    } else if (transMode == ReceiveMode) { // æŽ¥æ”¶æ¨¡å¼
         switch (protocol) {
         case XModem:
             result = xmodem.receive(array, fPos);
@@ -121,33 +152,76 @@ void FileThread::readData(const QByteArray &array)
         }
         fSize = fPos;
     }
-    if (result) { // ´«Êä½áÊø
-        file->close();
-        delete file;
-        file = nullptr;
+    if (result) { // ä¼ è¾“ç»“æŸ
+        closeFile();
         transMode = StopMode;
         emit transFinsh();
     }
 }
 
-// ·¢ËÍÊý¾Ý
-void FileThread::sendPortData(const QByteArray &array)
+void FileThread::startTransmit_p()
 {
-    emit sendData(array);
+    bool res;
+    m_file = new QFile(fileName);
+    if (transMode == SendMode) {
+        res = m_file->open(QFile::ReadOnly);
+        if (res) {
+            switch (protocol) {
+            case XModem:
+                xmodem.startTransmit();
+                break;
+            default:
+                break;
+            }
+        }
+    } else {
+        res = m_file->open(QFile::WriteOnly);
+        if (res) {
+            switch (protocol) {
+            case XModem:
+                xmodem.startReceive();
+                QTimer::singleShot(0, &m_timer,SLOT(start()));
+                break;
+            default:
+                break;
+            }
+        }
+    }
+    if (res) {
+        fSize = m_file->size();
+        fPos = 0;
+    } else {
+        emit fileError(); // connot open file
+    }
 }
 
-// Ïß³Ìº¯Êý
-void FileThread::run()
+// å–æ¶ˆä¼ è¾“ï¼ˆç§æœ‰ï¼‰
+void FileThread::cancelTransmit_p()
 {
-    exec();
+    switch (protocol) {
+    case XModem:
+        xmodem.cancelTrans();
+        break;
+    default:
+        break;
+    }
+    closeFile();
+    transMode = StopMode;
 }
 
-void FileThread::writeFile(const char* buffer, int size)
+void FileThread::onTimerUpdate()
 {
-    file->write(buffer, size);
+    if (m_timeoutCount++ >= 10) {
+        closeFile();
+        m_timer.stop();
+        emit timeout();
+    } else {
+        startTransmit_p();
+    }
 }
 
-int FileThread::readFile(char* buffer, int size)
-{
-    return file->read(buffer, size);
+void FileThread::closeFile() {
+    m_file->close();
+    delete m_file;
+    m_file = nullptr;
 }

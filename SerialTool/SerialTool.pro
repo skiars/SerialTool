@@ -34,7 +34,6 @@ SOURCES += \
     source/main.cpp \
     source/optionsbox.cpp \
     source/portsetbox.cpp \
-    source/serialtool.cpp\
     source/textedit.cpp \
     source/wavedecode.cpp \
     source/oscilloscope.cpp \
@@ -48,14 +47,14 @@ SOURCES += \
     source/terminalview.cpp \
     source/serialport.cpp \
     source/pointdatabuffer.cpp \
-    source/valuedisplay.cpp
+    source/valuedisplay.cpp \
+    source/mainwindow.cpp
 
 HEADERS  += \
     include/aboutbox.h \
     include/channelitem.h \
     include/optionsbox.h \
     include/portsetbox.h \
-    include/serialtool.h \
     include/textedit.h \
     include/version.h \
     include/wavedecode.h \
@@ -71,7 +70,8 @@ HEADERS  += \
     include/terminalview.h \
     include/serialport.h \
     include/pointdatabuffer.h \
-    include/valuedisplay.h
+    include/valuedisplay.h \
+    include/mainwindow.h
 
 DISTFILES += \
     resource/images/clear.png \
@@ -92,13 +92,13 @@ FORMS += \
     ui/aboutbox.ui \
     ui/optionsbox.ui \
     ui/portsetbox.ui \
-    ui/serialtool.ui \
     ui/oscilloscope.ui \
     ui/filetransferview.ui \
     ui/vediobox.ui \
     ui/tcpudpport.ui \
     ui/terminalview.ui \
+    ui/valuedisplay.ui \
     ui/serialport.ui \
-    ui/valuedisplay.ui
+    ui/mainwindow.ui
 
 LIBS += -lqscintilla2_qt5

@@ -1,10 +1,13 @@
 #ifndef __PORTSETBOX_H
 #define __PORTSETBOX_H
 
-#include "ui_portsetbox.h"
 #include <QtWidgets/QDialog>
 #include <QSettings>
 #include <QtSerialPort/QSerialPort>
+
+namespace Ui {
+class PortSetBox;
+}
 
 class PortSetBox : public QDialog {
     Q_OBJECT
@@ -19,7 +22,7 @@ private slots:
     void setStopBits(int index);
     void setFlowControl(int index);
 private:
-    Ui_PortSetBox ui;
+    Ui::PortSetBox *ui;
     QSerialPort *serialPort;
 };
 

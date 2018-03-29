@@ -17,7 +17,7 @@ public :
     int receive(const QByteArray &arr, qint64 &bytes);
     void startTransmit();
     void startReceive();
-    bool cancelTrans();
+    void cancelTrans();
 
 private:
     char calcVerifi(const char *frame);
@@ -26,10 +26,10 @@ private:
     bool transMode;
     char status;
     char lastCount;
-    uint8_t packCount;  // °ü¼ÆÊı
-    char frame[132];    // Êı¾İÖ¡
+    uint8_t packCount;  // åŒ…è®¡æ•°
+    char frame[132];    // æ•°æ®å¸§
     FileThread *thread;
-    QByteArray rxBuf;   // ½ÓÊÕ»º³å
+    QByteArray rxBuf;   // æ¥æ”¶ç¼“å†²
 };
 
 #endif

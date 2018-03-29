@@ -18,14 +18,6 @@
     </message>
 </context>
 <context>
-    <name>DocmentDialog</name>
-    <message>
-        <source>Docment</source>
-        <translation type="vanished">文档
-</translation>
-    </message>
-</context>
-<context>
     <name>FileTransferView</name>
     <message>
         <location filename="../ui/filetransferview.ui" line="47"/>
@@ -103,38 +95,243 @@
         <translation>浏览...</translation>
     </message>
     <message>
-        <location filename="../source/filetransferview.cpp" line="95"/>
+        <location filename="../source/filetransferview.cpp" line="105"/>
         <source>Start transmit file: &quot;</source>
         <translation>开始传输文件: &quot;</translation>
     </message>
     <message>
-        <location filename="../source/filetransferview.cpp" line="99"/>
+        <location filename="../source/filetransferview.cpp" line="109"/>
         <source>Can not open the file: &quot;</source>
         <translation>无法打开文件: &quot;</translation>
     </message>
     <message>
-        <location filename="../source/filetransferview.cpp" line="102"/>
+        <location filename="../source/filetransferview.cpp" line="112"/>
+        <location filename="../source/filetransferview.cpp" line="180"/>
         <source>Error: </source>
         <translation>错误：</translation>
     </message>
     <message>
-        <location filename="../source/filetransferview.cpp" line="104"/>
+        <location filename="../source/filetransferview.cpp" line="114"/>
+        <location filename="../source/filetransferview.cpp" line="182"/>
         <source>Error</source>
         <translation>错误</translation>
     </message>
     <message>
-        <location filename="../source/filetransferview.cpp" line="130"/>
+        <location filename="../source/filetransferview.cpp" line="140"/>
         <source>Cancel transfer.
 </source>
         <translation>取消传输.
 </translation>
     </message>
     <message>
-        <location filename="../source/filetransferview.cpp" line="150"/>
+        <location filename="../source/filetransferview.cpp" line="159"/>
         <source>Transmit finished.
 </source>
         <translation>传输完成.
 </translation>
+    </message>
+    <message>
+        <location filename="../source/filetransferview.cpp" line="176"/>
+        <source>Transmission timeout.</source>
+        <translation>传输超时。</translation>
+    </message>
+</context>
+<context>
+    <name>MainWindow</name>
+    <message>
+        <location filename="../ui/mainwindow.ui" line="69"/>
+        <location filename="../ui/mainwindow.ui" line="315"/>
+        <source>Terminal</source>
+        <translation>终端</translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwindow.ui" line="94"/>
+        <location filename="../ui/mainwindow.ui" line="326"/>
+        <source>Plot</source>
+        <translation>波形绘制</translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwindow.ui" line="109"/>
+        <location filename="../ui/mainwindow.ui" line="358"/>
+        <source>File Transmit</source>
+        <translation>文件传输</translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwindow.ui" line="147"/>
+        <source>File</source>
+        <translation>文件</translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwindow.ui" line="156"/>
+        <source>Tools</source>
+        <translation>工具</translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwindow.ui" line="164"/>
+        <source>Edit</source>
+        <translation>编辑</translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwindow.ui" line="174"/>
+        <source>View</source>
+        <translation>视图</translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwindow.ui" line="187"/>
+        <source>Help</source>
+        <translation>帮助</translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwindow.ui" line="200"/>
+        <location filename="../ui/mainwindow.ui" line="307"/>
+        <source>Tool Bar</source>
+        <translation>工具栏</translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwindow.ui" line="226"/>
+        <location filename="../source/mainwindow.cpp" line="277"/>
+        <source>Save</source>
+        <translation>保存</translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwindow.ui" line="229"/>
+        <source>Ctrl+S</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwindow.ui" line="238"/>
+        <source>Options</source>
+        <translation>选项</translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwindow.ui" line="247"/>
+        <location filename="../source/mainwindow.cpp" line="459"/>
+        <source>Open Port</source>
+        <translation>打开端口</translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwindow.ui" line="250"/>
+        <source>Alt+S</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwindow.ui" line="263"/>
+        <location filename="../source/mainwindow.cpp" line="368"/>
+        <source>Pause Tx/Rx</source>
+        <translation>暂停发送/接收</translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwindow.ui" line="266"/>
+        <source>Alt+R</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwindow.ui" line="275"/>
+        <source>Clear Buffer</source>
+        <translation>清空缓冲</translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwindow.ui" line="278"/>
+        <source>Alt+C</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwindow.ui" line="287"/>
+        <source>Port Settings</source>
+        <translation>端口设置</translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwindow.ui" line="296"/>
+        <source>Close</source>
+        <translation>关闭</translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwindow.ui" line="318"/>
+        <source>Tester</source>
+        <translation>调试助手</translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwindow.ui" line="337"/>
+        <source>Status Bar</source>
+        <translation>状态栏</translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwindow.ui" line="342"/>
+        <source>About</source>
+        <translation>关于</translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwindow.ui" line="345"/>
+        <source>F1</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwindow.ui" line="350"/>
+        <source>Vedio Box</source>
+        <translation>视频图传</translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwindow.ui" line="363"/>
+        <location filename="../ui/mainwindow.ui" line="366"/>
+        <source>Wiki</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwindow.ui" line="375"/>
+        <location filename="../ui/mainwindow.ui" line="378"/>
+        <location filename="../source/mainwindow.cpp" line="302"/>
+        <source>Open</source>
+        <translation>打开</translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwindow.ui" line="381"/>
+        <source>Ctrl+O</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwindow.ui" line="386"/>
+        <source>Value Display</source>
+        <translation>数值显示器</translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwindow.ui" line="395"/>
+        <source>Stays On Top</source>
+        <translation>置于顶层</translation>
+    </message>
+    <message>
+        <location filename="../source/mainwindow.cpp" line="278"/>
+        <location filename="../source/mainwindow.cpp" line="287"/>
+        <source>Portable Network Graphic Format (*.png)</source>
+        <translation>图像文件存储格式 (*.png)</translation>
+    </message>
+    <message>
+        <location filename="../source/mainwindow.cpp" line="279"/>
+        <location filename="../source/mainwindow.cpp" line="289"/>
+        <source>Bitmap (*.bmp)</source>
+        <translation>位图文件 (*.bmp)</translation>
+    </message>
+    <message>
+        <location filename="../source/mainwindow.cpp" line="280"/>
+        <location filename="../source/mainwindow.cpp" line="291"/>
+        <location filename="../source/mainwindow.cpp" line="303"/>
+        <source>Wave Plain Text File (*.txt)</source>
+        <translation>波形纯文本文件 (*.txt)</translation>
+    </message>
+    <message>
+        <location filename="../source/mainwindow.cpp" line="281"/>
+        <location filename="../source/mainwindow.cpp" line="293"/>
+        <source>Terminal Text File (*.txt)</source>
+        <translation>终端文本文件 (*.txt)</translation>
+    </message>
+    <message>
+        <location filename="../source/mainwindow.cpp" line="361"/>
+        <source>Start Tx/Rx</source>
+        <translation>开始发送/接收</translation>
+    </message>
+    <message>
+        <location filename="../source/mainwindow.cpp" line="438"/>
+        <source>Close Port</source>
+        <translation>关闭端口</translation>
     </message>
 </context>
 <context>
@@ -322,22 +519,22 @@
         <translation>保持接收</translation>
     </message>
     <message>
-        <location filename="../source/oscilloscope.cpp" line="444"/>
+        <location filename="../source/oscilloscope.cpp" line="460"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../source/oscilloscope.cpp" line="445"/>
+        <location filename="../source/oscilloscope.cpp" line="461"/>
         <source>The current window has data not saved, Still open the file?</source>
         <translation>当前窗口数据未保存，仍然打开文件？</translation>
     </message>
     <message>
-        <location filename="../source/oscilloscope.cpp" line="453"/>
+        <location filename="../source/oscilloscope.cpp" line="469"/>
         <source>Error</source>
         <translation>错误</translation>
     </message>
     <message>
-        <location filename="../source/oscilloscope.cpp" line="454"/>
+        <location filename="../source/oscilloscope.cpp" line="470"/>
         <source>File parsing error.</source>
         <translation>文件解析错误。</translation>
     </message>
@@ -393,212 +590,6 @@
 Port may be occupied or configured incorrectly!</source>
         <translation>无法打开端口！
 端口可能被占用或者配置错误！</translation>
-    </message>
-</context>
-<context>
-    <name>SerialTool</name>
-    <message>
-        <location filename="../source/serialtool.cpp" line="278"/>
-        <location filename="../source/serialtool.cpp" line="287"/>
-        <source>Portable Network Graphic Format (*.png)</source>
-        <translation>图像文件存储格式 (*.png)</translation>
-    </message>
-    <message>
-        <location filename="../source/serialtool.cpp" line="279"/>
-        <location filename="../source/serialtool.cpp" line="289"/>
-        <source>Bitmap (*.bmp)</source>
-        <translation>位图文件 (*.bmp)</translation>
-    </message>
-    <message>
-        <location filename="../source/serialtool.cpp" line="280"/>
-        <location filename="../source/serialtool.cpp" line="291"/>
-        <location filename="../source/serialtool.cpp" line="303"/>
-        <source>Wave Plain Text File (*.txt)</source>
-        <translation>波形纯文本文件 (*.txt)</translation>
-    </message>
-    <message>
-        <location filename="../source/serialtool.cpp" line="281"/>
-        <location filename="../source/serialtool.cpp" line="293"/>
-        <source>Terminal Text File (*.txt)</source>
-        <translation>终端文本文件 (*.txt)</translation>
-    </message>
-    <message>
-        <location filename="../source/serialtool.cpp" line="361"/>
-        <source>Start Tx/Rx</source>
-        <translation>开始发送/接收</translation>
-    </message>
-    <message>
-        <location filename="../ui/serialtool.ui" line="263"/>
-        <location filename="../source/serialtool.cpp" line="368"/>
-        <source>Pause Tx/Rx</source>
-        <translation>暂停发送/接收</translation>
-    </message>
-    <message>
-        <location filename="../ui/serialtool.ui" line="247"/>
-        <location filename="../source/serialtool.cpp" line="459"/>
-        <source>Open Port</source>
-        <translation>打开端口</translation>
-    </message>
-    <message>
-        <location filename="../source/serialtool.cpp" line="438"/>
-        <source>Close Port</source>
-        <translation>关闭端口</translation>
-    </message>
-    <message>
-        <location filename="../ui/serialtool.ui" line="69"/>
-        <location filename="../ui/serialtool.ui" line="315"/>
-        <source>Terminal</source>
-        <translation>终端</translation>
-    </message>
-    <message>
-        <location filename="../ui/serialtool.ui" line="318"/>
-        <source>Tester</source>
-        <translation>调试助手</translation>
-    </message>
-    <message>
-        <location filename="../ui/serialtool.ui" line="94"/>
-        <location filename="../ui/serialtool.ui" line="326"/>
-        <source>Plot</source>
-        <translation>波形绘制</translation>
-    </message>
-    <message>
-        <location filename="../ui/serialtool.ui" line="147"/>
-        <source>File</source>
-        <translation>文件</translation>
-    </message>
-    <message>
-        <location filename="../ui/serialtool.ui" line="156"/>
-        <source>Tools</source>
-        <translation>工具</translation>
-    </message>
-    <message>
-        <location filename="../ui/serialtool.ui" line="164"/>
-        <source>Edit</source>
-        <translation>编辑</translation>
-    </message>
-    <message>
-        <location filename="../ui/serialtool.ui" line="174"/>
-        <source>View</source>
-        <translation>视图</translation>
-    </message>
-    <message>
-        <location filename="../ui/serialtool.ui" line="187"/>
-        <source>Help</source>
-        <translation>帮助</translation>
-    </message>
-    <message>
-        <source>Port Tool Bar</source>
-        <translation type="vanished">端口工具栏</translation>
-    </message>
-    <message>
-        <location filename="../ui/serialtool.ui" line="226"/>
-        <location filename="../source/serialtool.cpp" line="277"/>
-        <source>Save</source>
-        <translation>保存</translation>
-    </message>
-    <message>
-        <location filename="../ui/serialtool.ui" line="229"/>
-        <source>Ctrl+S</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../ui/serialtool.ui" line="238"/>
-        <source>Options</source>
-        <translation>选项</translation>
-    </message>
-    <message>
-        <location filename="../ui/serialtool.ui" line="250"/>
-        <source>Alt+S</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../ui/serialtool.ui" line="266"/>
-        <source>Alt+R</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../ui/serialtool.ui" line="275"/>
-        <source>Clear Buffer</source>
-        <translation>清空缓冲</translation>
-    </message>
-    <message>
-        <location filename="../ui/serialtool.ui" line="278"/>
-        <source>Alt+C</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../ui/serialtool.ui" line="287"/>
-        <source>Port Settings</source>
-        <translation>端口设置</translation>
-    </message>
-    <message>
-        <location filename="../ui/serialtool.ui" line="296"/>
-        <source>Close</source>
-        <translation>关闭</translation>
-    </message>
-    <message>
-        <location filename="../ui/serialtool.ui" line="350"/>
-        <source>Vedio Box</source>
-        <translation>视频图传</translation>
-    </message>
-    <message>
-        <location filename="../ui/serialtool.ui" line="363"/>
-        <location filename="../ui/serialtool.ui" line="366"/>
-        <source>Wiki</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../ui/serialtool.ui" line="395"/>
-        <source>Stays On Top</source>
-        <translation>置于顶层</translation>
-    </message>
-    <message>
-        <source>Docment</source>
-        <translation type="vanished">文档</translation>
-    </message>
-    <message>
-        <location filename="../ui/serialtool.ui" line="375"/>
-        <location filename="../ui/serialtool.ui" line="378"/>
-        <location filename="../source/serialtool.cpp" line="302"/>
-        <source>Open</source>
-        <translation>打开</translation>
-    </message>
-    <message>
-        <location filename="../ui/serialtool.ui" line="381"/>
-        <source>Ctrl+O</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../ui/serialtool.ui" line="386"/>
-        <source>Value Display</source>
-        <translation>数值显示器</translation>
-    </message>
-    <message>
-        <location filename="../ui/serialtool.ui" line="200"/>
-        <location filename="../ui/serialtool.ui" line="307"/>
-        <source>Tool Bar</source>
-        <translation>工具栏</translation>
-    </message>
-    <message>
-        <location filename="../ui/serialtool.ui" line="109"/>
-        <location filename="../ui/serialtool.ui" line="358"/>
-        <source>File Transmit</source>
-        <translation>文件传输</translation>
-    </message>
-    <message>
-        <location filename="../ui/serialtool.ui" line="337"/>
-        <source>Status Bar</source>
-        <translation>状态栏</translation>
-    </message>
-    <message>
-        <location filename="../ui/serialtool.ui" line="342"/>
-        <source>About</source>
-        <translation>关于</translation>
-    </message>
-    <message>
-        <location filename="../ui/serialtool.ui" line="345"/>
-        <source>F1</source>
-        <translation></translation>
     </message>
 </context>
 <context>

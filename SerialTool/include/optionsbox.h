@@ -1,16 +1,19 @@
 #ifndef __OPTIONSBOX_H
 #define __OPTIONSBOX_H
 
-#include "ui_optionsbox.h"
 #include <QtWidgets/QDialog>
 
-class SerialTool;
+namespace Ui {
+class OptionsBox;
+}
+class MainWindow;
+class QAbstractButton;
 
 class OptionsBox : public QDialog {
     Q_OBJECT
 
 public:
-    OptionsBox(SerialTool *parent = Q_NULLPTR);
+    OptionsBox(MainWindow *parent = Q_NULLPTR);
     ~OptionsBox();
 
 private:
@@ -36,8 +39,8 @@ private slots:
     void setLanguage(int index);
 
 private:
-    Ui_OptionsBox ui;
-    SerialTool *serialTool;
+    Ui::OptionsBox *ui;
+    MainWindow *m_parent;
     QString fontFamily, fontStyle;
     int fontSize;
     QString rxColor, txColor, bgColor, axColor;

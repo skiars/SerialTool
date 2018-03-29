@@ -5,7 +5,9 @@
 #include <QColor>
 #include <QFile>
 #include <QMutex>
+#include <QSemaphore>
 #include <QWaitCondition>
+#include <QTimer>
 
 class FileThread : public QThread
 {
@@ -29,8 +31,8 @@ public :
     void setFileName(const QString &fileName);
     void setProtocol(Protocol mode);
     void setTransMode(TransMode mode);
-    bool startTransfer();
-    bool cancelTransfer();
+    void startTransmit();
+    void cancelTransmit();
     qint64 fileSize();
     qint64 filePos();
     char progress();
@@ -44,17 +46,42 @@ public slots:
 signals:
     void sendData(const QByteArray &);
     void transFinsh(void);
+    void fileError();
+    void timeout();
 
 protected:
     void run();
+
+private slots:
+    void onTimerUpdate();
+
+private:
+    enum Status {
+        None = 0,
+        StartTrans,
+        CancelTrans,
+        ReadData
+    };
+
+    void setStatus(Status status);
+    void startTransmit_p();
+    void receivePack_p(const QByteArray &array);
+    void cancelTransmit_p();
+    void closeFile();
 
 private:
     Protocol protocol;
     TransMode transMode;
     qint64 fSize, fPos;
-    QByteArray receiveArray; // ½ÓÊÕ»º³åÇø
+    QMutex m_mutex;
+    QSemaphore m_sem;
+    QByteArray receiveArray; // æŽ¥æ”¶ç¼“å†²åŒº
     QString fileName;
-    QFile *file;
+    QFile *m_file;
+    Status m_status = None;
+    QByteArray m_rxbuffer;
+    QTimer m_timer;
+    int m_timeoutCount;
 };
 
 #endif

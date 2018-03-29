@@ -1,19 +1,19 @@
 #include "wavedecode.h"
 
 enum {
-    Frame_Head = 0xA3,          //Ö¡Í·Ê¶±ğ×Ö
-    Frame_PointMode = 0xA8,     // µãÄ£Ê½Ê¶±ğ×Ö
-    Frame_SyncMode = 0xA9,      // Í¬²½Ä£Ê½Ê¶±ğ×Ö
-    Frame_InfoMode  = 0xAA      // ĞÅÏ¢Ö¡Ê¶±ğ×Ö
+    Frame_Head = 0xA3,          //å¸§å¤´è¯†åˆ«å­—
+    Frame_PointMode = 0xA8,     // ç‚¹æ¨¡å¼è¯†åˆ«å­—
+    Frame_SyncMode = 0xA9,      // åŒæ­¥æ¨¡å¼è¯†åˆ«å­—
+    Frame_InfoMode  = 0xAA      // ä¿¡æ¯å¸§è¯†åˆ«å­—
 };
 
 enum {
-    STA_None = 0, // ¿ÕÏĞ×´Ì¬
-    STA_Head,     // ½ÓÊÕµ½Ö¡Í·
-    STA_Point,    // µãÄ£Ê½
-    STA_Sync,     // Í¬²½Ä£Ê½
-    STA_Info,     // ĞÅÏ¢Ä£Ê½
-    STA_SyncData  // Í¬²½Ä£Ê½Êı¾İ
+    STA_None = 0, // ç©ºé—²çŠ¶æ€
+    STA_Head,     // æ¥æ”¶åˆ°å¸§å¤´
+    STA_Point,    // ç‚¹æ¨¡å¼
+    STA_Sync,     // åŒæ­¥æ¨¡å¼
+    STA_Info,     // ä¿¡æ¯æ¨¡å¼
+    STA_SyncData  // åŒæ­¥æ¨¡å¼æ•°æ®
 };
 
 enum Result {
@@ -59,25 +59,25 @@ double WaveDecode::data2Double(uint32_t value, int type)
     return d;
 }
 
-// ½ÓÊÕÒ»¸öµãÊı¾İ, ½ö½öÊÇÊı¾İ
-int WaveDecode::pointData(WaveDataType &dst, uint8_t byte)
+// æ¥æ”¶ä¸€ä¸ªç‚¹æ•°æ®, ä»…ä»…æ˜¯æ•°æ®
+int WaveDecode::pointData(DataType &dst, uint8_t byte)
 {
-    static const int bytes[] = { 4, 1, 2, 4 }; // ¸÷ÖÖÀàĞÍµÄ×Ö½ÚÊı
+    static const int bytes[] = { 4, 1, 2, 4 }; // å„ç§ç±»å‹çš„å­—èŠ‚æ•°
 
-    if (dataCount == 0) { // µÚÒ»¸ö×Ö½ÚÊÇÊı¾İÀàĞÍºÍÍ¨µÀĞÅÏ¢
-        channel = byte & 0x0F; // Í¨µÀÖµ
+    if (dataCount == 0) { // ç¬¬ä¸€ä¸ªå­—èŠ‚æ˜¯æ•°æ®ç±»å‹å’Œé€šé“ä¿¡æ¯
+        channel = byte & 0x0F; // é€šé“å€¼
         // tpye: 0: float, 1: int8, 2: int16, 3: int32
         type = byte >> 4;
-        if (type > 3) { // Êı¾İÀàĞÍ´íÎó
+        if (type > 3) { // æ•°æ®ç±»å‹é”™è¯¯
             dataCount = 0;
             return Error;
         }
         dataLength = bytes[type];
-    } else { // ºóÃæ¼¸¸ö×Ö½ÚÊÇÊı¾İ
+    } else { // åé¢å‡ ä¸ªå­—èŠ‚æ˜¯æ•°æ®
         data = (data << 8) | byte;
-        if (dataCount >= dataLength) { // ½ÓÊÕÍê±Ï
+        if (dataCount >= dataLength) { // æ¥æ”¶å®Œæ¯•
             dst.channel = channel;
-            dst.mode = WaveValueMode;
+            dst.mode = ValueMode;
             dst.value = data2Double(data, type);
             dataCount = 0;
             data = 0;
@@ -88,10 +88,10 @@ int WaveDecode::pointData(WaveDataType &dst, uint8_t byte)
     return Ok;
 }
 
-// ×ª»»Ê±¼ä´Á
-void WaveDecode::timeStamp(WaveDataType &dst, uint8_t* buffer)
+// è½¬æ¢æ—¶é—´æˆ³
+void WaveDecode::timeStamp(DataType &dst, uint8_t* buffer)
 {
-    dst.mode = WaveTimeStampMode;
+    dst.mode = TimeStampMode;
     dst.year = (buffer[0] >> 1) & 0x7F;
     dst.month = ((buffer[0] << 3) & 0x80) | ((buffer[1] >> 5) & 0x07);
     dst.day = buffer[1] & 0x1F;
@@ -103,12 +103,12 @@ void WaveDecode::timeStamp(WaveDataType &dst, uint8_t* buffer)
         | (((uint32_t)buffer[6] << 8) & 0x00FF00) | (uint32_t)buffer[7];
 }
 
-// ²¨ĞÎÊı¾İÖ¡½âÂë, »áÊ¶±ğÖ¡Í·
-bool WaveDecode::frameDecode(WaveDataType &data, uint8_t byte)
+// æ³¢å½¢æ•°æ®å¸§è§£ç , ä¼šè¯†åˆ«å¸§å¤´
+bool WaveDecode::frameDecode_p(DataType &data, uint8_t byte)
 {
     int res;
 
-    // ²¶»ñÖ¡Í·×´Ì¬»ú
+    // æ•è·å¸§å¤´çŠ¶æ€æœº
     switch (status) {
     case STA_None:
         status = byte == Frame_Head ? STA_Head : STA_None;
@@ -139,12 +139,12 @@ bool WaveDecode::frameDecode(WaveDataType &data, uint8_t byte)
     case STA_Point:
         res = pointData(data, byte);
         switch (res) {
-        case Ok: // »¹ÔÚ½ÓÊÕÊı¾İ
+        case Ok: // è¿˜åœ¨æ¥æ”¶æ•°æ®
             break;
-        case Error: // ´íÎóÔòÖØĞÂ¿ªÊ¼½ÓÊÕ
+        case Error: // é”™è¯¯åˆ™é‡æ–°å¼€å§‹æ¥æ”¶
             status = STA_None;
             break;
-        case Done: // ½áÊø³õÊ¼»¯×´Ì¬²¢·µ»Øtrue
+        case Done: // ç»“æŸåˆå§‹åŒ–çŠ¶æ€å¹¶è¿”å›true
             status = STA_None;
             return true;
         }
@@ -152,21 +152,21 @@ bool WaveDecode::frameDecode(WaveDataType &data, uint8_t byte)
     case STA_Sync:
         frameCount = 0;
         frameLength = byte;
-        // Èç¹ûlen > 64ÔòÖ¡³¤¶È´íÎó, ½«ÖØĞÂÆ¥ÅäÖ¡, ·ñÔò×ªµ½STA_SyncData×´Ì¬
+        // å¦‚æœlen > 64åˆ™å¸§é•¿åº¦é”™è¯¯, å°†é‡æ–°åŒ¹é…å¸§, å¦åˆ™è½¬åˆ°STA_SyncDataçŠ¶æ€
         status = frameLength <= 64 ? STA_SyncData : STA_None;
         break;
     case STA_SyncData:
-        if (++frameCount >= frameLength) { // ¼ÆÊı´ïµ½Ö¡³¤¶ÈËµÃ÷Ö¡½áÊø, ÖØÖÃ×´Ì¬
+        if (++frameCount >= frameLength) { // è®¡æ•°è¾¾åˆ°å¸§é•¿åº¦è¯´æ˜å¸§ç»“æŸ, é‡ç½®çŠ¶æ€
             status = STA_None;
         }
         res = pointData(data, byte);
         switch (res) {
-        case Ok: // »¹ÔÚ½ÓÊÕÊı¾İ
+        case Ok: // è¿˜åœ¨æ¥æ”¶æ•°æ®
             break;
-        case Error: // ´íÎóÔòÖØĞÂ¿ªÊ¼½ÓÊÕ
+        case Error: // é”™è¯¯åˆ™é‡æ–°å¼€å§‹æ¥æ”¶
             status = STA_None;
             break;
-        case Done: // ½áÊø·µ»Øtrue
+        case Done: // ç»“æŸè¿”å›true
             return true;
         }
         break;
@@ -179,8 +179,22 @@ bool WaveDecode::frameDecode(WaveDataType &data, uint8_t byte)
             return true;
         }
         break;
-    default: // Òì³£Çé¿ö¸´Î»×´Ì¬
+    default: // å¼‚å¸¸æƒ…å†µå¤ä½çŠ¶æ€
         status = STA_None;
     }
     return false;
+}
+
+QVector<WaveDecode::DataType> WaveDecode::frameDecode(const QByteArray &array)
+{
+    DataType data;
+    QVector<DataType> vector;
+
+
+    for (char byte : array) {
+        if (frameDecode_p(data, byte) == true) {
+            vector.append(data);
+        }
+    }
+    return vector;
 }

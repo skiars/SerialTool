@@ -1,8 +1,11 @@
 #ifndef __VEDIOBOX_H
 #define __VEDIOBOX_H
 
-#include "ui_vediobox.h"
 #include <QDialog>
+
+namespace Ui {
+    class VedioBox;
+}
 
 class VedioBox : public QDialog
 {
@@ -10,7 +13,8 @@ class VedioBox : public QDialog
 
 public:
     VedioBox(QWidget *parent = NULL);
-    void addData(const QByteArray &arr);
+    ~VedioBox();
+    void append(const QByteArray &arr);
     void setFilePath(const QString &path);
 
 private slots:
@@ -18,7 +22,7 @@ private slots:
     void copyImage();
 
 private:
-    Ui_VedioBox ui;
+    Ui::VedioBox *ui;
     QByteArray array;
     QPixmap image;
     char imageData[600];

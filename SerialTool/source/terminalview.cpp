@@ -1,9 +1,9 @@
 #include "terminalview.h"
+#include "ui_terminalview.h"
 #include <QSettings>
 #include <QTextCodec>
 #include <QTimer>
 #include <QKeyEvent>
-#include "ui_terminalview.h"
 
 TerminalView::TerminalView(QWidget *parent) :
     QWidget(parent),

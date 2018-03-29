@@ -1,20 +1,23 @@
-#ifndef __SERIALTOOL_H
-#define __SERIALTOOL_H
+#ifndef __MAINWINDOW_H
+#define __MAINWINDOW_H
 
 #include <QtWidgets/QMainWindow>
-#include "ui_serialtool.h"
-#include <QtSerialPort/QSerialPort>
-#include <QtSerialPort/QSerialPortInfo>
 #include <QMessageBox>
-#include "channelitem.h"
-#include "vediobox.h"
+#include <QTimer>
 
+namespace Ui {
+class MainWindow;
+}
+class QSettings;
 class TcpUdpPort;
 class WaveDecode;
 class SerialPort;
+class VedioBox;
 class ValueDisplay;
+class QTranslator;
+class QActionGroup;
 
-class SerialTool : public QMainWindow
+class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
@@ -24,12 +27,12 @@ class SerialTool : public QMainWindow
     };
 
 public:
-    SerialTool(QWidget *parent = Q_NULLPTR);
-    ~SerialTool();
+    MainWindow(QWidget *parent = Q_NULLPTR);
+    ~MainWindow();
 
     void loadSettings();
     void saveConfig();
-    QSettings *getConfig() { return config; }
+    QSettings *getConfig() { return m_config; }
     void setLanguage(const QString &string);
     void setStyleSheet(const QString &string);
 
@@ -68,21 +71,20 @@ private:
     void setWindowStaysOnTop(bool enabled);
 
 private:
-    Ui_SerialTool ui;
-    QString docPath;
-    QTimer secTimer;   // 秒定时器
-    TcpUdpPort *tcpUdpPort; // TCP/UDP端口
-    QSettings *config;
-    bool runFlag = true;
-    QActionGroup *tabActionGroup;
-    int rxCount, txCount;
-    QLabel *rxCntLabel, *txCntLabel, *portInfoLabel;
-    QVector<QTranslator*> translator;
+    Ui::MainWindow *ui;
+    QString m_docPath;
+    QTimer m_timer;   // 秒定时器
+    TcpUdpPort *m_tcpUdpPort; // TCP/UDP端口
+    QSettings *m_config;
+    bool m_runFlag = true;
+    QActionGroup *m_tabActionGroup;
+    int m_rxCount, m_txCount;
+    QLabel *m_rxCntLabel, *m_txCntLabel, *m_portInfoLabel;
+    QVector<QTranslator*> m_translator;
     VedioBox *m_vedioBox = NULL;
     ValueDisplay *m_valueDisplay = NULL;
-    PortType portType;
-    WaveDecode* waveDecode;
-    SerialPort *serialPort;
+    PortType m_portType;
+    SerialPort *m_serialPort;
 };
 
-#endif // SERIALTOOL_H
+#endif // __MAINWINDOW_H

@@ -1,14 +1,18 @@
 #ifndef __ABOUTBOX_H
 #define __ABOUTBOX_H
 
-#include "ui_aboutbox.h"
 #include <QtWidgets/QDialog>
+
+namespace Ui {
+    class AboutBox;
+}
 
 class AboutBox : public QDialog {
 public:
         AboutBox(QWidget *parent);
+        ~AboutBox();
 private:
-    Ui_AboutBox ui;
+    Ui::AboutBox *ui;
 };
 
 #endif

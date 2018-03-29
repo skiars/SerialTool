@@ -9,7 +9,6 @@ class TextEdit : public QsciScintilla
 
 public:
     TextEdit(QWidget *parent = NULL);
-    void setText(const QString &text);
     void append(const QString &text);
     void setFonts(QString fonts, int size, QColor color = Qt::black, QString style = "");
     void setHighLight(bool mode);

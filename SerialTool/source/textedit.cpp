@@ -14,12 +14,6 @@ TextEdit::TextEdit(QWidget *parent) : QsciScintilla(parent)
     connect(this, &QsciScintilla::linesChanged, this, &TextEdit::onLinesChanged);
 }
 
-void TextEdit::setText(const QString &text)
-{
-    clear();
-    append(text);
-}
-
 void TextEdit::append(const QString &text)
 {
     bool posEnd = SendScintilla(SCI_GETLENGTH) == SendScintilla(SCI_GETCURRENTPOS);

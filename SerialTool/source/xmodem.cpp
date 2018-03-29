@@ -1,14 +1,14 @@
 #include "xmodem.h"
 
-// ×´Ì¬»úÊ¹ÓÃµÄ×Ö·û
-#define NONE 0x00 // ¿ÕÏĞ×´Ì¬
-#define TRAN 0x01 // ´«Êä×´Ì¬
+// çŠ¶æ€æœºä½¿ç”¨çš„å­—ç¬¦
+#define NONE 0x00 // ç©ºé—²çŠ¶æ€
+#define TRAN 0x01 // ä¼ è¾“çŠ¶æ€
 
 enum {
-    None,         // ¿ÕÏĞ×´Ì¬
-    Trans,        // ´«Êä×´Ì¬
-    TransEnd,     // ´«Êä½áÊø×´Ì¬
-    TransEOT      // EOT×Ö·ûµÄÓ¦´ğ×´Ì¬
+    None,         // ç©ºé—²çŠ¶æ€
+    Trans,        // ä¼ è¾“çŠ¶æ€
+    TransEnd,     // ä¼ è¾“ç»“æŸçŠ¶æ€
+    TransEOT      // EOTå­—ç¬¦çš„åº”ç­”çŠ¶æ€
 };
 
 #define SOH 0x01
@@ -27,26 +27,26 @@ void XModemClass::setThread(FileThread *thread)
     this->thread = thread;
 }
 
-// ¼ÆËãĞ£ÑéÖµ
+// è®¡ç®—æ ¡éªŒå€¼
 char XModemClass::calcVerifi(const char *frame)
 {
     int value = 0;
 
-    // Ö»ÊµÏÖÁËĞ£ÑéºÍËã·¨
+    // åªå®ç°äº†æ ¡éªŒå’Œç®—æ³•
     for (int i = 3; i < 128 + 3; ++i) {
         value += frame[i];
     }
     return (char)(value & 0xFF);
 }
 
-// ¿ªÊ¼´«Êä
+// å¼€å§‹ä¼ è¾“
 void XModemClass::startTransmit()
 {
     status = None;
     transMode = true;
 }
 
-// ¿ªÊ¼½ÓÊÕ
+// å¼€å§‹æ¥æ”¶
 void XModemClass::startReceive()
 {
     QByteArray arr;
@@ -58,73 +58,72 @@ void XModemClass::startReceive()
     thread->sendPortData(arr);
 }
 
-// È¡Ïû´«Êä
-bool XModemClass::cancelTrans()
+// å–æ¶ˆä¼ è¾“
+void XModemClass::cancelTrans()
 {
     QByteArray arr;
 
-    if (transMode) { // ·¢ËÍÄ£Ê½ÏÂÈ¡Ïû´«Êä
+    if (transMode) { // å‘é€æ¨¡å¼ä¸‹å–æ¶ˆä¼ è¾“
         if (status == None) {
             arr.clear();
             arr.append(EOT);
             thread->sendPortData(arr);
-        } else { // ½ÓÊÜÄ£Ê½ÏÂÈ¡Ïû´«Êä
+        } else { // æ¥å—æ¨¡å¼ä¸‹å–æ¶ˆä¼ è¾“
             arr.clear();
             arr.append(CAN);
             thread->sendPortData(arr);
         }
     }
-    return true;
 }
 
-// ·¢ËÍÄ£Ê½Ã¿´Î½ÓÊÕÒ»¸ö×Ö½Ú
+// å‘é€æ¨¡å¼æ¯æ¬¡æ¥æ”¶ä¸€ä¸ªå­—èŠ‚
 int XModemClass::transmit(char ch, qint64 &bytes)
 {
     int rBytes;
     QByteArray arr;
 
-    if (ch == CAN) { // È¡Ïû´«Êä
+    if (ch == CAN) { // å–æ¶ˆä¼ è¾“
         return 1;
     }
     switch (status) {
     case None:
-        if (ch == NAK) { // ¿ªÊ¼´«Êä
+        if (ch == NAK) { // å¼€å§‹ä¼ è¾“
             status = ACK;
-            memset(frame, 0, 132); // ³õÊ¼»¯Ö¡
-            ch = ACK; // ÎªÁËÏÂÃæ´«ÊäµÚÒ»Ö¡
+            memset(frame, 0, 132); // åˆå§‹åŒ–å¸§
+            ch = ACK; // ä¸ºäº†ä¸‹é¢ä¼ è¾“ç¬¬ä¸€å¸§
             status = Trans;
         }
-    case TransEnd: // ´«Êä½áÊø
-        // ½ÓÊÕµ½ACKËµÃ÷×îºóÒ»Ö¡Êı¾İ´«ÊäÍê³É, ´ËÊ±´«ÊäEOT
+    case TransEnd: // ä¼ è¾“ç»“æŸ
+        // æ¥æ”¶åˆ°ACKè¯´æ˜æœ€åä¸€å¸§æ•°æ®ä¼ è¾“å®Œæˆ, æ­¤æ—¶ä¼ è¾“EOT
         if (ch == ACK && status == TransEnd) {
             arr.clear();
             arr.append(EOT);
             thread->sendPortData(arr);
-            status = TransEOT; // ½øÈë½áÊøÓ¦´ğ×´Ì¬
+            status = TransEOT; // è¿›å…¥ç»“æŸåº”ç­”çŠ¶æ€
             break;
         }
-    case Trans: // ´«ÊäÊı¾İ
-        if (ch == ACK) { // ´«ÊäÏÂÒ»¿éÊı¾İ
+    case Trans: // ä¼ è¾“æ•°æ®
+        if (ch == ACK) { // ä¼ è¾“ä¸‹ä¸€å—æ•°æ®
             frame[0] = SOH;
             ++frame[1];
             frame[2] = ~frame[1];
             rBytes = thread->readFile(frame + 3, 128);
             bytes += rBytes;
-            if (rBytes < 128) { // ËµÃ÷ÊÇ×îºóÒ»Ö¡Êı¾İ
-                // ¶àÓàµÄ×Ö½ÚÌî³ä0x1A
+            if (rBytes < 128) { // è¯´æ˜æ˜¯æœ€åä¸€å¸§æ•°æ®
+                // å¤šä½™çš„å­—èŠ‚å¡«å……0x1A
                 for (int i = rBytes + 3; i < 131; ++i) {
                     frame[i] = 0x1A;
                 }
                 status = TransEnd;
             }
-            frame[131] = calcVerifi(frame); // ¼ÆËãĞ£Ñé×Ö·û
+            frame[131] = calcVerifi(frame); // è®¡ç®—æ ¡éªŒå­—ç¬¦
         }
         arr.clear();
         arr.append(frame, 132);
-        thread->sendPortData(arr); // ·¢ËÍÊı¾İ
+        thread->sendPortData(arr); // å‘é€æ•°æ®
         break;
     case TransEOT:
-        if (ch == ACK) { // EOT±»¶Ô·½Ó¦´ğ, ´«Êä½áÊø
+        if (ch == ACK) { // EOTè¢«å¯¹æ–¹åº”ç­”, ä¼ è¾“ç»“æŸ
             status = None;
             return 1;
         }
@@ -133,7 +132,7 @@ int XModemClass::transmit(char ch, qint64 &bytes)
     return 0;
 }
 
-// ½ÓÊÕÄ£Ê½
+// æ¥æ”¶æ¨¡å¼
 int XModemClass::receive(const QByteArray &arr, qint64 &bytes)
 {
     int size, pos;
@@ -143,30 +142,30 @@ int XModemClass::receive(const QByteArray &arr, qint64 &bytes)
     rxBuf.append(arr);
     size = rxBuf.size();
     pdata = rxBuf.data();
-    if (pdata[0] == EOT) { // ´«Êä½áÊø
+    if (pdata[0] == EOT) { // ä¼ è¾“ç»“æŸ
         tbuf.append(ACK);
-        thread->sendPortData(tbuf); // ·¢ËÍÓ¦´ğ±êÖ¾
+        thread->sendPortData(tbuf); // å‘é€åº”ç­”æ ‡å¿—
         return 1;
     }
-    // Ñ°ÕÒSOH×Ö·û
+    // å¯»æ‰¾SOHå­—ç¬¦
     for (pos = 0; pos < size && pdata[pos] != SOH; ++pos);
-    if (size - pos < 131) { // ½ÓÊÕÇø»º³å³¤¶ÈĞ¡ÓÚ132bytesËµÃ÷²»ÊÇÍêÕûµÄÖ¡
+    if (size - pos < 131) { // æ¥æ”¶åŒºç¼“å†²é•¿åº¦å°äº132bytesè¯´æ˜ä¸æ˜¯å®Œæ•´çš„å¸§
         return 0;
     }
-    pdata += pos; // »ñÈ¡Ö¡Êı¾İ
-    // Ğ£Ñé
-    if (calcVerifi(pdata) == pdata[131] // ¼ì²éĞ£Ñé×Ö½Ú
-        && pdata[1] == ~pdata[2] // Ö¡¼ÆÊıĞ£Ñé
-        && ((char)(lastCount + 1) == pdata[1] || lastCount == pdata[1])) { // Ö¡ÊıÊÇ·ñÕı³£
+    pdata += pos; // è·å–å¸§æ•°æ®
+    // æ ¡éªŒ
+    if (calcVerifi(pdata) == pdata[131] // æ£€æŸ¥æ ¡éªŒå­—èŠ‚
+        && pdata[1] == ~pdata[2] // å¸§è®¡æ•°æ ¡éªŒ
+        && ((char)(lastCount + 1) == pdata[1] || lastCount == pdata[1])) { // å¸§æ•°æ˜¯å¦æ­£å¸¸
         thread->writeFile(pdata + 3, 128);
         bytes += 128;
         lastCount = pdata[1];
         tbuf.append(ACK);
-        thread->sendPortData(tbuf); // ·¢ËÍÓ¦´ğ±êÖ¾
+        thread->sendPortData(tbuf); // å‘é€åº”ç­”æ ‡å¿—
     } else {
         tbuf.append(NAK);
-        thread->sendPortData(tbuf); // ·¢ËÍÓ¦´ğ±êÖ¾
+        thread->sendPortData(tbuf); // å‘é€åº”ç­”æ ‡å¿—
     }
-    rxBuf = rxBuf.mid(pos + 132); // ±£ÁôÓàÏÂÄÚÈİ
+    rxBuf = rxBuf.mid(pos + 132); // ä¿ç•™ä½™ä¸‹å†…å®¹
     return 0;
 }

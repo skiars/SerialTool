@@ -1,36 +1,38 @@
 #ifndef __WAVEDECODE_H
 #define __WAVEDECODE_H
 
-#include <stdint.h>
+#include <QVector>
 
-enum WaveDataMode {
-    WaveValueMode,
-    WaveTimeStampMode
-};
-
-struct WaveDataType {
-    WaveDataMode mode;
-    uint8_t year;
-    uint8_t month;
-    uint8_t day;
-    uint8_t hour;
-    uint8_t min;
-    uint8_t sec;
-    uint16_t msec;
-    uint32_t sampleRate;
-    double value;
-    uint8_t channel;
-};
+class QByteArray;
 
 class WaveDecode {
 public:
+    enum DataMode {
+        ValueMode,
+        TimeStampMode
+    };
+    struct DataType {
+        DataMode mode;
+        uint8_t year;
+        uint8_t month;
+        uint8_t day;
+        uint8_t hour;
+        uint8_t min;
+        uint8_t sec;
+        uint16_t msec;
+        uint32_t sampleRate;
+        double value;
+        uint8_t channel;
+    };
+
     WaveDecode();
-    bool frameDecode(WaveDataType &data, uint8_t byte);
+    QVector<DataType> frameDecode(const QByteArray &array);
 
 private:
     double data2Double(uint32_t value, int type);
-    int pointData(WaveDataType &dst, uint8_t byte);
-    void timeStamp(WaveDataType &dst, uint8_t* buffer);
+    int pointData(DataType &dst, uint8_t byte);
+    void timeStamp(DataType &dst, uint8_t* buffer);
+    bool frameDecode_p(DataType &data, uint8_t byte);
 
 private:
     uint32_t data;

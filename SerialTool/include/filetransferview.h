@@ -1,9 +1,13 @@
 #ifndef __FILETRANSFERVIEW_H
 #define __FILETRANSFERVIEW_H
 
-#include "ui_filetransferview.h"
-#include <QSettings>
+#include <QWidget>
 #include "filethread.h"
+
+namespace Ui {
+    class FileTransferView;
+}
+class QSettings;
 
 class FileTransferView : public QWidget
 {
@@ -11,6 +15,7 @@ class FileTransferView : public QWidget
 
 public:
     FileTransferView(QWidget *parent = Q_NULLPTR);
+    ~FileTransferView();
     void retranslate();
     void loadConfig(QSettings *config);
     void saveConfig(QSettings *config);
@@ -28,12 +33,13 @@ private slots:
     void portSendData(const QByteArray &array);
     void sendFile();
     void onTransFinsh();
+    void onTimeoutError();
 
 signals:
     void sendData(const QByteArray &);
 
 private:
-    Ui_FileTransferView ui;
+    Ui::FileTransferView *ui;
     FileThread thread;
     QByteArray receiveArray; // 接收缓冲区
 };

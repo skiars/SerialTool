@@ -14,7 +14,7 @@ class ValueDisplay : public QDialog
 public:
     explicit ValueDisplay(QWidget *parent = 0);
     ~ValueDisplay();
-    void addData(const QByteArray &array);
+    void append(const QByteArray &array);
 
 private:
     Ui::ValueDisplay *ui;
