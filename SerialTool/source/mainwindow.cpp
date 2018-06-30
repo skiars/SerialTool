@@ -22,7 +22,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     QString configPath(QStandardPaths::writableLocation(
-        QStandardPaths::AppConfigLocation) + "/m_config.ini");
+        QStandardPaths::AppConfigLocation) + "/config.ini");
     syncDefaultConfig(configPath);
     m_config = new QSettings(configPath, QSettings::IniFormat);
 
@@ -73,7 +73,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(m_tabActionGroup, SIGNAL(triggered(QAction*)), this, SLOT(tabActionGroupTriggered(QAction*)));
     connect(ui->actionAbout, SIGNAL(triggered()), this, SLOT(about()));
     connect(ui->actionWiki, SIGNAL(triggered()), this, SLOT(openWiki()));
-    connect(ui->fileTransfer, &FileTransferView::sendData, this, &MainWindow::writePort);
+    connect(ui->fileTransmit, &FileTransmitView::sendData, this, &MainWindow::writePort);
     connect(ui->actionVedioBox, SIGNAL(triggered()), this, SLOT(onVedioBoxTriggered()));
     connect(ui->actionValueDisplay, SIGNAL(triggered()), this, SLOT(onValueDisplayTriggered()));
     connect(ui->tabWidget, SIGNAL(currentChanged(int)), this, SLOT(currentTabChanged(int)));
@@ -130,7 +130,7 @@ void MainWindow::setLanguage(const QString &string)
     ui->retranslateUi(this);
     ui->terminal->retranslate();
     ui->oscPlot->retranslate();
-    ui->fileTransfer->retranslate();
+    ui->fileTransmit->retranslate();
     m_tcpUdpPort->retranslate();
     m_serialPort->retranslate();
 }
@@ -179,6 +179,11 @@ void MainWindow::loadSettings()
         m_vedioBox->setWindowOpacity(windowOpacity());
     }
 
+    // highlight
+    ui->terminal->setHighlight(m_config->value("TerminalHighlight").toString());
+    // text codec
+    ui->terminal->setTextCodec(m_config->value("TerminalTextCodec").toString());
+
     // 语言设置
     setLanguage(m_config->value("Language").toString());
     setStyleSheet(m_config->value("Theme").toString());
@@ -212,7 +217,7 @@ void MainWindow::loadConfig()
     ui->tabWidget->setCurrentIndex(m_config->value("TabIndex").toInt());
     setTabActionIndex(ui->tabWidget->currentIndex());
     ui->toolBar1->setVisible(m_config->value("ToolBarVisible").toBool());
-    ui->actionVisibleToolbar->setChecked(ui->toolBar1->isVisible());
+    ui->actionVisibleToolbar->setChecked(m_config->value("ToolBarVisible").toBool());
     ui->statusBar->setVisible(m_config->value("StatusBarVisible").toBool());
     // 这里如果直接速读取ui->statusBar->isVisible()会是false,原因不明
     ui->actionVisibleStatusBar->setChecked(m_config->value("StatusBarVisible").toBool());
@@ -226,7 +231,7 @@ void MainWindow::loadConfig()
     ui->oscPlot->loadConfig(m_config);
 
     // 读取文件传输功能的设置
-    ui->fileTransfer->loadConfig(m_config);
+    ui->fileTransmit->loadConfig(m_config);
 
     // 最后读取系统设置
     loadSettings();
@@ -247,7 +252,7 @@ void MainWindow::saveConfig()
         QVariant(ui->tabWidget->currentIndex()));
     m_config->setValue("ToolBarVisible", QVariant(ui->toolBar1->isVisible()));
     m_config->setValue("StatusBarVisible", QVariant(ui->statusBar->isVisible()));
-    m_config->setValue("WindowStaysOnTop", QVariant(windowFlags() & Qt::WindowStaysOnTopHint));
+    m_config->setValue("WindowStaysOnTop", QVariant((windowFlags() & Qt::WindowStaysOnTopHint) != 0));
     m_config->endGroup();
 
     // 调试终端配置
@@ -261,7 +266,7 @@ void MainWindow::saveConfig()
     m_config->endGroup();
 
     // 文件传输配置
-    ui->fileTransfer->saveConfig(m_config);
+    ui->fileTransmit->saveConfig(m_config);
 }
 
 void MainWindow::setOptions()
@@ -502,7 +507,7 @@ void MainWindow::readPortData()
         }
         // 串口文件传输
         if (ui->tabWidget->currentIndex() == 2) {
-            ui->fileTransfer->readData(buf);
+            ui->fileTransmit->readData(buf);
         }
         if (m_vedioBox != NULL) {
             m_vedioBox->append(buf);
@@ -597,14 +602,15 @@ void MainWindow::onVedioBoxDelete()
 
 void MainWindow::setWindowStaysOnTop(bool enabled)
 {
-    Qt::WindowFlags flags = enabled ?
-                 Qt::WindowStaysOnTopHint : Qt::Window;
     QString str = enabled ? ":/SerialTool/images/pin_down.ico"
                           : ":/SerialTool/images/pin_up.ico";
 
-    hide();
-    setWindowFlags(flags);
     ui->actionStaysOnTop->setIcon(QIcon(str));
+    if (enabled) {
+        setWindowFlags(windowFlags() | Qt::WindowStaysOnTopHint);
+    } else {
+        setWindowFlags(windowFlags() & ~Qt::WindowStaysOnTopHint);
+    }
     show();
 }
 
@@ -615,7 +621,7 @@ void MainWindow::onStaysOnTopTriggered()
 
 void MainWindow::openWiki()
 {
-    QDesktopServices::openUrl(QUrl("https://github.com/Le-Seul/Serial/wiki"));
+    QDesktopServices::openUrl(QUrl("https://github.com/gztss/SerialTool/wiki"));
 }
 
 void MainWindow::currentTabChanged(int index)

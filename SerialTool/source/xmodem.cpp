@@ -85,23 +85,22 @@ int XModemClass::transmit(char ch, qint64 &bytes)
     if (ch == CAN) { // 取消传输
         return 1;
     }
+    if (status == None && ch == NAK) { // 开始传输
+        status = ACK;
+        memset(frame, 0, 132); // 初始化帧
+        ch = ACK; // 为了下面传输第一帧
+        status = Trans;
+    }
     switch (status) {
-    case None:
-        if (ch == NAK) { // 开始传输
-            status = ACK;
-            memset(frame, 0, 132); // 初始化帧
-            ch = ACK; // 为了下面传输第一帧
-            status = Trans;
-        }
     case TransEnd: // 传输结束
         // 接收到ACK说明最后一帧数据传输完成, 此时传输EOT
-        if (ch == ACK && status == TransEnd) {
+        if (ch == ACK) {
             arr.clear();
             arr.append(EOT);
             thread->sendPortData(arr);
             status = TransEOT; // 进入结束应答状态
-            break;
         }
+        break;
     case Trans: // 传输数据
         if (ch == ACK) { // 传输下一块数据
             frame[0] = SOH;

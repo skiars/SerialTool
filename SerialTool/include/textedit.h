@@ -11,13 +11,18 @@ public:
     TextEdit(QWidget *parent = NULL);
     void append(const QString &text);
     void setFonts(QString fonts, int size, QColor color = Qt::black, QString style = "");
-    void setHighLight(bool mode);
+    void setHighLight(const QString &language);
 
 public slots:
     void setWrap(bool wrap);
 
 private:
     void setMarginsWidth();
+    void highlightNone();
+    void highlightCpp();
+    void highlightBash();
+    void highlightLua();
+    void highlightJSON();
 
 private slots:
     void onTextChanged();
@@ -26,13 +31,12 @@ private slots:
     void onVScrollBarValueChanged();
 
 private:
-    QString fontFamily;
+    QString fontFamily, m_language;
     QFont lineNumFont;
     int fontSize;
     int lineCount = 1;
     bool isWrap = false;
     bool scrollEnd = true;
-    bool highLight = false;
 };
 
 #endif

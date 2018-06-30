@@ -25,8 +25,6 @@ private slots:
     void processOptions(QAbstractButton *button);
     void setTextFontAnsi();
     void setTextFontMulti();
-    void setRxFontColor();
-    void setTxFontColor();
     void setPlotBackgroundColor();
     void setAxisColor();
     void onCmdNewClick();

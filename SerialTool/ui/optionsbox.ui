@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>431</width>
-    <height>312</height>
+    <width>430</width>
+    <height>370</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -152,6 +152,9 @@
             <property name="maximum">
              <number>100</number>
             </property>
+            <property name="value">
+             <number>100</number>
+            </property>
            </widget>
           </item>
          </layout>
@@ -255,30 +258,13 @@
        <item>
         <widget class="QGroupBox" name="groupBox_2">
          <property name="title">
-          <string>Text Color</string>
+          <string>Text Editor</string>
          </property>
          <layout class="QGridLayout" name="gridLayout">
-          <item row="0" column="2">
-           <widget class="QPushButton" name="rxColorButton">
-            <property name="text">
-             <string>Color...</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QLineEdit" name="lineEditRxColor">
-            <property name="text">
-             <string notr="true"/>
-            </property>
-            <property name="readOnly">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
           <item row="0" column="0">
            <widget class="QLabel" name="label_2">
             <property name="text">
-             <string>Rx Area</string>
+             <string>Text Codec</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -288,7 +274,7 @@
           <item row="1" column="0">
            <widget class="QLabel" name="label_3">
             <property name="text">
-             <string>Tx Area</string>
+             <string>Highlight</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -296,20 +282,72 @@
            </widget>
           </item>
           <item row="1" column="1">
-           <widget class="QLineEdit" name="lineEditTxColor">
-            <property name="text">
-             <string notr="true"/>
-            </property>
-            <property name="readOnly">
-             <bool>true</bool>
-            </property>
+           <widget class="QComboBox" name="highlightBox">
+            <item>
+             <property name="text">
+              <string notr="true">None</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string notr="true">Bash</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string notr="true">C/C++</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string notr="true">Lua</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string notr="true">JSON</string>
+             </property>
+            </item>
            </widget>
           </item>
-          <item row="1" column="2">
-           <widget class="QPushButton" name="txColorButton">
-            <property name="text">
-             <string>Color...</string>
+          <item row="0" column="1">
+           <widget class="QComboBox" name="textCodecBox">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
             </property>
+            <item>
+             <property name="text">
+              <string notr="true">ASCII</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string notr="true">GB-2312</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string notr="true">GB-18030</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string notr="true">UTF-8</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string notr="true">UTF-16BE</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string notr="true">UTF-16LE</string>
+             </property>
+            </item>
            </widget>
           </item>
          </layout>

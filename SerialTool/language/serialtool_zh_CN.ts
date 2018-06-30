@@ -18,120 +18,120 @@
     </message>
 </context>
 <context>
-    <name>FileTransferView</name>
+    <name>FileTransmitView</name>
     <message>
-        <location filename="../ui/filetransferview.ui" line="47"/>
+        <location filename="../ui/filetransmitview.ui" line="47"/>
         <source>Mode</source>
         <translation>模式</translation>
     </message>
     <message>
-        <location filename="../ui/filetransferview.ui" line="53"/>
+        <location filename="../ui/filetransmitview.ui" line="53"/>
         <source>Send</source>
         <translation>发送</translation>
     </message>
     <message>
-        <location filename="../ui/filetransferview.ui" line="63"/>
+        <location filename="../ui/filetransmitview.ui" line="63"/>
         <source>Receive</source>
         <translation>接收</translation>
     </message>
     <message>
-        <location filename="../ui/filetransferview.ui" line="73"/>
+        <location filename="../ui/filetransmitview.ui" line="73"/>
         <source>Before Send</source>
         <translation>预发送文本</translation>
     </message>
     <message>
-        <location filename="../ui/filetransferview.ui" line="117"/>
-        <source>Operations</source>
-        <translation>操作</translation>
-    </message>
-    <message>
-        <location filename="../ui/filetransferview.ui" line="160"/>
-        <source>File</source>
-        <translation>文件</translation>
-    </message>
-    <message>
-        <location filename="../ui/filetransferview.ui" line="170"/>
-        <source>Protocol</source>
-        <translation>协议</translation>
-    </message>
-    <message>
-        <location filename="../ui/filetransferview.ui" line="189"/>
-        <source>Cancel</source>
-        <translation>取消</translation>
-    </message>
-    <message>
-        <location filename="../ui/filetransferview.ui" line="136"/>
-        <source>XModem</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../ui/filetransferview.ui" line="107"/>
+        <location filename="../ui/filetransmitview.ui" line="107"/>
         <source>Use Berfor Send</source>
         <translation>使用预发送文本</translation>
     </message>
     <message>
-        <location filename="../ui/filetransferview.ui" line="141"/>
+        <location filename="../ui/filetransmitview.ui" line="117"/>
+        <source>Operations</source>
+        <translation>操作</translation>
+    </message>
+    <message>
+        <location filename="../ui/filetransmitview.ui" line="136"/>
+        <source>XModem</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../ui/filetransmitview.ui" line="141"/>
         <source>YModem</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ui/filetransferview.ui" line="146"/>
+        <location filename="../ui/filetransmitview.ui" line="146"/>
         <source>ZModem</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ui/filetransferview.ui" line="215"/>
-        <source>Progress</source>
-        <translation>进度</translation>
+        <location filename="../ui/filetransmitview.ui" line="160"/>
+        <source>File</source>
+        <translation>文件</translation>
     </message>
     <message>
-        <location filename="../ui/filetransferview.ui" line="244"/>
-        <source>Start</source>
-        <translation>开始</translation>
+        <location filename="../ui/filetransmitview.ui" line="170"/>
+        <source>Protocol</source>
+        <translation>协议</translation>
     </message>
     <message>
-        <location filename="../ui/filetransferview.ui" line="202"/>
+        <location filename="../ui/filetransmitview.ui" line="189"/>
+        <source>Cancel</source>
+        <translation>取消</translation>
+    </message>
+    <message>
+        <location filename="../ui/filetransmitview.ui" line="202"/>
         <source>Browse...</source>
         <translation>浏览...</translation>
     </message>
     <message>
-        <location filename="../source/filetransferview.cpp" line="105"/>
+        <location filename="../ui/filetransmitview.ui" line="215"/>
+        <source>Progress</source>
+        <translation>进度</translation>
+    </message>
+    <message>
+        <location filename="../ui/filetransmitview.ui" line="244"/>
+        <source>Start</source>
+        <translation>开始</translation>
+    </message>
+    <message>
+        <location filename="../source/filetransmitview.cpp" line="105"/>
         <source>Start transmit file: &quot;</source>
         <translation>开始传输文件: &quot;</translation>
     </message>
     <message>
-        <location filename="../source/filetransferview.cpp" line="109"/>
+        <location filename="../source/filetransmitview.cpp" line="109"/>
         <source>Can not open the file: &quot;</source>
         <translation>无法打开文件: &quot;</translation>
     </message>
     <message>
-        <location filename="../source/filetransferview.cpp" line="112"/>
-        <location filename="../source/filetransferview.cpp" line="180"/>
+        <location filename="../source/filetransmitview.cpp" line="112"/>
+        <location filename="../source/filetransmitview.cpp" line="180"/>
         <source>Error: </source>
         <translation>错误：</translation>
     </message>
     <message>
-        <location filename="../source/filetransferview.cpp" line="114"/>
-        <location filename="../source/filetransferview.cpp" line="182"/>
+        <location filename="../source/filetransmitview.cpp" line="114"/>
+        <location filename="../source/filetransmitview.cpp" line="182"/>
         <source>Error</source>
         <translation>错误</translation>
     </message>
     <message>
-        <location filename="../source/filetransferview.cpp" line="140"/>
+        <location filename="../source/filetransmitview.cpp" line="140"/>
         <source>Cancel transfer.
 </source>
         <translation>取消传输.
 </translation>
     </message>
     <message>
-        <location filename="../source/filetransferview.cpp" line="159"/>
+        <location filename="../source/filetransmitview.cpp" line="159"/>
         <source>Transmit finished.
 </source>
         <translation>传输完成.
 </translation>
     </message>
     <message>
-        <location filename="../source/filetransferview.cpp" line="176"/>
+        <location filename="../source/filetransmitview.cpp" line="176"/>
         <source>Transmission timeout.</source>
         <translation>传输超时。</translation>
     </message>
@@ -189,7 +189,7 @@
     </message>
     <message>
         <location filename="../ui/mainwindow.ui" line="226"/>
-        <location filename="../source/mainwindow.cpp" line="277"/>
+        <location filename="../source/mainwindow.cpp" line="282"/>
         <source>Save</source>
         <translation>保存</translation>
     </message>
@@ -205,7 +205,7 @@
     </message>
     <message>
         <location filename="../ui/mainwindow.ui" line="247"/>
-        <location filename="../source/mainwindow.cpp" line="459"/>
+        <location filename="../source/mainwindow.cpp" line="464"/>
         <source>Open Port</source>
         <translation>打开端口</translation>
     </message>
@@ -216,7 +216,7 @@
     </message>
     <message>
         <location filename="../ui/mainwindow.ui" line="263"/>
-        <location filename="../source/mainwindow.cpp" line="368"/>
+        <location filename="../source/mainwindow.cpp" line="373"/>
         <source>Pause Tx/Rx</source>
         <translation>暂停发送/接收</translation>
     </message>
@@ -279,7 +279,7 @@
     <message>
         <location filename="../ui/mainwindow.ui" line="375"/>
         <location filename="../ui/mainwindow.ui" line="378"/>
-        <location filename="../source/mainwindow.cpp" line="302"/>
+        <location filename="../source/mainwindow.cpp" line="307"/>
         <source>Open</source>
         <translation>打开</translation>
     </message>
@@ -299,37 +299,37 @@
         <translation>置于顶层</translation>
     </message>
     <message>
-        <location filename="../source/mainwindow.cpp" line="278"/>
-        <location filename="../source/mainwindow.cpp" line="287"/>
+        <location filename="../source/mainwindow.cpp" line="283"/>
+        <location filename="../source/mainwindow.cpp" line="292"/>
         <source>Portable Network Graphic Format (*.png)</source>
         <translation>图像文件存储格式 (*.png)</translation>
     </message>
     <message>
-        <location filename="../source/mainwindow.cpp" line="279"/>
-        <location filename="../source/mainwindow.cpp" line="289"/>
+        <location filename="../source/mainwindow.cpp" line="284"/>
+        <location filename="../source/mainwindow.cpp" line="294"/>
         <source>Bitmap (*.bmp)</source>
         <translation>位图文件 (*.bmp)</translation>
     </message>
     <message>
-        <location filename="../source/mainwindow.cpp" line="280"/>
-        <location filename="../source/mainwindow.cpp" line="291"/>
-        <location filename="../source/mainwindow.cpp" line="303"/>
+        <location filename="../source/mainwindow.cpp" line="285"/>
+        <location filename="../source/mainwindow.cpp" line="296"/>
+        <location filename="../source/mainwindow.cpp" line="308"/>
         <source>Wave Plain Text File (*.txt)</source>
         <translation>波形纯文本文件 (*.txt)</translation>
     </message>
     <message>
-        <location filename="../source/mainwindow.cpp" line="281"/>
-        <location filename="../source/mainwindow.cpp" line="293"/>
+        <location filename="../source/mainwindow.cpp" line="286"/>
+        <location filename="../source/mainwindow.cpp" line="298"/>
         <source>Terminal Text File (*.txt)</source>
         <translation>终端文本文件 (*.txt)</translation>
     </message>
     <message>
-        <location filename="../source/mainwindow.cpp" line="361"/>
+        <location filename="../source/mainwindow.cpp" line="366"/>
         <source>Start Tx/Rx</source>
         <translation>开始发送/接收</translation>
     </message>
     <message>
-        <location filename="../source/mainwindow.cpp" line="438"/>
+        <location filename="../source/mainwindow.cpp" line="443"/>
         <source>Close Port</source>
         <translation>关闭端口</translation>
     </message>
@@ -387,111 +387,109 @@
         <translation>不透明度</translation>
     </message>
     <message>
-        <location filename="../ui/optionsbox.ui" line="177"/>
+        <location filename="../ui/optionsbox.ui" line="180"/>
         <source>Terminal</source>
         <translation>终端</translation>
     </message>
     <message>
-        <location filename="../ui/optionsbox.ui" line="195"/>
+        <location filename="../ui/optionsbox.ui" line="198"/>
         <source>Font</source>
         <translation>字体</translation>
     </message>
     <message>
-        <location filename="../ui/optionsbox.ui" line="201"/>
-        <location filename="../ui/optionsbox.ui" line="218"/>
+        <location filename="../ui/optionsbox.ui" line="204"/>
+        <location filename="../ui/optionsbox.ui" line="221"/>
         <source>Fonts...</source>
         <translation>字体...</translation>
     </message>
     <message>
-        <location filename="../ui/optionsbox.ui" line="208"/>
+        <location filename="../ui/optionsbox.ui" line="211"/>
         <source>Multi-Byte</source>
         <translation>多字节字符</translation>
     </message>
     <message>
-        <location filename="../ui/optionsbox.ui" line="245"/>
+        <location filename="../ui/optionsbox.ui" line="248"/>
         <source>ASCII</source>
         <translation>ASCII字符</translation>
     </message>
     <message>
-        <location filename="../ui/optionsbox.ui" line="258"/>
-        <source>Text Color</source>
-        <translation>文本颜色</translation>
-    </message>
-    <message>
-        <location filename="../ui/optionsbox.ui" line="264"/>
-        <location filename="../ui/optionsbox.ui" line="311"/>
-        <location filename="../ui/optionsbox.ui" line="376"/>
-        <location filename="../ui/optionsbox.ui" line="403"/>
+        <location filename="../ui/optionsbox.ui" line="414"/>
+        <location filename="../ui/optionsbox.ui" line="441"/>
         <source>Color...</source>
         <translation>颜色...</translation>
     </message>
     <message>
-        <location filename="../ui/optionsbox.ui" line="281"/>
-        <source>Rx Area</source>
-        <translation>接收区</translation>
+        <location filename="../ui/optionsbox.ui" line="261"/>
+        <source>Text Editor</source>
+        <translation>文本编辑器</translation>
     </message>
     <message>
-        <location filename="../ui/optionsbox.ui" line="291"/>
-        <source>Tx Area</source>
-        <translation>发送区</translation>
+        <location filename="../ui/optionsbox.ui" line="267"/>
+        <source>Text Codec</source>
+        <translation>编码格式</translation>
     </message>
     <message>
-        <location filename="../ui/optionsbox.ui" line="335"/>
+        <location filename="../ui/optionsbox.ui" line="277"/>
+        <source>Highlight</source>
+        <translation>代码高亮</translation>
+    </message>
+    <message>
+        <location filename="../ui/optionsbox.ui" line="373"/>
         <source>Plot</source>
         <translation>波形绘制</translation>
     </message>
     <message>
-        <location filename="../ui/optionsbox.ui" line="350"/>
+        <location filename="../ui/optionsbox.ui" line="388"/>
         <source>Color</source>
         <translation>颜色</translation>
     </message>
     <message>
-        <location filename="../ui/optionsbox.ui" line="356"/>
+        <location filename="../ui/optionsbox.ui" line="394"/>
         <source>Background</source>
         <translation>背景颜色</translation>
     </message>
     <message>
-        <location filename="../ui/optionsbox.ui" line="383"/>
+        <location filename="../ui/optionsbox.ui" line="421"/>
         <source>Grid</source>
         <translation>网格颜色</translation>
     </message>
     <message>
-        <location filename="../ui/optionsbox.ui" line="413"/>
+        <location filename="../ui/optionsbox.ui" line="451"/>
         <source>Graphics Options</source>
         <translation>图形选项</translation>
     </message>
     <message>
-        <location filename="../ui/optionsbox.ui" line="422"/>
+        <location filename="../ui/optionsbox.ui" line="460"/>
         <source>Update Interval (ms)</source>
         <translation>刷新时间(ms)</translation>
     </message>
     <message>
-        <location filename="../ui/optionsbox.ui" line="429"/>
+        <location filename="../ui/optionsbox.ui" line="467"/>
         <source>Use Antialias</source>
         <translation>抗锯齿</translation>
     </message>
     <message>
-        <location filename="../ui/optionsbox.ui" line="436"/>
+        <location filename="../ui/optionsbox.ui" line="474"/>
         <source>Use OpenGL</source>
         <translation>使用OpenGL</translation>
     </message>
     <message>
-        <location filename="../ui/optionsbox.ui" line="492"/>
+        <location filename="../ui/optionsbox.ui" line="530"/>
         <source>Command</source>
         <translation>命令</translation>
     </message>
     <message>
-        <location filename="../ui/optionsbox.ui" line="522"/>
+        <location filename="../ui/optionsbox.ui" line="560"/>
         <source>New</source>
         <translation>新建</translation>
     </message>
     <message>
-        <location filename="../ui/optionsbox.ui" line="529"/>
+        <location filename="../ui/optionsbox.ui" line="567"/>
         <source>Edit</source>
         <translation>编辑</translation>
     </message>
     <message>
-        <location filename="../ui/optionsbox.ui" line="536"/>
+        <location filename="../ui/optionsbox.ui" line="574"/>
         <source> Delete</source>
         <translation>删除</translation>
     </message>
@@ -575,17 +573,17 @@
         <translation>端口</translation>
     </message>
     <message>
-        <location filename="../ui/serialport.ui" line="73"/>
+        <location filename="../ui/serialport.ui" line="76"/>
         <source>Baud Rate</source>
         <translation>波特率</translation>
     </message>
     <message>
-        <location filename="../source/serialport.cpp" line="76"/>
+        <location filename="../source/serialport.cpp" line="84"/>
         <source>Error</source>
         <translation>错误</translation>
     </message>
     <message>
-        <location filename="../source/serialport.cpp" line="77"/>
+        <location filename="../source/serialport.cpp" line="85"/>
         <source>Can not open the port!
 Port may be occupied or configured incorrectly!</source>
         <translation>无法打开端口！
@@ -696,12 +694,12 @@ Please check the port number.</source>
         <translation>发送</translation>
     </message>
     <message>
-        <location filename="../source/terminalview.cpp" line="172"/>
+        <location filename="../source/terminalview.cpp" line="178"/>
         <source>Ctrl + Enter to send</source>
         <translation>Ctrl + Enter发送</translation>
     </message>
     <message>
-        <location filename="../source/terminalview.cpp" line="173"/>
+        <location filename="../source/terminalview.cpp" line="179"/>
         <source>Connect port and start transmission to enable this button</source>
         <translation>连接端口并开启传输来启用此按钮</translation>
     </message>

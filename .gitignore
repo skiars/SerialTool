@@ -246,3 +246,6 @@ ModelManifest.xml
 
 *-Debug/
 *-Release/
+
+.qmake.stash
+*/.vscode/

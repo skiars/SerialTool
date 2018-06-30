@@ -83,9 +83,7 @@
    </item>
   </layout>
  </widget>
- <resources>
-  <include location="../resource/serialtool.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>buttonBox</sender>

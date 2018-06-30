@@ -1,6 +1,6 @@
 * {
-  font-family: 'Microsoft YaHei UI', '微软雅黑', '宋体';
-  outline: none; /* 去掉虚线 */
+  font-family: 'Microsoft YaHei UI', '微软雅黑';
+  outline: none;
 }
 
 QMainWindow {
@@ -8,14 +8,12 @@ QMainWindow {
 }
 
 QComboBox, QSpinBox, QDoubleSpinBox, QListWidget, QLineEdit, QTextEdit {
-  background: white;
   border: 1px solid gray;
   border-radius: 3px;
-  padding: 1px 2px 1px 2px; /* 针对于组合框中的文本内容 */
-  min-width: 3em; /* 组合框的最小宽度 */
+  min-width: 3em;
+  height: 20px;
 }
 
-/* 定义串口接收数据显示控件的样式 */
 QFrame#textEditRx, QFrame#textEditTx {
   border: 1px solid gray;
   border-radius: 3px;
@@ -104,7 +102,7 @@ QTabBar::tab {
   border-top-left-radius: 3px;
   border-top-right-radius: 3px;
   min-width: 8ex;
-  padding: 0px 5px 0px; /* 上, 左右, 下边距 */
+  padding: 0px 5px 0px;
 }
 
 QTabBar::tab:selected, QTabBar::tab:hover {
@@ -131,9 +129,9 @@ QGroupBox{
 QGroupBox::title {
   subcontrol-origin: margin;
   subcontrol-position: top left;
-  left: 10px;       /* 线的偏离度 */
+  left: 10px;
   margin-left: 0px;
-  padding:0 1px;   /* 文字在方框中位置的偏离度 */
+  padding:0 1px;
 }
 
 QScrollBar {
@@ -238,8 +236,8 @@ QScrollBar::sub-line::vertical {
 QPushButton {
   border: 1px solid gray;
   border-radius: 3px;
-  padding: 1.5px 6px; /* 针对于组合框中的文本内容 */
-  min-width: 4em; /* 组合框的最小宽度 */
+  padding: 1.5px 6px;
+  min-width: 4em;
   background: #EAEAEA
 }
 
@@ -266,7 +264,7 @@ QAction {
 QListView {
   border: 1px solid gray;
   border-radius: 3px;
-  padding: 1px 1px 1px 2px; /* 针对于组合框中的文本内容 */
+  padding: 1px 1px 1px 2px;
 }
 
 QComboBox QAbstractItemView {

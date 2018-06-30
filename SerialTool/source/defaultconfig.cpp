@@ -17,7 +17,7 @@ void syncDefaultConfig(const QString &iniName)
         }
 
         QFile::copy(":/config/default.ini", iniName);
-        file.setPermissions(QFile::WriteOther);
+        file.setPermissions(QFile::ReadOwner | QFile::WriteOwner);
     } else { // 文件存在
         QSettings config(iniName, QSettings::IniFormat);
 

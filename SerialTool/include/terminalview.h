@@ -27,6 +27,8 @@ public:
     void setFontFamily(QString fonts, int size, QString style);
     void setEnabled(bool status);
     void setPaused(bool status);
+    void setHighlight(const QString &language);
+    void setTextCodec(const QString &name);
     void saveText(const QString &fname);
 
 signals:
@@ -36,9 +38,14 @@ private:
     void keyPressEvent(QKeyEvent  *event);
     void setSendButtonEnabled(bool status);
     void arrayToHex(QString &str, const QByteArray &arr, int countOfLine);
-    void arrayToAscii(QString &str, const QByteArray &arr);
+    void arrayToString(QString &str, const QByteArray &arr);
     void loadHistory(QSettings *config);
     void saveHistory(QSettings *config);
+
+    void arrayToUTF8(QString &str, const QByteArray &array);
+    void arrayToUTF16(QString &str, const QByteArray &array);
+    void arrayToDualByte(QString &str, const QByteArray &array);
+    void arrayToASCII(QString &str, const QByteArray &array);
 
 private slots:
     void sendData();
@@ -49,10 +56,20 @@ private slots:
     void onHistoryBoxChanged(const QString &string);
 
 private:
+    enum TextCodec {
+        ASCII,
+        GB2312,
+        GB18030,
+        UTF8,
+        UTF16
+    };
+
     Ui::TerminalView *ui;
-    bool sendEnabled = false,  paused = false;
-    QTimer *resendTimer;
-    QByteArray *asciiBuf;
+    bool m_sendEnabled = false,  m_paused = false;
+    QTimer *m_resendTimer;
+    QByteArray *m_asciiBuf;
+    enum TextCodec m_textCodec;
+    QByteArray m_codecName;
 };
 
 #endif // TERMINALVIEW_H

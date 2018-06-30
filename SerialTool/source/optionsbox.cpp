@@ -60,7 +60,7 @@ OptionsBox::OptionsBox(MainWindow *parent) :
     setWindowFlags(flags);
 
     ui->setupUi(this);
-    setFixedSize(400, 300); // 不能伸缩的对话框
+    setFixedSize(400, 400); // 不能伸缩的对话框
 
     m_parent = parent;
 
@@ -71,8 +71,6 @@ OptionsBox::OptionsBox(MainWindow *parent) :
 
     connect(ui->fontAnsiSetButton, SIGNAL(clicked()), this, SLOT(setTextFontAnsi()));
     connect(ui->fontMultiSetButton, SIGNAL(clicked()), this, SLOT(setTextFontMulti()));
-    connect(ui->rxColorButton, SIGNAL(clicked()), this, SLOT(setRxFontColor()));
-    connect(ui->txColorButton, SIGNAL(clicked()), this, SLOT(setTxFontColor()));
     connect(ui->buttonBox, SIGNAL(clicked(QAbstractButton *)),
         this, SLOT(processOptions(QAbstractButton *)));
     connect(ui->plotBgColorButton, SIGNAL(clicked()), this, SLOT(setPlotBackgroundColor()));
@@ -95,6 +93,7 @@ OptionsBox::~OptionsBox()
 // 初始化设置
 void OptionsBox::setup()
 {
+    QString textCodec, highlight;
     QSettings *config = m_parent->getConfig();
 
     // 字体和颜色设置
@@ -103,8 +102,8 @@ void OptionsBox::setup()
     fontFamily.replace("+", ",");
     fontStyle = config->value("FontStyle").toString();
     fontSize = config->value("FontSize").toInt();
-    rxColor = config->value("ReceiveTextColor").toString();
-    txColor = config->value("TransmitTextColor").toString();
+    textCodec = config->value("TerminalTextCodec").toString();
+    highlight = config->value("TerminalHighlight").toString();
     bgColor = config->value("PlotBackground").toString();
     axColor = config->value("AxisColor").toString();
     ui->opacitySlider->setValue(config->value("WindowOpacity").toInt());
@@ -122,8 +121,8 @@ void OptionsBox::setup()
             + "," + fontStyle + "," + QString::number(fontSize));
         ui->lineEditFontMulti->setText(fontFamily.section(",", 1, 1).trimmed());
     }
-    ui->lineEditRxColor->setText(rxColor);
-    ui->lineEditTxColor->setText(txColor);
+    ui->textCodecBox->setCurrentText(textCodec);
+    ui->highlightBox->setCurrentText(highlight);
     ui->lineEditPlotColor->setText(bgColor);
     ui->lineEditAxisColor->setText(axColor);
 
@@ -142,6 +141,8 @@ void OptionsBox::processOptions(QAbstractButton *button)
     QDialogButtonBox::StandardButton btn = ui->buttonBox->standardButton(button);
 
     if (btn == QDialogButtonBox::Ok || btn == QDialogButtonBox::Apply) {
+        QString textCodec = ui->textCodecBox->currentText();
+        QString highlight = ui->highlightBox->currentText();
         QSettings *config = m_parent->getConfig();
         // 字体和颜色设置
         config->beginGroup("Settings");
@@ -150,8 +151,8 @@ void OptionsBox::processOptions(QAbstractButton *button)
         fontFamily.replace("+", ",");
         config->setValue("FontStyle", QVariant(fontStyle));
         config->setValue("FontSize", QVariant(fontSize));
-        config->setValue("ReceiveTextColor", QVariant(rxColor));
-        config->setValue("TransmitTextColor", QVariant(txColor));
+        config->setValue("TerminalTextCodec", QVariant(textCodec));
+        config->setValue("TerminalHighlight", QVariant(highlight));
         config->setValue("PlotBackground", QVariant(bgColor));
         config->setValue("AxisColor", QVariant(axColor));
         config->setValue("WindowOpacity", QVariant(ui->opacitySpinBox->value()));
@@ -205,26 +206,6 @@ void OptionsBox::setTextFontMulti()
         fontFamily =
             fontFamily.section(',', 0, 0).trimmed() + "," + font.family();
         ui->lineEditFontMulti->setText(font.family());
-    }
-}
-
-void OptionsBox::setRxFontColor()
-{
-    QColor color = QColorDialog::getColor(QColor(rxColor), this);
-
-    if (color.isValid()) {
-        rxColor = color.name();
-        ui->lineEditRxColor->setText(rxColor);
-    }
-}
-
-void OptionsBox::setTxFontColor()
-{
-    QColor color = QColorDialog::getColor(QColor(txColor), this);
-
-    if (color.isValid()) {
-        txColor = color.name();
-        ui->lineEditTxColor->setText(txColor);
     }
 }
 

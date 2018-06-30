@@ -125,7 +125,7 @@
          <number>0</number>
         </property>
         <item>
-         <widget class="FileTransferView" name="fileTransfer" native="true"/>
+         <widget class="FileTransmitView" name="fileTransmit" native="true"/>
         </item>
        </layout>
       </widget>
@@ -405,9 +405,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>FileTransferView</class>
+   <class>FileTransmitView</class>
    <extends>QWidget</extends>
-   <header>filetransferview.h</header>
+   <header>filetransmitview.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

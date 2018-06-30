@@ -4,6 +4,7 @@
 #include <QTextCodec>
 #include <QTimer>
 #include <QKeyEvent>
+#include <QDebug>
 
 TerminalView::TerminalView(QWidget *parent) :
     QWidget(parent),
@@ -11,20 +12,18 @@ TerminalView::TerminalView(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    resendTimer = new QTimer;
-    asciiBuf = new QByteArray;
+    m_resendTimer = new QTimer;
+    m_asciiBuf = new QByteArray;
 
     ui->textEditRx->setReadOnly(true);
     ui->textEditTx->setWrap(true); // Send area auto wrap.
 
-    // Send and Receive area High Light.
-    ui->textEditTx->setHighLight(true);
-    ui->textEditRx->setHighLight(true);
+    setTextCodec("GB-2312"); // default
 
     connect(ui->wrapLineBox, SIGNAL(stateChanged(int)), this, SLOT(onWrapBoxChanged(int)));
     connect(ui->sendButton, &QPushButton::clicked, this, &TerminalView::onSendButtonClicked);
     connect(ui->resendBox, &QCheckBox::stateChanged, this, &TerminalView::updateResendTimerStatus);
-    QObject::connect(resendTimer, &QTimer::timeout, this, &TerminalView::sendData);
+    QObject::connect(m_resendTimer, &QTimer::timeout, this, &TerminalView::sendData);
     connect(ui->resendIntervalBox, SIGNAL(valueChanged(int)), this, SLOT(setResendInterval(int)));
     connect(ui->historyBox, SIGNAL(activated(const QString &)), this, SLOT(onHistoryBoxChanged(const QString &)));
     connect(ui->wrapLineBox, SIGNAL(stateChanged(int)), this, SLOT(onWrapBoxChanged(int)));
@@ -33,8 +32,8 @@ TerminalView::TerminalView(QWidget *parent) :
 TerminalView::~TerminalView()
 {
     delete ui;
-    delete resendTimer;
-    delete asciiBuf;
+    delete m_resendTimer;
+    delete m_asciiBuf;
 }
 
 void TerminalView::keyPressEvent(QKeyEvent *event)
@@ -133,12 +132,19 @@ void TerminalView::saveHistory(QSettings *config)
     config->endGroup();
 }
 
+void TerminalView::setHighlight(const QString &language)
+{
+    // Send and Receive area highlight.
+    ui->textEditTx->setHighLight(language);
+    ui->textEditRx->setHighLight(language);
+}
+
 void TerminalView::append(const QByteArray &array)
 {
     QString string;
 
     if (ui->portReadAscii->isChecked()) {
-        arrayToAscii(string, array);
+        arrayToString(string, array);
     } else {
         arrayToHex(string, array, 16);
     }
@@ -148,7 +154,7 @@ void TerminalView::append(const QByteArray &array)
 void TerminalView::clear()
 {
     ui->textEditRx->clear();
-    asciiBuf->clear();
+    m_asciiBuf->clear();
 }
 
 void TerminalView::setFontFamily(QString fontFamily, int size, QString style)
@@ -159,8 +165,8 @@ void TerminalView::setFontFamily(QString fontFamily, int size, QString style)
 
 void TerminalView::setPaused(bool status)
 {
-    paused = status;
-    setSendButtonEnabled(!paused && sendEnabled);
+    m_paused = status;
+    setSendButtonEnabled(!m_paused && m_sendEnabled);
     updateResendTimerStatus();
 }
 
@@ -176,8 +182,8 @@ void TerminalView::setSendButtonEnabled(bool status)
 
 void TerminalView::setEnabled(bool status)
 {
-    sendEnabled = status;
-    setSendButtonEnabled(!paused && sendEnabled);
+    m_sendEnabled = status;
+    setSendButtonEnabled(!m_paused && m_sendEnabled);
     // auto resend
     updateResendTimerStatus();
 }
@@ -188,7 +194,7 @@ void TerminalView::sendData()
     QByteArray array;
 
     if (ui->portWriteAscii->isChecked() == true) {
-        QTextCodec *code = QTextCodec::codecForName("GB-2312");
+        QTextCodec *code = QTextCodec::codecForName(m_codecName);
         array = code->fromUnicode(ui->textEditTx->text());
     } else {
         array = QByteArray::fromHex(ui->textEditTx->text().toLatin1());
@@ -223,19 +229,42 @@ void TerminalView::onSendButtonClicked()
 
 void TerminalView::updateResendTimerStatus()
 {
-    bool status = sendEnabled && !paused && ui->resendBox->isChecked();
+    bool status = m_sendEnabled && !m_paused && ui->resendBox->isChecked();
 
     if (status) {
-        resendTimer->start(ui->resendIntervalBox->text().toInt());
+        m_resendTimer->start(ui->resendIntervalBox->text().toInt());
     } else {
-        resendTimer->stop();
+        m_resendTimer->stop();
     }
 }
 
 //  set resend interval time
 void TerminalView::setResendInterval(int msc)
 {
-    resendTimer->setInterval(msc);
+    m_resendTimer->setInterval(msc);
+}
+
+void TerminalView::setTextCodec(const QString &name)
+{
+    if (name == "GB-2312") {
+        m_textCodec = GB2312;
+        m_codecName = "GB-2312";
+    } else if (name == "GB-18030") {
+        m_textCodec = GB18030;
+        m_codecName = "GB-18030";
+    } else if (name == "UTF-8") {
+        m_textCodec = UTF8;
+        m_codecName = "UTF-8";
+    } else if (name == "UTF-16BE") {
+        m_textCodec = UTF16;
+        m_codecName = "UTF-16BE";
+    } else if (name == "UTF-16LE") {
+        m_textCodec = UTF16;
+        m_codecName = "UTF-16LE";
+    } else { // ASCII
+        m_textCodec = ASCII;
+        m_codecName = "ASCII";
+    }
 }
 
 void TerminalView::onHistoryBoxChanged(const QString &string)
@@ -265,25 +294,112 @@ void TerminalView::arrayToHex(QString &str, const QByteArray &array, int countOf
     }
 }
 
-// 这个函数可以避免中文接收的乱码
-void TerminalView::arrayToAscii(QString &str, const QByteArray &array)
+// array转UTF8
+void TerminalView::arrayToUTF8(QString &str, const QByteArray &array)
 {
-    int cnt = 0;
-    int lastIndex = asciiBuf->length() - 1;
+    int lastIndex, cut = 0;
+    bool isCut = false;
 
-    asciiBuf->append(array);
-    for (int i = lastIndex; i >= 0 && asciiBuf->at(i) & 0x80; --i) {
-        cnt++;
+    m_asciiBuf->append(array);
+    lastIndex = m_asciiBuf->length() - 1;
+    if (m_asciiBuf->at(lastIndex) & 0x80) { // 0xxx xxxx -> OK
+        // UTF8最大编码为4字节，因此向前搜寻三字节
+        for (int i = lastIndex; i >= 0 && ++cut < 4; --i) {
+            uint8_t byte = m_asciiBuf->at(i);
+            if (((cut < 2) && (byte & 0xE0) == 0xC0) ||
+                ((cut < 3) && (byte & 0xF0) == 0xE0) ||
+                (byte & 0xF8) == 0xF0) {
+                isCut = true;
+                break;
+            }
+        }
     }
-    if (cnt & 1) { // 字符串最末尾的非ASCII字节数不为2的整数倍
-        char ch = asciiBuf->at(lastIndex);
-        asciiBuf->remove(lastIndex, 1);
-        str = QString::fromLocal8Bit(*asciiBuf);
-        asciiBuf->clear();
-        asciiBuf->append(ch);
+    lastIndex -= isCut ? cut - 1 : -1;
+    QByteArray cutArray = m_asciiBuf->mid(lastIndex);
+    m_asciiBuf->remove(lastIndex, cut);
+    QTextCodec *code = QTextCodec::codecForName(m_codecName);
+    str = code->toUnicode(*m_asciiBuf);
+    m_asciiBuf->clear();
+    m_asciiBuf->append(cutArray);
+}
+
+// array转双字节编码格式(GB2312等)
+void TerminalView::arrayToDualByte(QString &str, const QByteArray &array)
+{
+    int lastIndex;
+    bool isCut = false;
+
+    m_asciiBuf->append(array);
+    lastIndex = m_asciiBuf->length() - 1;
+    for (int i = lastIndex; i >= 0 && m_asciiBuf->at(i) & 0x80; --i) {
+        isCut = !isCut;
+    }
+    if (isCut) { // 字符串最末尾的非ASCII字节数不为2的整数倍
+        char ch = m_asciiBuf->at(lastIndex);
+        m_asciiBuf->remove(lastIndex, 1);
+        QTextCodec *code = QTextCodec::codecForName(m_codecName);
+        str = code->toUnicode(*m_asciiBuf);
+        m_asciiBuf->clear();
+        m_asciiBuf->append(ch);
     } else {
-        str = QString::fromLocal8Bit(*asciiBuf);
-        asciiBuf->clear();
+        QTextCodec *code = QTextCodec::codecForName(m_codecName);
+        str = code->toUnicode(*m_asciiBuf);
+        m_asciiBuf->clear();
+    }
+}
+
+// array转Unicode
+void TerminalView::arrayToUTF16(QString &str, const QByteArray &array)
+{
+    int lastIndex;
+    bool isCut = false;;
+
+    m_asciiBuf->append(array);
+    lastIndex = m_asciiBuf->length() - 1;
+    isCut = (lastIndex + 1) & 0x01;
+    if (isCut) { // 字符串长度不为偶数
+        char ch = m_asciiBuf->at(lastIndex);
+        m_asciiBuf->remove(lastIndex, 1);
+        QTextCodec *code = QTextCodec::codecForName(m_codecName);
+        str = code->toUnicode(*m_asciiBuf);
+        m_asciiBuf->clear();
+        m_asciiBuf->append(ch);
+    } else {
+        QTextCodec *code = QTextCodec::codecForName(m_codecName);
+        str = code->toUnicode(*m_asciiBuf);
+        m_asciiBuf->clear();
+    }
+}
+
+// array转ASCII
+void TerminalView::arrayToASCII(QString &str, const QByteArray &array)
+{
+    if (m_asciiBuf->isEmpty()) {
+        str = QString::fromLatin1(array);
+    } else {
+        m_asciiBuf->append(array);
+        str = QString::fromLatin1(*m_asciiBuf);
+        m_asciiBuf->clear();
+    }
+}
+
+// 这个函数可以避免中文接收的乱码
+void TerminalView::arrayToString(QString &str, const QByteArray &array)
+{
+    switch (m_textCodec) {
+    case GB2312:
+    case GB18030:
+        arrayToDualByte(str, array);
+        break;
+    case UTF8:
+        arrayToUTF8(str, array);
+        break;
+    case UTF16:
+        arrayToUTF16(str, array);
+        break;
+    default: // ASCII
+        arrayToASCII(str, array);
+        break;
     }
 }
 

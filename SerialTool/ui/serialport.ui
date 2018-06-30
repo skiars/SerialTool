@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>300</width>
-    <height>20</height>
+    <width>308</width>
+    <height>29</height>
    </rect>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout_1">
@@ -58,6 +58,9 @@
      </property>
      <property name="styleSheet">
       <string notr="true">QComboBox { width: 120px }</string>
+     </property>
+     <property name="insertPolicy">
+      <enum>QComboBox::InsertAlphabetically</enum>
      </property>
     </widget>
    </item>

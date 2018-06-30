@@ -3,6 +3,8 @@
 #include <QScrollBar>
 #include <Qsci/qscilexercpp.h>
 #include <Qsci/qscilexerbash.h>
+#include <Qsci/qscilexerlua.h>
+#include <Qsci/qscilexerjson.h>
 
 TextEdit::TextEdit(QWidget *parent) : QsciScintilla(parent)
 {
@@ -65,9 +67,7 @@ void TextEdit::setFonts(QString fonts, int size, QColor color, QString style)
        */
     SendScintilla(SCI_SETSCROLLWIDTHTRACKING, true);
 
-    if (highLight) { // 重新设置语法高亮
-        setHighLight(true);
-    }
+    setHighLight(m_language); // 重新设置语法高亮
 }
 
 void TextEdit::setMarginsWidth()
@@ -135,47 +135,20 @@ void TextEdit::onVScrollBarValueChanged()
 void TextEdit::setWrap(bool wrap)
 {
     if (wrap) {
-        QsciScintilla::setWrapMode(WrapWhitespace);
+        setWrapMode(WrapWhitespace);
     } else {
-        QsciScintilla::setWrapMode(WrapNone);
+        setWrapMode(WrapNone);
     }
     isWrap = wrap;
 }
 
-// 设置语法高亮
-void TextEdit::setHighLight(bool mode)
+void TextEdit::highlightNone()
 {
-    if (mode) {
-        highLight = true;
-    } else {
-        highLight = false;
-        SendScintilla(SCI_SETLEXER, SCLEX_CONTAINER);
-        return;
-    }
+    SendScintilla(SCI_SETLEXER, SCLEX_CONTAINER);
+}
 
-#if 1
-    QByteArray keyWords;
-
-    QFile file(QStandardPaths::writableLocation(
-        QStandardPaths::AppConfigLocation) + "/keywords");
-
-    if (file.open(QIODevice::ReadOnly)) {
-        keyWords = file.readAll();
-        file.close();
-    }
-    //NULL
-    SendScintilla(SCI_SETLEXER, SCLEX_BASH); // bash解析器
-    SendScintilla(SCI_SETKEYWORDS, (unsigned long)0, keyWords.data());// 设置关键字
-    // 下面设置各种语法元素前景色
-    SendScintilla(SCI_STYLESETFORE, QsciLexerBash::Default, 0x38312A); // 默认
-    SendScintilla(SCI_STYLESETFORE, QsciLexerBash::Keyword, 0x8B8B00);   // 关键字
-    SendScintilla(SCI_STYLESETFORE, QsciLexerBash::DoubleQuotedString, 0x6666D4); // 字符串
-    SendScintilla(SCI_STYLESETFORE, QsciLexerBash::SingleQuotedString, 0x6666D4); // 字符
-    SendScintilla(SCI_STYLESETFORE, QsciLexerBash::Operator, 0xB48246); // 运算符
-    SendScintilla(SCI_STYLESETFORE, QsciLexerBash::Number, 0x006F7F); // 数字
-    SendScintilla(SCI_STYLESETFORE, QsciLexerBash::Comment, 0x008000); // 行注释
-    SendScintilla(SCI_STYLESETFORE, QsciLexerBash::Identifier, 0x38312A); // 识别符
-#else
+void TextEdit::highlightCpp()
+{
     const char* g_szKeywords =
         "asm auto bool break case catch char class const "
         "const_cast continue default delete do double "
@@ -192,17 +165,90 @@ void TextEdit::setHighLight(bool mode)
     SendScintilla(SCI_SETKEYWORDS, (unsigned long)0, g_szKeywords);// 设置关键字
 
     // 下面设置各种语法元素前景色
-    SendScintilla(SCI_STYLESETFORE, QsciLexerCPP::Keyword, 0xFF4030);   // 关键字
-    SendScintilla(SCI_STYLESETFORE, QsciLexerCPP::DoubleQuotedString, 0x1515A3); // 字符串
-    SendScintilla(SCI_STYLESETFORE, QsciLexerCPP::SingleQuotedString, 0x1515A3); // 字符
+    SendScintilla(SCI_STYLESETFORE, QsciLexerCPP::Default, 0x38312A);   // 默认
+    SendScintilla(SCI_STYLESETFORE, QsciLexerCPP::Keyword, 0x8B8B00);   // 关键字
+    SendScintilla(SCI_STYLESETFORE, QsciLexerCPP::DoubleQuotedString, 0x6666D4); // 字符串
+    SendScintilla(SCI_STYLESETFORE, QsciLexerCPP::SingleQuotedString, 0x6666D4); // 字符
     SendScintilla(SCI_STYLESETFORE, QsciLexerCPP::Operator, 0xB48246); // 运算符
-    SendScintilla(SCI_STYLESETFORE, QsciLexerCPP::Number, 0x4F4F2F); // 数字
+    SendScintilla(SCI_STYLESETFORE, QsciLexerCPP::Number, 0x006F7F); // 数字
     SendScintilla(SCI_STYLESETFORE, QsciLexerCPP::PreProcessor, 0x808080); // 预处理指令
     SendScintilla(SCI_STYLESETFORE, QsciLexerCPP::Comment, 0x008000); // 块注释
     SendScintilla(SCI_STYLESETFORE, QsciLexerCPP::CommentLine, 0x008000); // 行注释
     SendScintilla(SCI_STYLESETFORE, QsciLexerCPP::CommentDoc, 0x008000); // 文档注释（/**开头）
-#endif
+}
 
+void TextEdit::highlightBash()
+{
+    QByteArray keyWords;
+
+    QFile file(QStandardPaths::writableLocation(
+        QStandardPaths::AppConfigLocation) + "/keywords");
+
+    if (file.open(QIODevice::ReadOnly)) {
+        keyWords = file.readAll();
+        file.close();
+    }
+
+    SendScintilla(SCI_SETLEXER, SCLEX_BASH); // bash解析器
+    SendScintilla(SCI_SETKEYWORDS, (unsigned long)0, keyWords.data());// 设置关键字
+    // 下面设置各种语法元素前景色
+    SendScintilla(SCI_STYLESETFORE, QsciLexerBash::Default, 0x38312A); // 默认
+    SendScintilla(SCI_STYLESETFORE, QsciLexerBash::Keyword, 0x8B8B00);   // 关键字
+    SendScintilla(SCI_STYLESETFORE, QsciLexerBash::DoubleQuotedString, 0x6666D4); // 字符串
+    SendScintilla(SCI_STYLESETFORE, QsciLexerBash::SingleQuotedString, 0x6666D4); // 字符
+    SendScintilla(SCI_STYLESETFORE, QsciLexerBash::Operator, 0xB48246); // 运算符
+    SendScintilla(SCI_STYLESETFORE, QsciLexerBash::Number, 0x006F7F); // 数字
+    SendScintilla(SCI_STYLESETFORE, QsciLexerBash::Comment, 0x008000); // 行注释
+    SendScintilla(SCI_STYLESETFORE, QsciLexerBash::Identifier, 0x38312A); // 识别符
+}
+
+void TextEdit::highlightLua()
+{
+    const char* g_szKeywords =
+        "and break do else elseif end false for function "
+        "if in local nil not or repeat return then true until while";
+
+    SendScintilla(SCI_SETLEXER, SCLEX_LUA); // lua解析器
+    SendScintilla(SCI_SETKEYWORDS, (unsigned long)0, g_szKeywords);// 设置关键字
+    // 下面设置各种语法元素前景色
+    SendScintilla(SCI_STYLESETFORE, QsciLexerLua::Default, 0x38312A); // 默认
+    SendScintilla(SCI_STYLESETFORE, QsciLexerLua::Keyword, 0x8B8B00);   // 关键字
+    SendScintilla(SCI_STYLESETFORE, QsciLexerLua::String, 0x6666D4); // 字符串
+    SendScintilla(SCI_STYLESETFORE, QsciLexerLua::Operator, 0xB48246); // 运算符
+    SendScintilla(SCI_STYLESETFORE, QsciLexerLua::Number, 0x006F7F); // 数字
+    SendScintilla(SCI_STYLESETFORE, QsciLexerLua::Comment, 0x008000); // 行注释
+    SendScintilla(SCI_STYLESETFORE, QsciLexerLua::Identifier, 0x38312A); // 识别符
+}
+
+void TextEdit::highlightJSON()
+{
+    const char* g_szKeywords = "true false";
+
+    SendScintilla(SCI_SETLEXER, SCLEX_JSON); // lua解析器
+    SendScintilla(SCI_SETKEYWORDS, (unsigned long)0, g_szKeywords);// 设置关键字
+    // 下面设置各种语法元素前景色
+    SendScintilla(SCI_STYLESETFORE, QsciLexerJSON::Default, 0x38312A); // 默认
+    SendScintilla(SCI_STYLESETFORE, QsciLexerJSON::Keyword, 0x8B8B00);   // 关键字
+    SendScintilla(SCI_STYLESETFORE, QsciLexerJSON::String, 0x6666D4); // 字符串
+    SendScintilla(SCI_STYLESETFORE, QsciLexerJSON::Operator, 0xB48246); // 运算符
+    SendScintilla(SCI_STYLESETFORE, QsciLexerJSON::Number, 0x006F7F); // 数字
+}
+
+// 设置语法高亮
+void TextEdit::setHighLight(const QString &language)
+{
+    if (language == "C/C++") {
+        highlightCpp();
+    } else if (language == "Bash") {
+        highlightBash();
+    } else if (language == "Lua") {
+        highlightLua();
+    } else if (language == "JSON") {
+        highlightJSON();
+    } else {
+        highlightNone();
+    }
+    m_language = language;
     SendScintilla(SCI_SETTABWIDTH, 4); // Tab宽度
     // 当前行高亮
     SendScintilla(SCI_SETCARETLINEVISIBLE, true);

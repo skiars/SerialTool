@@ -3,10 +3,11 @@
 # Project created by QtCreator 2017-02-01T17:03:23
 #
 #-------------------------------------------------
-
 QT       += core gui widgets serialport network charts
+QT       -= console
 
 TARGET = SerialTool
+
 TEMPLATE = app
 
 # The following define makes your compiler emit warnings if you use
@@ -20,7 +21,9 @@ DEFINES += QT_DEPRECATED_WARNINGS QSCINTILLA_DLL
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-QMAKE_CFLAGS +=
+unix {
+    QMAKE_LFLAGS += -fno-pie -no-pie # create executable file
+}
 
 TRANSLATIONS += language/serialtool_zh_CN.ts
 
@@ -37,7 +40,6 @@ SOURCES += \
     source/textedit.cpp \
     source/wavedecode.cpp \
     source/oscilloscope.cpp \
-    source/filetransferview.cpp \
     source/filethread.cpp \
     source/xmodem.cpp \
     source/vediobox.cpp \
@@ -48,7 +50,8 @@ SOURCES += \
     source/serialport.cpp \
     source/pointdatabuffer.cpp \
     source/valuedisplay.cpp \
-    source/mainwindow.cpp
+    source/mainwindow.cpp \
+    source/filetransmitview.cpp
 
 HEADERS  += \
     include/aboutbox.h \
@@ -60,7 +63,6 @@ HEADERS  += \
     include/wavedecode.h \
     include/oscilloscope.h \
     include/filethread.h \
-    include/filetransferview.h \
     include/xmodem.h \
     include/xmodem_crc16.h \
     include/vediobox.h \
@@ -71,7 +73,8 @@ HEADERS  += \
     include/serialport.h \
     include/pointdatabuffer.h \
     include/valuedisplay.h \
-    include/mainwindow.h
+    include/mainwindow.h \
+    include/filetransmitview.h
 
 DISTFILES += \
     resource/images/clear.png \
@@ -93,12 +96,12 @@ FORMS += \
     ui/optionsbox.ui \
     ui/portsetbox.ui \
     ui/oscilloscope.ui \
-    ui/filetransferview.ui \
     ui/vediobox.ui \
     ui/tcpudpport.ui \
     ui/terminalview.ui \
     ui/valuedisplay.ui \
     ui/serialport.ui \
-    ui/mainwindow.ui
+    ui/mainwindow.ui \
+    ui/filetransmitview.ui
 
 LIBS += -lqscintilla2_qt5

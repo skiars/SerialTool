@@ -41,6 +41,10 @@ private slots:
     void onTimerUpdate();
     void setBaudRate(const QString &string);
 
+#if defined(Q_OS_LINUX)
+    void onPortTextEdited();
+#endif
+
 private:
     Ui::SerialPort *ui;
     QSerialPort *serialPort;

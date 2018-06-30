@@ -42,7 +42,7 @@ PortSetBox::PortSetBox(QSerialPort *port, QWidget *parent) :
     setWindowFlags(flags);
 
     ui->setupUi(this);
-    setFixedSize(200, 150); // 不能伸缩的对话框
+    setFixedSize(200, 200); // 不能伸缩的对话框
 
     serialPort = port;
 
