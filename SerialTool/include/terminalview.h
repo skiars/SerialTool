@@ -29,6 +29,10 @@ public:
     void setPaused(bool status);
     void setHighlight(const QString &language);
     void setTextCodec(const QString &name);
+    void setTabsInsertSpaces(bool enable);
+    void setTabWidth(int width);
+    void setAutoIndent(bool enable);
+    void setIndentationGuides(bool enable);
     void saveText(const QString &fname);
 
 signals:

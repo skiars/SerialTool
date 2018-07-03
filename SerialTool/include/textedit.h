@@ -12,6 +12,10 @@ public:
     void append(const QString &text);
     void setFonts(QString fonts, int size, QColor color = Qt::black, QString style = "");
     void setHighLight(const QString &language);
+    void setIndentationsUseTabs(bool enable);
+    void setTabWidth(int width);
+    void setAutoIndent(bool enable);
+    void setIndentationGuides(bool enable);
 
 public slots:
     void setWrap(bool wrap);

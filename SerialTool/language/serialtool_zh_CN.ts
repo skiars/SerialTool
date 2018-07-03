@@ -189,7 +189,7 @@
     </message>
     <message>
         <location filename="../ui/mainwindow.ui" line="226"/>
-        <location filename="../source/mainwindow.cpp" line="282"/>
+        <location filename="../source/mainwindow.cpp" line="286"/>
         <source>Save</source>
         <translation>保存</translation>
     </message>
@@ -205,7 +205,7 @@
     </message>
     <message>
         <location filename="../ui/mainwindow.ui" line="247"/>
-        <location filename="../source/mainwindow.cpp" line="464"/>
+        <location filename="../source/mainwindow.cpp" line="468"/>
         <source>Open Port</source>
         <translation>打开端口</translation>
     </message>
@@ -216,7 +216,7 @@
     </message>
     <message>
         <location filename="../ui/mainwindow.ui" line="263"/>
-        <location filename="../source/mainwindow.cpp" line="373"/>
+        <location filename="../source/mainwindow.cpp" line="377"/>
         <source>Pause Tx/Rx</source>
         <translation>暂停发送/接收</translation>
     </message>
@@ -279,7 +279,7 @@
     <message>
         <location filename="../ui/mainwindow.ui" line="375"/>
         <location filename="../ui/mainwindow.ui" line="378"/>
-        <location filename="../source/mainwindow.cpp" line="307"/>
+        <location filename="../source/mainwindow.cpp" line="311"/>
         <source>Open</source>
         <translation>打开</translation>
     </message>
@@ -299,37 +299,37 @@
         <translation>置于顶层</translation>
     </message>
     <message>
-        <location filename="../source/mainwindow.cpp" line="283"/>
-        <location filename="../source/mainwindow.cpp" line="292"/>
+        <location filename="../source/mainwindow.cpp" line="287"/>
+        <location filename="../source/mainwindow.cpp" line="296"/>
         <source>Portable Network Graphic Format (*.png)</source>
         <translation>图像文件存储格式 (*.png)</translation>
     </message>
     <message>
-        <location filename="../source/mainwindow.cpp" line="284"/>
-        <location filename="../source/mainwindow.cpp" line="294"/>
+        <location filename="../source/mainwindow.cpp" line="288"/>
+        <location filename="../source/mainwindow.cpp" line="298"/>
         <source>Bitmap (*.bmp)</source>
         <translation>位图文件 (*.bmp)</translation>
     </message>
     <message>
-        <location filename="../source/mainwindow.cpp" line="285"/>
-        <location filename="../source/mainwindow.cpp" line="296"/>
-        <location filename="../source/mainwindow.cpp" line="308"/>
+        <location filename="../source/mainwindow.cpp" line="289"/>
+        <location filename="../source/mainwindow.cpp" line="300"/>
+        <location filename="../source/mainwindow.cpp" line="312"/>
         <source>Wave Plain Text File (*.txt)</source>
         <translation>波形纯文本文件 (*.txt)</translation>
     </message>
     <message>
-        <location filename="../source/mainwindow.cpp" line="286"/>
-        <location filename="../source/mainwindow.cpp" line="298"/>
+        <location filename="../source/mainwindow.cpp" line="290"/>
+        <location filename="../source/mainwindow.cpp" line="302"/>
         <source>Terminal Text File (*.txt)</source>
         <translation>终端文本文件 (*.txt)</translation>
     </message>
     <message>
-        <location filename="../source/mainwindow.cpp" line="366"/>
+        <location filename="../source/mainwindow.cpp" line="370"/>
         <source>Start Tx/Rx</source>
         <translation>开始发送/接收</translation>
     </message>
     <message>
-        <location filename="../source/mainwindow.cpp" line="443"/>
+        <location filename="../source/mainwindow.cpp" line="447"/>
         <source>Close Port</source>
         <translation>关闭端口</translation>
     </message>
@@ -413,8 +413,8 @@
         <translation>ASCII字符</translation>
     </message>
     <message>
-        <location filename="../ui/optionsbox.ui" line="414"/>
-        <location filename="../ui/optionsbox.ui" line="441"/>
+        <location filename="../ui/optionsbox.ui" line="467"/>
+        <location filename="../ui/optionsbox.ui" line="494"/>
         <source>Color...</source>
         <translation>颜色...</translation>
     </message>
@@ -434,62 +434,82 @@
         <translation>代码高亮</translation>
     </message>
     <message>
-        <location filename="../ui/optionsbox.ui" line="373"/>
+        <location filename="../ui/optionsbox.ui" line="293"/>
+        <source>Auto Indent</source>
+        <translation>自动缩进</translation>
+    </message>
+    <message>
+        <location filename="../ui/optionsbox.ui" line="300"/>
+        <source>Tab Size</source>
+        <translation>Tab宽度</translation>
+    </message>
+    <message>
+        <location filename="../ui/optionsbox.ui" line="310"/>
+        <source>Tabs Insert Spaces</source>
+        <translation>Tab插入空格</translation>
+    </message>
+    <message>
+        <location filename="../ui/optionsbox.ui" line="339"/>
+        <source>Indentation Guides</source>
+        <translation>缩进提示</translation>
+    </message>
+    <message>
+        <location filename="../ui/optionsbox.ui" line="426"/>
         <source>Plot</source>
         <translation>波形绘制</translation>
     </message>
     <message>
-        <location filename="../ui/optionsbox.ui" line="388"/>
+        <location filename="../ui/optionsbox.ui" line="441"/>
         <source>Color</source>
         <translation>颜色</translation>
     </message>
     <message>
-        <location filename="../ui/optionsbox.ui" line="394"/>
+        <location filename="../ui/optionsbox.ui" line="447"/>
         <source>Background</source>
         <translation>背景颜色</translation>
     </message>
     <message>
-        <location filename="../ui/optionsbox.ui" line="421"/>
+        <location filename="../ui/optionsbox.ui" line="474"/>
         <source>Grid</source>
         <translation>网格颜色</translation>
     </message>
     <message>
-        <location filename="../ui/optionsbox.ui" line="451"/>
+        <location filename="../ui/optionsbox.ui" line="504"/>
         <source>Graphics Options</source>
         <translation>图形选项</translation>
     </message>
     <message>
-        <location filename="../ui/optionsbox.ui" line="460"/>
+        <location filename="../ui/optionsbox.ui" line="513"/>
         <source>Update Interval (ms)</source>
         <translation>刷新时间(ms)</translation>
     </message>
     <message>
-        <location filename="../ui/optionsbox.ui" line="467"/>
+        <location filename="../ui/optionsbox.ui" line="520"/>
         <source>Use Antialias</source>
         <translation>抗锯齿</translation>
     </message>
     <message>
-        <location filename="../ui/optionsbox.ui" line="474"/>
+        <location filename="../ui/optionsbox.ui" line="527"/>
         <source>Use OpenGL</source>
         <translation>使用OpenGL</translation>
     </message>
     <message>
-        <location filename="../ui/optionsbox.ui" line="530"/>
+        <location filename="../ui/optionsbox.ui" line="583"/>
         <source>Command</source>
         <translation>命令</translation>
     </message>
     <message>
-        <location filename="../ui/optionsbox.ui" line="560"/>
+        <location filename="../ui/optionsbox.ui" line="613"/>
         <source>New</source>
         <translation>新建</translation>
     </message>
     <message>
-        <location filename="../ui/optionsbox.ui" line="567"/>
+        <location filename="../ui/optionsbox.ui" line="620"/>
         <source>Edit</source>
         <translation>编辑</translation>
     </message>
     <message>
-        <location filename="../ui/optionsbox.ui" line="574"/>
+        <location filename="../ui/optionsbox.ui" line="627"/>
         <source> Delete</source>
         <translation>删除</translation>
     </message>
@@ -578,12 +598,12 @@
         <translation>波特率</translation>
     </message>
     <message>
-        <location filename="../source/serialport.cpp" line="84"/>
+        <location filename="../source/serialport.cpp" line="94"/>
         <source>Error</source>
         <translation>错误</translation>
     </message>
     <message>
-        <location filename="../source/serialport.cpp" line="85"/>
+        <location filename="../source/serialport.cpp" line="95"/>
         <source>Can not open the port!
 Port may be occupied or configured incorrectly!</source>
         <translation>无法打开端口！

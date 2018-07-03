@@ -10,6 +10,13 @@ TextEdit::TextEdit(QWidget *parent) : QsciScintilla(parent)
 {
     SendScintilla(SCI_SETCODEPAGE, SC_CP_UTF8);
     SendScintilla(SCI_SETLAYOUTCACHE, SC_CACHE_DOCUMENT);
+
+    setTabIndents(true); // indent alignment
+    setAutoIndent(true);
+    setTabWidth(4);
+    setIndentationsUseTabs(false);
+    setIndentationGuides(false);
+
     connect(this, &QsciScintilla::textChanged, this, &TextEdit::onTextChanged);
     connect(verticalScrollBar(), &QScrollBar::rangeChanged, this, &TextEdit::onVScrollBarRangeChanged);
     connect(verticalScrollBar(), &QScrollBar::valueChanged, this, &TextEdit::onVScrollBarValueChanged);
@@ -229,6 +236,7 @@ void TextEdit::highlightJSON()
     // 下面设置各种语法元素前景色
     SendScintilla(SCI_STYLESETFORE, QsciLexerJSON::Default, 0x38312A); // 默认
     SendScintilla(SCI_STYLESETFORE, QsciLexerJSON::Keyword, 0x8B8B00);   // 关键字
+
     SendScintilla(SCI_STYLESETFORE, QsciLexerJSON::String, 0x6666D4); // 字符串
     SendScintilla(SCI_STYLESETFORE, QsciLexerJSON::Operator, 0xB48246); // 运算符
     SendScintilla(SCI_STYLESETFORE, QsciLexerJSON::Number, 0x006F7F); // 数字
@@ -249,8 +257,28 @@ void TextEdit::setHighLight(const QString &language)
         highlightNone();
     }
     m_language = language;
-    SendScintilla(SCI_SETTABWIDTH, 4); // Tab宽度
+
     // 当前行高亮
     SendScintilla(SCI_SETCARETLINEVISIBLE, true);
     SendScintilla(SCI_SETCARETLINEBACK, 0xE0E0E0);
+}
+
+void TextEdit::setIndentationsUseTabs(bool enable)
+{
+    QsciScintilla::setIndentationsUseTabs(enable);
+}
+
+void TextEdit::setTabWidth(int width)
+{
+    QsciScintilla::setTabWidth(width);
+}
+
+void TextEdit::setAutoIndent(bool enable)
+{
+    QsciScintilla::setAutoIndent(enable);
+}
+
+void TextEdit::setIndentationGuides(bool enable)
+{
+    QsciScintilla::setIndentationGuides(enable);
 }

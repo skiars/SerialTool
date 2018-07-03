@@ -114,6 +114,10 @@ void OptionsBox::setup()
     ui->portTypeBox->setCurrentIndex(config->value("PortType").toInt());
     language = config->value("Language").toString();
     theme = config->value("Theme").toString();
+    ui->tabWidthBox->setValue(config->value("TerminalTabWidth").toInt());
+    ui->tabsInsertSpacesBox->setChecked(config->value("TerminalTabsInsertSpaces").toBool());
+    ui->autoIndentBox->setChecked(config->value("TerminalAutoIndent").toBool());
+    ui->indentationGuidesBox->setChecked(config->value("TerminalIndentationGuides").toBool());
     config->endGroup();
 
     if (!fontFamily.isEmpty()) {
@@ -162,6 +166,10 @@ void OptionsBox::processOptions(QAbstractButton *button)
         config->setValue("PortType", QVariant(ui->portTypeBox->currentIndex()));
         config->setValue("Language", QVariant(language));
         config->setValue("Theme", QVariant(ui->themeBox->currentText()));
+        config->setValue("TerminalTabWidth", QVariant(ui->tabWidthBox->value()));
+        config->setValue("TerminalTabsInsertSpaces", QVariant(ui->tabsInsertSpacesBox->isChecked()));
+        config->setValue("TerminalAutoIndent", QVariant(ui->autoIndentBox->isChecked()));
+        config->setValue("TerminalIndentationGuides", QVariant(ui->indentationGuidesBox->isChecked()));
         config->endGroup();
         saveCommand(); // 保存命令
         m_parent->loadSettings(); // 配置生效

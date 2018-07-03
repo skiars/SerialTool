@@ -281,43 +281,67 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="1">
-           <widget class="QComboBox" name="highlightBox">
-            <item>
-             <property name="text">
-              <string notr="true">None</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string notr="true">Bash</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string notr="true">C/C++</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string notr="true">Lua</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string notr="true">JSON</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QComboBox" name="textCodecBox">
+          <item row="3" column="2">
+           <widget class="QCheckBox" name="autoIndentBox">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
+            <property name="text">
+             <string>Auto Indent</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_12">
+            <property name="text">
+             <string>Tab Size</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="3">
+           <widget class="QCheckBox" name="tabsInsertSpacesBox">
+            <property name="text">
+             <string>Tabs Insert Spaces</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="2">
+           <widget class="QSpinBox" name="tabWidthBox">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>80</width>
+              <height>0</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="3">
+           <widget class="QCheckBox" name="indentationGuidesBox">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Indentation Guides</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2" colspan="2">
+           <widget class="QComboBox" name="textCodecBox">
             <item>
              <property name="text">
               <string notr="true">ASCII</string>
@@ -346,6 +370,35 @@
             <item>
              <property name="text">
               <string notr="true">UTF-16LE</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item row="1" column="2" colspan="2">
+           <widget class="QComboBox" name="highlightBox">
+            <item>
+             <property name="text">
+              <string notr="true">None</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string notr="true">Bash</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string notr="true">C/C++</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string notr="true">Lua</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string notr="true">JSON</string>
              </property>
             </item>
            </widget>

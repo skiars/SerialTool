@@ -183,6 +183,10 @@ void MainWindow::loadSettings()
     ui->terminal->setHighlight(m_config->value("TerminalHighlight").toString());
     // text codec
     ui->terminal->setTextCodec(m_config->value("TerminalTextCodec").toString());
+    ui->terminal->setTabsInsertSpaces(m_config->value("TerminalTabsInsertSpaces").toBool());
+    ui->terminal->setTabWidth(m_config->value("TerminalTabWidth").toInt());
+    ui->terminal->setAutoIndent(m_config->value("TerminalAutoIndent").toBool());
+    ui->terminal->setIndentationGuides(m_config->value("TerminalIndentationGuides").toBool());
 
     // 语言设置
     setLanguage(m_config->value("Language").toString());

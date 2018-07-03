@@ -413,3 +413,23 @@ void TerminalView::saveText(const QString &fname)
         file.close();
     }
 }
+
+void TerminalView::setTabsInsertSpaces(bool enable)
+{
+    ui->textEditTx->setIndentationsUseTabs(!enable);
+}
+
+void TerminalView::setTabWidth(int width)
+{
+    ui->textEditTx->setTabWidth(width);
+}
+
+void TerminalView::setAutoIndent(bool enable)
+{
+    ui->textEditTx->setAutoIndent(enable);
+}
+
+void TerminalView::setIndentationGuides(bool enable)
+{
+    ui->textEditTx->setIndentationGuides(enable);
+}
