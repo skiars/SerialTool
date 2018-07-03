@@ -229,14 +229,14 @@ void TextEdit::highlightLua()
 
 void TextEdit::highlightJSON()
 {
-    const char* g_szKeywords = "true false";
+    const char* g_szKeywords = "true false null";
 
     SendScintilla(SCI_SETLEXER, SCLEX_JSON); // lua解析器
     SendScintilla(SCI_SETKEYWORDS, (unsigned long)0, g_szKeywords);// 设置关键字
     // 下面设置各种语法元素前景色
     SendScintilla(SCI_STYLESETFORE, QsciLexerJSON::Default, 0x38312A); // 默认
     SendScintilla(SCI_STYLESETFORE, QsciLexerJSON::Keyword, 0x8B8B00);   // 关键字
-
+    SendScintilla(SCI_STYLESETFORE, QsciLexerJSON::Property, 0xAB3DA0);   // 关键字
     SendScintilla(SCI_STYLESETFORE, QsciLexerJSON::String, 0x6666D4); // 字符串
     SendScintilla(SCI_STYLESETFORE, QsciLexerJSON::Operator, 0xB48246); // 运算符
     SendScintilla(SCI_STYLESETFORE, QsciLexerJSON::Number, 0x006F7F); // 数字
