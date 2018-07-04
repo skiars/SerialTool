@@ -13,9 +13,12 @@ SerialTool是一个实用的串口调试工具，这款工具支持串口调试�
 * 支持波形数据读取
 * 支持时间戳功能，包括年、月、日、时、分、秒、毫秒、采样率，方便进行波形数据分析（时间戳由下位机发送）
 * 多语言支持
-* 串口调试助手支持语法高亮(bash模式)
-* 支持TCP/UDP和串口两种端口模式
+* 终端界面支持语法高亮(Bash, JSON, Lua, C/C++等)
+* 终端支持多种字符编码，如GB2312, UTF8, UTF16等
+* 支持TCP/UDP和串口收发模式
 * 支持文件传输(目前只支持XModem协议)
+
+## [查看Wiki](../../wiki)
 
 ## 下载地址
 * [Latest release](https://github.com/gztss/SerialTool/releases/latest)
@@ -25,16 +28,16 @@ SerialTool是一个实用的串口调试工具，这款工具支持串口调试�
 ## 项目信息
 
 * 下位机示例代码在[./SerialTool/slave](./SerialTool/slave)目录下，该目录有两个文件：
- * [sendwave.c](./SerialTool/slave/sendwave.c)
- * [sendwave.h](./SerialTool/slave/sendwave.h)
- 您可以参考[串口示波器协议说明](./SerialTool/doc/plot_protocol.md)来了解下位机该如何发送波形数据。
-* 跟随本项目发布的可执行文件安装包使用Qt 5.6.3 for MinGW编译。
+  * [sendwave.c](./SerialTool/slave/sendwave.c)
+  * [sendwave.h](./SerialTool/slave/sendwave.h)
+  * 您可以参考[串口示波器协议说明](../../plot_protocol.md)来了解下位机该如何发送波形数据。
+* 跟随本项目发布的Windows 32位安装包使用Qt 5.6.3 for MinGW编译。
 * 使用的插件:
- * QScintilla: [Documentation](http://pyqt.sourceforge.net/Docs/QScintilla2), [Download](https://riverbankcomputing.com/software/qscintilla/download)
- * Qt Charts: 此插件在Qt 5.7以及更高的版本中包含在Qt安装文件中，使用Qt 5.6时需要自行编译。
+  * QScintilla: [Documentation](http://pyqt.sourceforge.net/Docs/QScintilla2), [Download](https://riverbankcomputing.com/software/qscintilla/download)
+  * Qt Charts: 此插件在Qt 5.7以及更高的版本中包含在Qt安装文件中，使用Qt 5.6时需要自行编译。
 
 ## 开源协议
 
-本程序使用GPL协议发布，但是[./SerialTool/slave](./SerialTool/slave)目录下的源码不受GPL协议约束，用户可以随意使用。
+本程序遵从[GPL-3.0协议](./LICENSE)发布，[./SerialTool/slave](./SerialTool/slave)目录下的源码不受GPL-3.0协议约束，用户可以将这些代码加入到自己的项目中而不必公开。
 
 [License](./LICENSE)
