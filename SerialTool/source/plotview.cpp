@@ -1,7 +1,6 @@
 #include "plotview.h"
 #include <QChart>
 #include <QValueAxis>
-#include <qDebug>
 
 QT_CHARTS_USE_NAMESPACE
 
