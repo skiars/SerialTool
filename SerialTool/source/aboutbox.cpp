@@ -22,7 +22,7 @@ AboutBox::AboutBox(QWidget *parent) :
     ui->buttonBox->setCenterButtons(true); // 按钮居中
     ui->textBrowser->setFrameStyle(QFrame::NoFrame); // 无边框
 
-    QPixmap pix(":/SerialTool/images/icon.ico");
+    QPixmap pix(":/SerialTool/images/logo.ico");
     pix = pix.scaledToWidth(64, Qt::SmoothTransformation);
     ui->label1->setPixmap(pix);
     ui->label2->setText(

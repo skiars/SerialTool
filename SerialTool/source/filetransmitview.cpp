@@ -24,6 +24,8 @@ FileTransmitView::FileTransmitView(QWidget *parent) :
 FileTransmitView::~FileTransmitView()
 {
     delete ui;
+    thread.terminate();
+    thread.wait();
 }
 
 void FileTransmitView::retranslate()

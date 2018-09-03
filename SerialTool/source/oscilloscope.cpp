@@ -39,7 +39,8 @@ Oscilloscope::Oscilloscope(QWidget *parent) :
 
     m_timer->setInterval(25);
 
-    connect(ui->horizontalScrollBar, &QAbstractSlider::sliderMoved, this, &Oscilloscope::horzScrollBarChanged);
+    connect(ui->horizontalScrollBar, &QAbstractSlider::sliderMoved, this, &Oscilloscope::horzScrollBarMoved);
+    connect(ui->horizontalScrollBar, &QAbstractSlider::actionTriggered, this, &Oscilloscope::horzScrollBarActionTriggered);
     connect(ui->yOffsetBox, static_cast<void (QDoubleSpinBox::*)(double)>
         (&QDoubleSpinBox::valueChanged), this, &Oscilloscope::yOffsetChanged);
     connect(ui->yRangeBox, static_cast<void (QDoubleSpinBox::*)(double)>
@@ -114,15 +115,11 @@ void Oscilloscope::saveConfig(QSettings *config)
 // 初始化示波器界面
 void Oscilloscope::setupPlot()
 {
-    ui->chartView->setChart(m_chart);
+    ui->plotView->setChart(m_chart);
     m_chart->createDefaultAxes();
     QValueAxis *xAxis = new QValueAxis;
     QValueAxis *yAxis = new QValueAxis;
-    xAxis->setLabelFormat("%d");
-    xAxis->setTickCount(6);
-    xAxis->setMinorTickCount(1);
-    yAxis->setTickCount(5);
-    yAxis->setMinorTickCount(1);
+    xAxis->setLabelFormat("%g");
     // 初始化通道
     for (int i = 0; i < CH_NUM; ++i) {
         QLineSeries *series = new QLineSeries(this);
@@ -194,7 +191,7 @@ void Oscilloscope::setUseOpenGL(bool status)
 void Oscilloscope::setUseAntialiased(bool status)
 {
     status &= !m_series[0]->useOpenGL(); // 不适用OpenGL时才可以打开抗锯齿
-    ui->chartView->setRenderHint(QPainter::Antialiasing, status);
+    ui->plotView->setRenderHint(QPainter::Antialiasing, status);
 }
 
 // 设置背景颜色
@@ -210,11 +207,11 @@ void Oscilloscope::setGridColor(QColor color)
     m_chart->axisX()->setLinePen(QPen(color));
     m_chart->axisX()->setGridLineColor(color);
     m_chart->axisX()->setLabelsColor(color);
-    m_chart->axisX()->setMinorGridLineColor(color);
+    m_chart->axisX()->setMinorGridLinePen(QPen(color, 0.35));
     m_chart->axisY()->setLinePen(QPen(color));
     m_chart->axisY()->setGridLineColor(color);
     m_chart->axisY()->setLabelsColor(color);
-    m_chart->axisY()->setMinorGridLineColor(color);
+    m_chart->axisY()->setMinorGridLinePen(QPen(color, 0.35));
 }
 
 // 设置更新时间
@@ -251,7 +248,7 @@ void Oscilloscope::savePng(const QString &fileName)
 {
     QScreen *screen = QGuiApplication::primaryScreen();
 
-    QPixmap p = screen->grabWindow(ui->chartView->winId());
+    QPixmap p = screen->grabWindow(ui->plotView->winId());
     QImage image = p.toImage();
     image.save(fileName);
 }
@@ -261,7 +258,7 @@ void Oscilloscope::saveBmp(const QString &fileName)
 {
     QScreen *screen = QGuiApplication::primaryScreen();
 
-    QPixmap p = screen->grabWindow(ui->chartView->winId());
+    QPixmap p = screen->grabWindow(ui->plotView->winId());
     QImage image = p.toImage();
     image.save(fileName);
 }
@@ -275,7 +272,7 @@ void Oscilloscope::channelStyleChanged(ChannelItem *item)
 }
 
 // 滚动条滑块移动时触发
-void Oscilloscope::horzScrollBarChanged(int value)
+void Oscilloscope::horzScrollBarMoved(int value)
 {
     if (ui->horizontalScrollBar->maximum() == value) {
         replotFlag = true;
@@ -283,6 +280,12 @@ void Oscilloscope::horzScrollBarChanged(int value)
         replotFlag = false;
     }
     m_chart->axisX()->setRange(value, value + m_xRange);
+}
+
+// 滚动条按钮点击时触发
+void Oscilloscope::horzScrollBarActionTriggered(void)
+{
+    horzScrollBarMoved(ui->horizontalScrollBar->value());
 }
 
 // Y轴偏置改变

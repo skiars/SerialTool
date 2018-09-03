@@ -2,7 +2,7 @@
     <qresource prefix="/SerialTool">
         <file>images/config.ico</file>
         <file>images/exit.ico</file>
-        <file>images/icon.ico</file>
+        <file>images/logo.ico</file>
         <file>images/pause.ico</file>
         <file>images/save.ico</file>
         <file>images/start.ico</file>

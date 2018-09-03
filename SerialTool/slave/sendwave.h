@@ -1,14 +1,14 @@
 /*****************************************************************************
  * 文件名: sendwave.c
- *   版本: V1.1
+ *   版本: V1.2
  *   作者: 官文亮
- *   日期: 2017/11/2
+ *   日期: 2018/9/2
  *   说明: 本文件属于SerialTool软件的波形显示功能的下位机参考代码, 作用是将数
  *         值转换为SerialTool可以识别的帧, 用户需实现串口发送函数, 结合本程序
  *         即可实现串口发送波形的显示, 本程序适合SerialTool v1.1.6及后续版本.
  *
- * SerialTool源码链接: https://github.com/Le-Seul/SerialTool
- * SerialTool安装包链接: https://github.com/Le-Seul/SerialTool/releases
+ * SerialTool源码链接: https://github.com/gztss/SerialTool
+ * SerialTool安装包链接: https://github.com/gztss/SerialTool/releases
  *
  *****************************************************************************/
 
@@ -50,7 +50,7 @@ typedef struct {
     uint8_t min;            // 0 ~ 59, 6 bit
     uint8_t sec;            // 0 ~ 59, 6 bit
     uint16_t msec;          // 0 ~ 999, 10 bit
-    uint32_t sampleRate;    // 0 ~ 2000000,21 bit
+    uint32_t sampleRate;    // 0 ~ 2000000, 21 bit
 } ws_timestamp_t;
 
 /* 公共函数声明 */

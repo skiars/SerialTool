@@ -48,7 +48,7 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="QtCharts::QChartView" name="chartView" native="true"/>
+       <widget class="PlotView" name="plotView" native="true"/>
       </item>
       <item>
        <widget class="QScrollBar" name="horizontalScrollBar">
@@ -252,9 +252,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QtCharts::QChartView</class>
+   <class>PlotView</class>
    <extends>QWidget</extends>
-   <header location="global">QtCharts/QChartView</header>
+   <header>plotview.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

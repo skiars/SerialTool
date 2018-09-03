@@ -51,7 +51,8 @@ SOURCES += \
     source/pointdatabuffer.cpp \
     source/valuedisplay.cpp \
     source/mainwindow.cpp \
-    source/filetransmitview.cpp
+    source/filetransmitview.cpp \
+    source/plotview.cpp
 
 HEADERS  += \
     include/aboutbox.h \
@@ -74,7 +75,8 @@ HEADERS  += \
     include/pointdatabuffer.h \
     include/valuedisplay.h \
     include/mainwindow.h \
-    include/filetransmitview.h
+    include/filetransmitview.h \
+    include/plotview.h
 
 DISTFILES += \
     resource/images/clear.png \
@@ -83,7 +85,7 @@ DISTFILES += \
     resource/images/port config.png \
     resource/images/config.ico \
     resource/images/exit.ico \
-    resource/images/icon.ico \
+    resource/images/logo.ico \
     resource/images/pause.ico \
     resource/images/save.ico \
     resource/images/start.ico

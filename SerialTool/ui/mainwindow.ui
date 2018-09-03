@@ -22,7 +22,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="../resource/serialtool.qrc">
-    <normaloff>:/SerialTool/images/icon.ico</normaloff>:/SerialTool/images/icon.ico</iconset>
+    <normaloff>:/SerialTool/images/logo.ico</normaloff>:/SerialTool/images/logo.ico</iconset>
   </property>
   <widget class="QWidget" name="centralWidget">
    <property name="sizePolicy">

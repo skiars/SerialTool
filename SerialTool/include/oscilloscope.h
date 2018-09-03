@@ -62,7 +62,8 @@ private slots:
     void yRangeChanged(double range);
     void xRangeChanged(const QString &str);
     void channelStyleChanged(ChannelItem *item);
-    void horzScrollBarChanged(int value);
+    void horzScrollBarMoved(int value);
+    void horzScrollBarActionTriggered(void);
     void timeUpdata();
 
 private:

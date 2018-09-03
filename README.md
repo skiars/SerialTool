@@ -1,6 +1,33 @@
 
+<p align="center">
+  <a>
+    <img src="https://github.com/gztss/SerialTool/blob/master/SerialTool/resource/images/logo.ico" alt="logo" width=64 height=64>
+  </a>
+  <h2 align="center">SerialTool</h2>
+  <p align="center">
+    <a href="https://github.com/gztss/SerialTool/blob/master/LICENSE">
+      <img src="https://img.shields.io/github/license/gztss/SerialTool.svg" alt="license" />
+    </a>
+    <a href="https://github.com/gztss/SerialTool/issues">
+      <img src="https://img.shields.io/github/issues/gztss/SerialTool.svg" alt="issues">
+    </a>
+    <a>
+      <img src="https://img.shields.io/github/repo-size/gztss/SerialTool.svg" alt="Repo Size" />
+    </a>
+    <a href="https://github.com/gztss/SerialTool/archive/master.zip">
+      <img src="https://img.shields.io/github/languages/code-size/gztss/SerialTool.svg" alt="Code Size" />
+    </a>
+    <a href="https://github.com/gztss/SerialTool/releases">
+      <img src="https://img.shields.io/github/downloads/gztss/SerialTool/total.svg" alt="All Downloads" />
+    </a>
+    <a href="https://github.com/gztss/SerialTool/releases">
+      <img src="https://img.shields.io/github/release/gztss/SerialTool/all.svg" alt="Last Release">
+    </a>
+  </p>
+  <p align="center">A practical Serial-Port/TCP/UDP debugging tool.</p>
+</p>
 
-# SerialTool
+## 简介
 
 SerialTool是一个实用的串口调试工具，这款工具支持串口调试助手、波形显示和文件传输等功能。该工具软件使用GPL许可证发布。用户可以将波形文件保存为文本文件，然后使用Matlab等工具进行数据分析。如果您支持本软件，欢迎贡献源代码或者向作者提出建议。
 
@@ -23,7 +50,7 @@ SerialTool是一个实用的串口调试工具，这款工具支持串口调试�
 ## 下载地址
 * [Latest release](https://github.com/gztss/SerialTool/releases/latest)
 * [GitHub](https://github.com/Le-Seul/SerialTool/releases)
-* [百度网盘](http://pan.baidu.com/s/1c18ZXW8)
+* [百度网盘](http://pan.baidu.com/s/1c18ZXW8) (不推荐😂😂)
 
 ## 项目信息
 
