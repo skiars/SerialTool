@@ -18,13 +18,7 @@
     <number>16</number>
    </property>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <property name="leftMargin">
-      <number>16</number>
-     </property>
-     <property name="rightMargin">
-      <number>16</number>
-     </property>
+    <layout class="QHBoxLayout" name="horizontalLayout" stretch="4,6">
      <item>
       <widget class="QLabel" name="label1">
        <property name="sizePolicy">
@@ -35,6 +29,9 @@
        </property>
        <property name="text">
         <string/>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
        </property>
       </widget>
      </item>

@@ -52,7 +52,8 @@ SOURCES += \
     source/valuedisplay.cpp \
     source/mainwindow.cpp \
     source/filetransmitview.cpp \
-    source/plotview.cpp
+    source/plotview.cpp \
+    source/updatedialog.cpp
 
 HEADERS  += \
     include/aboutbox.h \
@@ -76,7 +77,8 @@ HEADERS  += \
     include/valuedisplay.h \
     include/mainwindow.h \
     include/filetransmitview.h \
-    include/plotview.h
+    include/plotview.h \
+    include/updatedialog.h
 
 DISTFILES += \
     resource/images/clear.png \
@@ -104,6 +106,7 @@ FORMS += \
     ui/valuedisplay.ui \
     ui/serialport.ui \
     ui/mainwindow.ui \
-    ui/filetransmitview.ui
+    ui/filetransmitview.ui \
+    ui/updatedialog.ui
 
 LIBS += -lqscintilla2_qt5

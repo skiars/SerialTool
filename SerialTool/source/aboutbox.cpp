@@ -8,9 +8,7 @@ AboutBox::AboutBox(QWidget *parent) :
     ui(new Ui::AboutBox)
 {
     // 不显示问号
-    Qt::WindowFlags flags = Qt::Dialog;
-    flags |= Qt::WindowCloseButtonHint;
-    setWindowFlags(flags);
+    setWindowFlags(Qt::Dialog | Qt::WindowCloseButtonHint);
     ui->setupUi(this);
     setFixedSize(400, 400); // 不能伸缩的对话框
 

@@ -60,6 +60,7 @@ private slots:
     void onStaysOnTopTriggered();
     void currentTabChanged(int index);
     void dispPortStatus();
+    void updateSoftware();
 
 private:
     void loadConfig();

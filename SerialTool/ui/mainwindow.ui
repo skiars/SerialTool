@@ -188,6 +188,7 @@
     </property>
     <addaction name="actionWiki"/>
     <addaction name="actionAbout"/>
+    <addaction name="actionUpdate"/>
    </widget>
    <addaction name="menu"/>
    <addaction name="menu_3"/>
@@ -393,6 +394,11 @@
    </property>
    <property name="text">
     <string>Stays On Top</string>
+   </property>
+  </action>
+  <action name="actionUpdate">
+   <property name="text">
+    <string>Update</string>
    </property>
   </action>
  </widget>

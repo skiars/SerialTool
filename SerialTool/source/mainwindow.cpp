@@ -16,6 +16,7 @@
 #include "serialport.h"
 #include "valuedisplay.h"
 #include "vediobox.h"
+#include "updatedialog.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -82,6 +83,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(m_tcpUdpPort, SIGNAL(protocolChanged()), this, SLOT(dispPortStatus()));
     connect(m_tcpUdpPort, SIGNAL(connectionError()), this, SLOT(closePort()));
     connect(ui->actionStaysOnTop, SIGNAL(triggered()), this, SLOT(onStaysOnTopTriggered()));
+    connect(ui->actionUpdate, SIGNAL(triggered()), this, SLOT(updateSoftware()));
 
     m_timer.start(1000);
 }
@@ -635,4 +637,12 @@ void MainWindow::currentTabChanged(int index)
     } else {
         ui->oscPlot->stop();
     }
+}
+
+void MainWindow::updateSoftware()
+{
+    UpdateDialog *dialog = new UpdateDialog(this);
+
+    dialog->exec();
+    dialog->deleteLater();
 }
