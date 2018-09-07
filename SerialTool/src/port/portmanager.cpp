@@ -21,6 +21,14 @@ PortManager::PortManager(QToolBar *toolbar, QAction *portSetAction)
     setupPort(m_portFactorys->at(0)->create(toolbar));
 }
 
+PortManager::~PortManager()
+{
+    for (AbstractPortFactory *factory : *m_portFactorys) {
+        delete factory;
+    }
+    delete m_portFactorys;
+}
+
 void PortManager::retranslate()
 {
     m_currentPort->retranslate();
@@ -79,7 +87,7 @@ void PortManager::write(const QByteArray &data)
     m_currentPort->write(data);
 }
 
-bool PortManager::portStatus(QString &string)
+bool PortManager::portStatus(QString *string)
 {
     return m_currentPort->portStatus(string);
 }

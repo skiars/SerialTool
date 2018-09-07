@@ -25,7 +25,7 @@ public:
     void close();
     QByteArray readAll();
     void write(const QByteArray &data);
-    bool portStatus(QString &string);
+    bool portStatus(QString *string);
     bool isOpen();
     bool usePortSetDialog() { return true; }
     void portSetDialog();

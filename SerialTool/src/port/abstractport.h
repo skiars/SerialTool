@@ -18,7 +18,7 @@ public:
     virtual void close() = 0;
     virtual QByteArray readAll() = 0;
     virtual void write(const QByteArray &data) = 0;
-    virtual bool portStatus(QString &string) = 0;
+    virtual bool portStatus(QString *string) = 0;
     virtual bool isOpen() = 0;
     virtual bool usePortSetDialog() { return false; }
     virtual void portSetDialog() {}
@@ -33,6 +33,7 @@ class AbstractPortFactory
 {
 public:
     AbstractPortFactory() {}
+    virtual ~AbstractPortFactory() {}
     virtual AbstractPort* create(QWidget *parent = nullptr) = 0;
     virtual QString type() = 0;
 };

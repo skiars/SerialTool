@@ -31,6 +31,7 @@ ToolBoxManager::~ToolBoxManager()
         delete factory;
     }
     delete m_factorys;
+    delete m_actions;
 }
 
 void ToolBoxManager::onActionTriggered()

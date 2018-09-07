@@ -12,7 +12,7 @@ public:
     explicit AbstractView(QWidget *parent = nullptr) : QWidget(parent) {}
     virtual void loadConfig(QSettings *config) = 0;
     virtual void saveConfig(QSettings *config) = 0;
-    virtual void loadSettings(QSettings *config) = 0;
+    virtual void loadSettings(QSettings *config) { (void)config; }
     virtual void retranslate() {}
     virtual QString title() { return "Abstract View"; }
     virtual void receiveData(const QByteArray &array) = 0;

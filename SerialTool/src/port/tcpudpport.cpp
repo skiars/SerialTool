@@ -331,17 +331,17 @@ void TcpUdpPort::retranslate()
     ui->retranslateUi(this);
 }
 
-bool TcpUdpPort::portStatus(QString &string)
+bool TcpUdpPort::portStatus(QString *string)
 {
     bool status;
 
-    string += ui->protocolBox->currentText() + " ";
+    *string = ui->protocolBox->currentText() + " ";
     if (this->isOpen()) {
-        string += "OPEND @" + ui->ipEdit->text()
-               + ":" + ui->portEdit->text();
+        string->append("OPEND @" + ui->ipEdit->text()
+            + ":" + ui->portEdit->text());
         status = true;
     } else {
-        string += "CLOSED";
+        string->append("CLOSED");
         status = false;
     }
     return status;

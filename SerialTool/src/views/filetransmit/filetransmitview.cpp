@@ -63,11 +63,6 @@ void FileTransmitView::saveConfig(QSettings *config)
     config->endGroup();
 }
 
-void FileTransmitView::loadSettings(QSettings *config)
-{
-    (void)config;
-}
-
 void FileTransmitView::setEnabled(bool enabled)
 {
     (void)enabled;

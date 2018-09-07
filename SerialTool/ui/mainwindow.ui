@@ -91,6 +91,7 @@
      <string>Tools</string>
     </property>
     <addaction name="actionOption"/>
+    <addaction name="separator"/>
    </widget>
    <widget class="QMenu" name="menu_3">
     <property name="title">

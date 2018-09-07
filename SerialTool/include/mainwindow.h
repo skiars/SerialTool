@@ -35,8 +35,6 @@ private slots:
     void onPortSwitchActionTriggered();
     void dispPortStatus();
     void clear();
-    void saveFile();
-    void openFile();
     void setOptions();
     void onStaysOnTopTriggered();
     void about();

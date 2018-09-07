@@ -36,7 +36,7 @@ public:
     void write(const QByteArray &array);
     bool isOpen(void);
     void retranslate();
-    bool portStatus(QString &string);
+    bool portStatus(QString *string);
 
 private:
     QString localHost();

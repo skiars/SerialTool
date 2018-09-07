@@ -115,7 +115,7 @@ void SerialPort::write(const QByteArray &data)
     serialPort->write(data);
 }
 
-bool SerialPort::portStatus(QString &string)
+bool SerialPort::portStatus(QString *string)
 {
     bool status;
     static const QString parity[] {
@@ -126,19 +126,19 @@ bool SerialPort::portStatus(QString &string)
     };
 
     // 获取端口名
-    string = ui->portNameBox->currentText().section(" ", 0, 0) + " ";
-    if (string == " ") { // 端口名是空的
-        string = "COM Port ";
+    *string = ui->portNameBox->currentText().section(" ", 0, 0) + " ";
+    if (*string == " ") { // 端口名是空的
+        *string = "COM Port ";
     }
     if (serialPort->isOpen()) {
-        string += "OPEND, " + QString::number(serialPort->baudRate()) + "bps, "
-               + QString::number(serialPort->dataBits()) + "bit, "
-               + parity[serialPort->parity()] + ", "
-               + QString::number(serialPort->stopBits()) + ", "
-               + flowControl[serialPort->flowControl()];
+        string->append("OPEND, " + QString::number(serialPort->baudRate()) + "bps, "
+            + QString::number(serialPort->dataBits()) + "bit, "
+            + parity[serialPort->parity()] + ", "
+            + QString::number(serialPort->stopBits()) + ", "
+            + flowControl[serialPort->flowControl()]);
         status = true;
     } else {
-        string += "CLOSED";
+        string->append("CLOSED");
         status = false;
     }
     return status;

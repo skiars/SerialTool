@@ -196,17 +196,6 @@ void MainWindow::setOptions()
     option.exec();
 }
 
-// 保存文件
-void MainWindow::saveFile()
-{
-
-}
-
-// 打开文件
-void MainWindow::openFile()
-{
-}
-
 void MainWindow::changeRunFlag()
 {
     if (m_runFlag == true) {
@@ -230,7 +219,7 @@ void MainWindow::dispPortStatus()
     QString string;
     QPalette palette;
 
-    status = m_port->portStatus(string);
+    status = m_port->portStatus(&string);
     palette.setColor(QPalette::WindowText, status ? Qt::darkGreen : Qt::red);
     m_portInfoLabel->setText(string);
     m_portInfoLabel->setPalette(palette);

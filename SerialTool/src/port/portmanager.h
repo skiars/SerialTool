@@ -14,6 +14,7 @@ class PortManager : public QObject
     Q_OBJECT
 public:
     explicit PortManager(QToolBar *toolbar, QAction *portSetAction);
+    ~PortManager();
     void retranslate();
     void loadConfig(QSettings *config);
     void saveConfig(QSettings *config);
@@ -22,7 +23,7 @@ public:
     void close();
     QByteArray readAll();
     void write(const QByteArray &data);
-    bool portStatus(QString &string);
+    bool portStatus(QString *string);
     bool isOpen();
     void portSetDialog();
 

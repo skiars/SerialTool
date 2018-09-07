@@ -20,7 +20,6 @@ public:
     void retranslate();
     void loadConfig(QSettings *config);
     void saveConfig(QSettings *config);
-    void loadSettings(QSettings *config);
     void setEnabled(bool enabled);
 
 public slots:
