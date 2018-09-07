@@ -62,73 +62,8 @@
        </sizepolicy>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>-1</number>
       </property>
-      <widget class="QWidget" name="tabTerminal">
-       <attribute name="title">
-        <string>Terminal</string>
-       </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_3">
-        <property name="spacing">
-         <number>2</number>
-        </property>
-        <property name="leftMargin">
-         <number>2</number>
-        </property>
-        <property name="topMargin">
-         <number>2</number>
-        </property>
-        <property name="rightMargin">
-         <number>2</number>
-        </property>
-        <property name="bottomMargin">
-         <number>2</number>
-        </property>
-        <item>
-         <widget class="TerminalView" name="terminal" native="true"/>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="tabOsc">
-       <attribute name="title">
-        <string>Plot</string>
-       </attribute>
-       <widget class="Oscilloscope" name="oscPlot" native="true">
-        <property name="geometry">
-         <rect>
-          <x>0</x>
-          <y>0</y>
-          <width>592</width>
-          <height>297</height>
-         </rect>
-        </property>
-       </widget>
-      </widget>
-      <widget class="QWidget" name="tabFileTrans">
-       <attribute name="title">
-        <string>File Transmit</string>
-       </attribute>
-       <layout class="QHBoxLayout" name="horizontalLayout_2">
-        <property name="spacing">
-         <number>0</number>
-        </property>
-        <property name="leftMargin">
-         <number>0</number>
-        </property>
-        <property name="topMargin">
-         <number>0</number>
-        </property>
-        <property name="rightMargin">
-         <number>0</number>
-        </property>
-        <property name="bottomMargin">
-         <number>0</number>
-        </property>
-        <item>
-         <widget class="FileTransmitView" name="fileTransmit" native="true"/>
-        </item>
-       </layout>
-      </widget>
      </widget>
     </item>
    </layout>
@@ -156,8 +91,6 @@
      <string>Tools</string>
     </property>
     <addaction name="actionOption"/>
-    <addaction name="actionValueDisplay"/>
-    <addaction name="actionVedioBox"/>
    </widget>
    <widget class="QMenu" name="menu_3">
     <property name="title">
@@ -173,9 +106,6 @@
     <property name="title">
      <string>View</string>
     </property>
-    <addaction name="actionVisibleTab0"/>
-    <addaction name="actionVisibleTab1"/>
-    <addaction name="actionVisibleTab2"/>
     <addaction name="separator"/>
     <addaction name="actionVisibleToolbar"/>
     <addaction name="actionVisibleStatusBar"/>
@@ -202,6 +132,12 @@
    </property>
    <property name="allowedAreas">
     <set>Qt::BottomToolBarArea|Qt::TopToolBarArea</set>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>20</width>
+     <height>20</height>
+    </size>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -308,25 +244,6 @@
     <string>Tool Bar</string>
    </property>
   </action>
-  <action name="actionVisibleTab0">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Terminal</string>
-   </property>
-   <property name="toolTip">
-    <string>Tester</string>
-   </property>
-  </action>
-  <action name="actionVisibleTab1">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Plot</string>
-   </property>
-  </action>
   <action name="actionVisibleStatusBar">
    <property name="checkable">
     <bool>true</bool>
@@ -344,19 +261,6 @@
    </property>
    <property name="shortcut">
     <string>F1</string>
-   </property>
-  </action>
-  <action name="actionVedioBox">
-   <property name="text">
-    <string>Vedio Box</string>
-   </property>
-  </action>
-  <action name="actionVisibleTab2">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>File Transmit</string>
    </property>
   </action>
   <action name="actionWiki">
@@ -382,11 +286,6 @@
     <string>Ctrl+O</string>
    </property>
   </action>
-  <action name="actionValueDisplay">
-   <property name="text">
-    <string>Value Display</string>
-   </property>
-  </action>
   <action name="actionStaysOnTop">
    <property name="icon">
     <iconset>
@@ -403,26 +302,6 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <customwidgets>
-  <customwidget>
-   <class>Oscilloscope</class>
-   <extends>QWidget</extends>
-   <header>oscilloscope.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>FileTransmitView</class>
-   <extends>QWidget</extends>
-   <header>filetransmitview.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>TerminalView</class>
-   <extends>QWidget</extends>
-   <header>terminalview.h</header>
-   <container>1</container>
-  </customwidget>
- </customwidgets>
  <resources>
   <include location="../resource/serialtool.qrc"/>
  </resources>

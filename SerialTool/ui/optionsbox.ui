@@ -56,12 +56,12 @@
             </property>
             <item>
              <property name="text">
-              <string>Serial Port</string>
+              <string notr="true">Serial Port</string>
              </property>
             </item>
             <item>
              <property name="text">
-              <string>TCP/UDP</string>
+              <string notr="true">TCP/UDP</string>
              </property>
             </item>
            </widget>
@@ -630,7 +630,7 @@
          <item>
           <widget class="QPushButton" name="cmdDelete">
            <property name="text">
-            <string> Delete</string>
+            <string>Delete</string>
            </property>
           </widget>
          </item>

@@ -32,53 +32,64 @@ RC_FILE += resource/serialtool.rc
 INCLUDEPATH += include
 
 SOURCES += \
-    source/aboutbox.cpp \
-    source/channelitem.cpp \
-    source/main.cpp \
-    source/optionsbox.cpp \
-    source/portsetbox.cpp \
-    source/textedit.cpp \
-    source/wavedecode.cpp \
-    source/oscilloscope.cpp \
-    source/filethread.cpp \
-    source/xmodem.cpp \
-    source/vediobox.cpp \
-    source/tcpudpport.cpp \
-    source/defaultconfig.cpp \
-    source/oscopetimestamp.cpp \
-    source/terminalview.cpp \
-    source/serialport.cpp \
-    source/pointdatabuffer.cpp \
-    source/valuedisplay.cpp \
-    source/mainwindow.cpp \
-    source/filetransmitview.cpp \
-    source/plotview.cpp \
-    source/updatedialog.cpp
+    src/aboutbox.cpp \
+    src/main.cpp \
+    src/mainwindow.cpp \
+    src/controller.cpp \
+    src/optionsbox.cpp \
+    src/portsetbox.cpp \
+    src/defaultconfig.cpp \
+    src/updatedialog.cpp \
+    src/port/portmanager.cpp \
+    src/port/tcpudpport.cpp \
+    src/port/serialport.cpp \
+    src/views/viewmanager.cpp \
+    src/views/terminal/terminalview.cpp \
+    src/views/terminal/textedit.cpp \
+    src/views/oscilloscope/oscilloscopeview.cpp \
+    src/views/oscilloscope/channelitem.cpp \
+    src/views/oscilloscope/oscopetimestamp.cpp \
+    src/views/oscilloscope/pointdatabuffer.cpp \
+    src/views/oscilloscope/plotview.cpp \
+    src/views/oscilloscope/wavedecode.cpp \
+    src/views/filetransmit/filetransmitview.cpp \
+    src/views/filetransmit/filethread.cpp \
+    src/views/filetransmit/xmodem.cpp \
+    src/toolbox/toolboxmanager.cpp \
+    src/toolbox/vediobox/vediobox.cpp \
+    src/toolbox/valuedisplay/valuedisplay.cpp
 
 HEADERS  += \
     include/aboutbox.h \
-    include/channelitem.h \
+    include/mainwindow.h \
+    include/controller.h \
     include/optionsbox.h \
     include/portsetbox.h \
-    include/textedit.h \
     include/version.h \
-    include/wavedecode.h \
-    include/oscilloscope.h \
-    include/filethread.h \
-    include/xmodem.h \
-    include/xmodem_crc16.h \
-    include/vediobox.h \
-    include/tcpudpport.h \
     include/defaultconfig.h \
-    include/oscopetimestamp.h \
-    include/terminalview.h \
-    include/serialport.h \
-    include/pointdatabuffer.h \
-    include/valuedisplay.h \
-    include/mainwindow.h \
-    include/filetransmitview.h \
-    include/plotview.h \
-    include/updatedialog.h
+    include/updatedialog.h \
+    src/port/portmanager.h \
+    src/port/abstractport.h \
+    src/port/tcpudpport.h \
+    src/port/serialport.h \
+    src/views/viewmanager.h \
+    src/views/abstractview.h \
+    src/views/terminal/terminalview.h \
+    src/views/terminal/textedit.h \
+    src/views/oscilloscope/oscilloscopeview.h \
+    src/views/oscilloscope/channelitem.h \
+    src/views/oscilloscope/oscopetimestamp.h \
+    src/views/oscilloscope/pointdatabuffer.h \
+    src/views/oscilloscope/plotview.h \
+    src/views/oscilloscope/wavedecode.h \
+    src/views/filetransmit/filetransmitview.h \
+    src/views/filetransmit/filethread.h \
+    src/views/filetransmit/xmodem.h \
+    src/views/filetransmit/xmodem_crc16.h \
+    src/toolbox/toolboxmanager.h \
+    src/toolbox/abstracttoolbox.h \
+    src/toolbox/vediobox/vediobox.h \
+    src/toolbox/valuedisplay/valuedisplay.h
 
 DISTFILES += \
     resource/images/clear.png \
@@ -99,7 +110,6 @@ FORMS += \
     ui/aboutbox.ui \
     ui/optionsbox.ui \
     ui/portsetbox.ui \
-    ui/oscilloscope.ui \
     ui/vediobox.ui \
     ui/tcpudpport.ui \
     ui/terminalview.ui \
@@ -107,6 +117,7 @@ FORMS += \
     ui/serialport.ui \
     ui/mainwindow.ui \
     ui/filetransmitview.ui \
-    ui/updatedialog.ui
+    ui/updatedialog.ui \
+    ui/oscilloscopeview.ui
 
 LIBS += -lqscintilla2_qt5

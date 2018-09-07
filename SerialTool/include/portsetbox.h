@@ -2,7 +2,6 @@
 #define __PORTSETBOX_H
 
 #include <QtWidgets/QDialog>
-#include <QSettings>
 #include <QtSerialPort/QSerialPort>
 
 namespace Ui {

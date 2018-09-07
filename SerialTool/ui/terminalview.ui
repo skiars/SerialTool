@@ -257,7 +257,7 @@
   <customwidget>
    <class>TextEdit</class>
    <extends>QWidget</extends>
-   <header>textedit.h</header>
+   <header>src/views/terminal/textedit.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
