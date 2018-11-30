@@ -12,7 +12,7 @@ class ValueDisplay : public AbstractToolBox
     Q_OBJECT
 
 public:
-    explicit ValueDisplay(QWidget *parent = 0);
+    explicit ValueDisplay(QWidget *parent = nullptr);
     ~ValueDisplay();
     void retranslate();
     void receiveData(const QByteArray &array);

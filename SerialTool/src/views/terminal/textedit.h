@@ -1,5 +1,5 @@
-#ifndef __TEXTEDIT_H
-#define __TEXTEDIT_H
+#ifndef TEXTEDIT_H
+#define TEXTEDIT_H
 
 #include <Qsci/qsciscintilla.h>
 
@@ -8,7 +8,7 @@ class TextEdit : public QsciScintilla
     Q_OBJECT
 
 public:
-    TextEdit(QWidget *parent = NULL);
+    TextEdit(QWidget *parent = nullptr);
     void append(const QString &text);
     void setFonts(QString fonts, int size, QColor color = Qt::black, QString style = "");
     void setHighLight(const QString &language);
@@ -43,4 +43,4 @@ private:
     bool scrollEnd = true;
 };
 
-#endif
+#endif // TEXTEDIT_H

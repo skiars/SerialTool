@@ -1,5 +1,5 @@
-#ifndef __CHANNELITEM_H
-#define __CHANNELITEM_H
+#ifndef CHANNELITEM_H
+#define CHANNELITEM_H
 
 #include <QtWidgets/QWidget>
 #include <QtWidgets/QCheckBox>
@@ -58,4 +58,4 @@ private:
     int Channel;
 };
 
-#endif
+#endif // CHANNELITEM_H

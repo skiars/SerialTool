@@ -1,5 +1,5 @@
-#ifndef __ABOUTBOX_H
-#define __ABOUTBOX_H
+#ifndef ABOUTBOX_H
+#define ABOUTBOX_H
 
 #include <QtWidgets/QDialog>
 
@@ -15,4 +15,4 @@ private:
     Ui::AboutBox *ui;
 };
 
-#endif
+#endif // ABOUTBOX_H

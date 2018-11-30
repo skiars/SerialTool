@@ -1,5 +1,5 @@
-#ifndef __MAINWINDOW_H
-#define __MAINWINDOW_H
+#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
 
 #include <QtWidgets/QMainWindow>
 #include <QMessageBox>
@@ -58,4 +58,4 @@ private:
     Controller *m_controller;
 };
 
-#endif // __MAINWINDOW_H
+#endif // MAINWINDOW_H

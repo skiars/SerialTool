@@ -1,5 +1,5 @@
-#ifndef __XMODEM_H
-#define __XMODEM_H
+#ifndef XMODEM_H
+#define XMODEM_H
 
 #define XMODEM_SOH 0x01
 #define XMODEM_EOT 0x04
@@ -11,7 +11,7 @@
 
 class XModemClass {
 public :
-    XModemClass(FileThread *thread = NULL);
+    XModemClass(FileThread *thread = nullptr);
     void setThread(FileThread *thread);
     int transmit(char ch, qint64 &bytes);
     int receive(const QByteArray &arr, qint64 &bytes);
@@ -32,4 +32,4 @@ private:
     QByteArray rxBuf;   // 接收缓冲
 };
 
-#endif
+#endif // XMODEM_H

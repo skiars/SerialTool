@@ -1,5 +1,5 @@
-#ifndef __OSCILLOSCOPEVIEW_H
-#define __OSCILLOSCOPEVIEW_H
+#ifndef OSCILLOSCOPEVIEW_H
+#define OSCILLOSCOPEVIEW_H
 
 #include "../abstractview.h"
 
@@ -77,4 +77,4 @@ private:
     WaveDecode *m_decode;
 };
 
-#endif
+#endif // OSCILLOSCOPEVIEW_H

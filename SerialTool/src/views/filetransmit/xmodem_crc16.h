@@ -35,8 +35,8 @@ static const unsigned short crc16tab[256] = {
 
 unsigned short crc16_ccitt(const unsigned char *buf, int len)
 {
-    register int counter;
-    register unsigned short crc = 0;
+    int counter;
+    unsigned short crc = 0;
     for (counter = 0; counter < len; counter++)
         crc = (crc << 8) ^ crc16tab[((crc >> 8) ^ *(char *)buf++) & 0x00FF];
     return crc;

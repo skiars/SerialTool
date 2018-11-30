@@ -1,5 +1,5 @@
-#ifndef __VEDIOBOX_H
-#define __VEDIOBOX_H
+#ifndef VEDIOBOX_H
+#define VEDIOBOX_H
 
 #include "../abstracttoolbox.h"
 
@@ -38,4 +38,4 @@ public:
     QString title() { return tr("Video Box"); }
 };
 
-#endif
+#endif // VEDIOBOX_H

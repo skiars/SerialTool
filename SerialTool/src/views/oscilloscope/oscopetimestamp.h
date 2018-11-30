@@ -1,5 +1,5 @@
-#ifndef __OSCOPE_TIME_STAMP_H
-#define __OSCOPE_TIME_STAMP_H
+#ifndef OSCOPE_TIME_STAMP_H
+#define OSCOPE_TIME_STAMP_H
 
 #include <QVector>
 #include <QTextStream>
@@ -29,4 +29,4 @@ private:
     QVector<TimeStamp_p> m_timeStampVector;
 };
 
-#endif
+#endif // OSCOPE_TIME_STAMP_H

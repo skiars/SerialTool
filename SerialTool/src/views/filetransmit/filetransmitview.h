@@ -1,5 +1,5 @@
-#ifndef __FILETRANSFERVIEW_H
-#define __FILETRANSFERVIEW_H
+#ifndef FILETRANSFERVIEW_H
+#define FILETRANSFERVIEW_H
 
 #include "../abstractview.h"
 #include "filethread.h"
@@ -43,4 +43,4 @@ private:
     QByteArray receiveArray; // 接收缓冲区
 };
 
-#endif
+#endif // FILETRANSFERVIEW_H

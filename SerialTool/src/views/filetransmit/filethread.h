@@ -1,5 +1,5 @@
-#ifndef __FILETHREAD_H
-#define __FILETHREAD_H
+#ifndef FILETHREAD_H
+#define FILETHREAD_H
 
 #include <QThread>
 #include <QColor>
@@ -84,4 +84,4 @@ private:
     int m_timeoutCount;
 };
 
-#endif
+#endif // FILETHREAD_H

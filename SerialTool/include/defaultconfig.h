@@ -1,8 +1,8 @@
-#ifndef __DEFAULTCONFIG_H
-#define __DEFAULTCONFIG_H
+#ifndef DEFAULTCONFIG_H
+#define DEFAULTCONFIG_H
 
 class QString;
 
 void syncDefaultConfig(const QString &iniName);
 
-#endif
+#endif // DEFAULTCONFIG_H

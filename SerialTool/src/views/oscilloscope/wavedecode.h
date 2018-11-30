@@ -1,5 +1,5 @@
-#ifndef __WAVEDECODE_H
-#define __WAVEDECODE_H
+#ifndef WAVEDECODE_H
+#define WAVEDECODE_H
 
 #include <QVector>
 

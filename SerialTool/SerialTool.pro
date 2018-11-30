@@ -57,7 +57,11 @@ SOURCES += \
     src/views/filetransmit/xmodem.cpp \
     src/toolbox/toolboxmanager.cpp \
     src/toolbox/vediobox/vediobox.cpp \
-    src/toolbox/valuedisplay/valuedisplay.cpp
+    src/toolbox/valuedisplay/valuedisplay.cpp \
+    src/settings/optionsdialog.cpp \
+    src/settings/settingswidget.cpp \
+    src/settings/settingswidgets.cpp \
+    src/settings/translate.cpp
 
 HEADERS  += \
     include/aboutbox.h \
@@ -89,7 +93,11 @@ HEADERS  += \
     src/toolbox/toolboxmanager.h \
     src/toolbox/abstracttoolbox.h \
     src/toolbox/vediobox/vediobox.h \
-    src/toolbox/valuedisplay/valuedisplay.h
+    src/toolbox/valuedisplay/valuedisplay.h \
+    src/settings/optionsdialog.h \
+    src/settings/settingswidget.h \
+    src/settings/settingswidgets.h \
+    src/settings/translate.h
 
 DISTFILES += \
     resource/images/clear.png \

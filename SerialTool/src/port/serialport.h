@@ -15,7 +15,7 @@ class SerialPort : public AbstractPort
     Q_OBJECT
 
 public:
-    explicit SerialPort(QWidget *parent = 0);
+    explicit SerialPort(QWidget *parent = nullptr);
     ~SerialPort();
     void retranslate();
     void loadConfig(QSettings *config);

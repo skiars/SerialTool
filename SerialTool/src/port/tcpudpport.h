@@ -56,9 +56,9 @@ private slots:
 
 private:
     Ui::TcpUdpPort *ui;
-    QTcpSocket *tcpClient = NULL;
-    QTcpServer *tcpServer = NULL;
-    QUdpSocket *udpSocket = NULL;
+    QTcpSocket *tcpClient = nullptr;
+    QTcpServer *tcpServer = nullptr;
+    QUdpSocket *udpSocket = nullptr;
     QList<QTcpSocket *> listClient;
     Protocol protocol;
     QString serverIP;

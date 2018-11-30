@@ -1,5 +1,5 @@
-#ifndef __OPTIONSBOX_H
-#define __OPTIONSBOX_H
+#ifndef OPTIONSBOX_H
+#define OPTIONSBOX_H
 
 #include <QtWidgets/QDialog>
 
@@ -46,4 +46,4 @@ private:
     QVector<QString> languageList;
 };
 
-#endif
+#endif // OPTIONSBOX_H
