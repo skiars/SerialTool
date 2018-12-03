@@ -21,11 +21,13 @@ public:
     MainWindow(QWidget *parent = Q_NULLPTR);
     ~MainWindow();
 
-    void loadSettings();
     void saveConfig();
     QSettings *getConfig() { return m_config; }
     void setLanguage(const QString &string);
     void setStyleSheet(const QString &string);
+
+public slots:
+    void loadSettings();
 
 private slots:
     void changeRunFlag();

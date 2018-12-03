@@ -15,6 +15,7 @@
 #include <QFontDialog>
 #include <QSpinBox>
 #include <QDoubleSpinBox>
+#include <QListView>
 #include <QDebug>
 
 AbstractSettingsWidget::AbstractSettingsWidget(
@@ -77,7 +78,9 @@ SettingsComboBox::SettingsComboBox(const QJsonObject &json,
     QJsonValue value = json.value("items");
 
     m_comboBox = new QComboBox(this);
+    m_comboBox->setView(new QListView());
     m_layout->addWidget(m_comboBox);
+    m_comboBox->setSizeAdjustPolicy(QComboBox::AdjustToContents);
     if (value.isArray()) {
         QJsonArray array = value.toArray();
         for (QJsonValue v : array) {
@@ -107,11 +110,11 @@ void SettingsComboBox::parseItems(const QString &str)
     QStringList list = str.split('*');
     QString path = list[0];
     QString mode = list.size() == 2 ? list[1] : "";
-    QDir dir(m_path + '/' + path);
+    QDir dir(path);
 
     for (QFileInfo mfi : dir.entryInfoList()) {
         if (mfi.isDir() && mfi.fileName() != "." && mfi.fileName() != "..") {
-            m_comboBox->addItem(itemText(m_path + '/' + path, mfi.fileName(), mode));
+            m_comboBox->addItem(itemText(path, mfi.fileName(), mode));
             m_items.append(mfi.fileName());
         }
     }
@@ -288,7 +291,12 @@ SettingsSpinBox::SettingsSpinBox(const QJsonObject &json,
         m_spinBox = box;
         m_mode = IntSpinBox;
     }
+    QString sizePolicy(json.value("size-policy").toString());
+    if (sizePolicy == "fixed") {
+        m_spinBox->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
+    }
     m_layout->addWidget(m_spinBox);
+    m_layout->setAlignment(m_spinBox, Qt::AlignLeft);
 }
 
 void SettingsSpinBox::loadSettings(QSettings *config)

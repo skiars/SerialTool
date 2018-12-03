@@ -18,7 +18,7 @@ public:
     void layout(const QString &fileName);
     void loadSettings(QSettings *config);
     void saveSettings(QSettings *config);
-    void retranslate(const Translate *translate);
+    void retranslate(const QString &language = QString());
 
 private slots:
     void mutexWidgets(bool mutex, QStringList list);
@@ -37,9 +37,11 @@ private:
 
 private:
     QString m_path;
-    QList<QGroupBox *> m_groupBoxs;
-    QList<QLabel *> m_labels;
-    QList<AbstractSettingsWidget *> m_settingsWidgets;
+    QWidget *m_currentTab;
+    QVector<QGroupBox *> m_groupBoxs;
+    QVector<QLabel *> m_labels;
+    QVector<AbstractSettingsWidget *> m_settingsWidgets;
+    QVector<QString> m_tabsName, m_labelsName, m_groupBoxsName;
     Translate *m_translate;
 };
 

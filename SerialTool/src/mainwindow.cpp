@@ -15,6 +15,7 @@
 #include "updatedialog.h"
 #include "controller.h"
 #include "port/portmanager.h"
+#include "settings/optionsdialog.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -192,8 +193,11 @@ void MainWindow::saveConfig()
 
 void MainWindow::setOptions()
 {
-    OptionsBox option(this);
-    option.exec();
+    /*OptionsBox option(this);
+    option.exec();*/
+    OptionsDialog dialog(m_config, this);
+    connect(&dialog, SIGNAL(settingsUpdated()), this, SLOT(loadSettings()));
+    dialog.exec();
 }
 
 void MainWindow::changeRunFlag()

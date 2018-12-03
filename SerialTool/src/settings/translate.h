@@ -7,6 +7,7 @@ class Translate
 {
 public:
     Translate(const QString &fileName = QString());
+    void setTranslateFile(const QString &fileName);
     QString translate(const QString &str) const;
     inline QString tr(const QString &str) const { return translate(str); }
 

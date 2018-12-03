@@ -3,8 +3,15 @@
 
 Translate::Translate(const QString &fileName)
 {
-    QFile file(fileName);
+    if (!fileName.isEmpty()) {
+        setTranslateFile(fileName);
+    }
+}
 
+void Translate::setTranslateFile(const QString &fileName)
+{
+    QFile file(fileName);
+    m_map.clear();
     if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         while (!file.atEnd()) {
             QStringList list = QString(file.readLine()).split('\t');

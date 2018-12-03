@@ -4,7 +4,8 @@
 #include <QDialog>
 
 class QSettings;
-
+class QDialogButtonBox;
+class QAbstractButton;
 class SettingsWidget;
 
 class OptionsDialog : public QDialog
@@ -12,13 +13,17 @@ class OptionsDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit OptionsDialog(QWidget *parent = nullptr);
+    explicit OptionsDialog(QSettings *settings, QWidget *parent = nullptr);
     ~OptionsDialog();
 
-private:
-    void closeEvent(QCloseEvent *event);
+signals:
+    void settingsUpdated();
+
+private slots:
+    void processOptions(QAbstractButton *button);
 
 private:
+    QDialogButtonBox *m_buttonBox;
     SettingsWidget *m_settingsWidget;
     QSettings *m_config;
 };

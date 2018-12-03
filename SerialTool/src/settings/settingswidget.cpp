@@ -27,6 +27,7 @@ void SettingsWidget::layout(const QString &fileName)
 {
     QFile file(fileName);
 
+    m_translate = new Translate();
     m_path = fileName.left(fileName.lastIndexOf('/'));
     if (file.open(QFile::ReadOnly | QFile::Text)) {
         layoutTabs(file.readAll());
@@ -34,14 +35,12 @@ void SettingsWidget::layout(const QString &fileName)
     } else {
         qDebug() << "This file" << fileName << "is not found.";
     }
-
-    m_translate = new Translate("../SettingsWidget/resources/translate.txt");
-    retranslate(m_translate);
 }
 
 void SettingsWidget::loadSettings(QSettings *config)
 {
     config->beginGroup("Settings");
+    retranslate(config->value("Language").toString());
     for (AbstractSettingsWidget *widget : m_settingsWidgets) {
         widget->loadSettings(config);
     }
@@ -54,22 +53,26 @@ void SettingsWidget::saveSettings(QSettings *config)
     for (AbstractSettingsWidget *widget : m_settingsWidgets) {
         widget->saveSettings(config);
     }
+    retranslate(config->value("Language").toString());
     config->endGroup();
 }
 
-void SettingsWidget::retranslate(const Translate *translate)
+void SettingsWidget::retranslate(const QString &language)
 {
+    if (!language.isEmpty()) {
+        m_translate->setTranslateFile("./language/" + language + "/settings.txt");
+    }
     for (int i = 0; i < count(); ++i) {
-        setTabText(i, translate->tr(tabText(i)));
+        setTabText(i, m_translate->tr(m_tabsName[i]));
     }
-    for (QLabel *label : m_labels) {
-        label->setText(translate->tr(label->text()));
+    for (int i = 0; i < m_labels.size(); ++i) {
+        m_labels[i]->setText(m_translate->tr(m_labelsName[i]));
     }
-    for (QGroupBox *box : m_groupBoxs) {
-        box->setTitle(translate->tr(box->title()));
+    for (int i = 0; i < m_groupBoxs.size(); ++i) {
+        m_groupBoxs[i]->setTitle(m_translate->tr(m_groupBoxsName[i]));
     }
     for (AbstractSettingsWidget *widget : m_settingsWidgets) {
-        widget->retranslate(translate);
+        widget->retranslate(m_translate);
     }
 }
 
@@ -115,14 +118,14 @@ bool SettingsWidget::layoutPage(const QByteArray &json)
         QJsonObject object = docment.object();
         QJsonValue value = object.value("title");
         QString title = value.isString() ? value.toString() : "Unknow";
-        QWidget *widget = new QWidget(this);
-        QVBoxLayout *layout = new QVBoxLayout(this);
-
+        m_currentTab = new QWidget();
+        QVBoxLayout *layout = new QVBoxLayout(m_currentTab);
         layout->setMargin(6);
-        widget->setLayout(layout);
-        this->addTab(widget, title);
         layoutPageView(layout, object);
         layout->addSpacerItem(new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding));
+        m_currentTab->setLayout(layout);
+        this->addTab(m_currentTab, title);
+        m_tabsName.append(title);
     } else {
         qDebug() << "JSON Parser error:" << jsonError.error;
         return false;
@@ -136,17 +139,17 @@ QLayout* SettingsWidget::parseLayout(const QJsonObject &json)
     QString type = json.value("layout").toString();
 
     if (type == "vbox") {
-        layout = new QVBoxLayout(this);
+        layout = new QVBoxLayout(m_currentTab);
     } else if (type == "hbox") {
-        layout = new QHBoxLayout(this);
+        layout = new QHBoxLayout(m_currentTab);
     } else if (type == "grid") {
-        layout = new QGridLayout(this);
+        layout = new QGridLayout(m_currentTab);
     } else if (type == "form") {
-        QFormLayout *formLayout = new QFormLayout(this);
+        QFormLayout *formLayout = new QFormLayout(m_currentTab);
         formLayout->setLabelAlignment(Qt::AlignRight);
         layout = formLayout;
     } else {
-        layout = new QVBoxLayout(this);
+        layout = new QVBoxLayout(m_currentTab);
     }
     layout->setMargin(6);
     layout->setSpacing(6);
@@ -174,17 +177,17 @@ QWidget* SettingsWidget::addSettingsWidget(QString type, const QJsonObject &json
     AbstractSettingsWidget *widget = nullptr;
 
     if (type == "combo-box") {
-        widget = new SettingsComboBox(json, m_path, this);
+        widget = new SettingsComboBox(json, m_path, m_currentTab);
     } else if (type == "check-box") {
-        widget = new SettingsCheckBox(json, m_path, this);
+        widget = new SettingsCheckBox(json, m_path, m_currentTab);
     } else if (type == "slider") {
-        widget = new SettingsSlider(json, m_path, this);
+        widget = new SettingsSlider(json, m_path, m_currentTab);
     } else if (type == "font-select") {
-        widget = new SettingsFontSelect(json, m_path, this);
+        widget = new SettingsFontSelect(json, m_path, m_currentTab);
     } else if (type == "font-family") {
-        widget = new SettingsFontFamily(json, m_path, this);
+        widget = new SettingsFontFamily(json, m_path, m_currentTab);
     } else if (type == "spin-box") {
-        widget = new SettingsSpinBox(json, m_path, this);
+        widget = new SettingsSpinBox(json, m_path, m_currentTab);
     }
 
     if (widget) {
@@ -220,9 +223,10 @@ void SettingsWidget::addBlock(QLayout *layout, const QJsonObject &json)
             if (text.isEmpty()) {
                 layout->addWidget(widget);
             } else {
-                QLabel *label = new QLabel(text, this);
+                QLabel *label = new QLabel(text, m_currentTab);
                 formLayout->addRow(label, widget);
                 m_labels.append(label);
+                m_labelsName.append(text);
             }
         } else if (QGridLayout *gridLayout = dynamic_cast<QGridLayout *>(layout)) {
             QStringList list = json.value("at").toString().split(QRegExp(",\\s*"));
@@ -259,7 +263,7 @@ void SettingsWidget::parseView(QWidget *widget, const QJsonObject &json)
 
 QWidget* SettingsWidget::parseBlock(const QJsonObject &json)
 {
-    QWidget *widget = new QWidget(this);
+    QWidget *widget = new QWidget(m_currentTab);
 
     parseView(widget, json);
     return widget;
@@ -267,11 +271,12 @@ QWidget* SettingsWidget::parseBlock(const QJsonObject &json)
 
 QWidget* SettingsWidget::parseGroup(const QJsonObject &json)
 {
-    QGroupBox *widget = new QGroupBox(this);
-
-    widget->setTitle(json.value("title").toString());
+    QGroupBox *widget = new QGroupBox(m_currentTab);
+    QString title(json.value("title").toString());
+    widget->setTitle(title);
     parseView(widget, json);
     m_groupBoxs.append(widget);
+    m_groupBoxsName.append(title);
     return widget;
 }
 
