@@ -1,0 +1,36 @@
+{
+  "title": "Plot",
+  "view": [
+    {
+      "type": "group",
+      "title": "Graphics Options",
+      "layout": "form",
+      "view": [
+        {
+          "type": "spin-box",
+          "label": "Update Interval (ms)",
+          "key": "UpdateInterval",
+          "minimum": 10,
+          "maximum": 10000,
+          "size-policy": "fixed"
+        },
+        {
+          "type": "check-box",
+          "text": "Use OpenGL",
+          "key": "UseOpenGL",
+          "id": "id3",
+          "mutex": {
+            "active": true,
+            "list": [ "id_UseAntialias" ]
+          }
+        },
+        {
+          "type": "check-box",
+          "text": "Use Antialias",
+          "key": "UseAntialias",
+          "id": "id_UseAntialias"
+        }
+      ]
+    }
+  ]
+}

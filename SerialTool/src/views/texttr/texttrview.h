@@ -73,4 +73,4 @@ private:
     QByteArray m_codecName;
 };
 
-#endif // TERMINALVIEW_H
+#endif // TEXTTRVIEW_H

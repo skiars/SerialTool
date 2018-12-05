@@ -1,0 +1,44 @@
+{
+  "title": "Global",
+  "view": [
+    {
+      "type": "group",
+      "title": "Port",
+      "layout": "form",
+      "view": {
+        "type": "combo-box",
+        "label": "Port Type",
+        "key": "PortType",
+        "items": [
+          "Serial Port",
+          "TCP/UDP"
+        ]
+      }
+    },
+    {
+      "type": "group",
+      "title": "System",
+      "layout": "form",
+      "view": [
+        {
+          "type": "combo-box",
+          "label": "Language",
+          "key": "Language",
+          "items": "./language/*/name"
+        },
+        {
+          "type": "combo-box",
+          "label": "Theme",
+          "key": "Theme",
+          "items": "./themes/*"
+        },
+        {
+          "type": "slider",
+          "label": "Opacity",
+          "key": "WindowOpacity",
+          "range": "30, 100"
+        }
+      ]
+    }
+  ]
+}

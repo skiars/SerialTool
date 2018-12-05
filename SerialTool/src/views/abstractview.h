@@ -10,14 +10,14 @@ class AbstractView : public QWidget
     Q_OBJECT
 public:
     explicit AbstractView(QWidget *parent = nullptr) : QWidget(parent) {}
-    virtual void loadConfig(QSettings *config) = 0;
-    virtual void saveConfig(QSettings *config) = 0;
-    virtual void loadSettings(QSettings *config) { (void)config; }
+    virtual void loadConfig(QSettings */*config*/) {}
+    virtual void saveConfig(QSettings */*config*/) {}
+    virtual void loadSettings(QSettings */*config*/) {}
     virtual void retranslate() {}
     virtual QString title() { return "Abstract View"; }
-    virtual void receiveData(const QByteArray &array) = 0;
+    virtual void receiveData(const QByteArray &/*array*/) {}
     virtual bool holdReceive() { return false; }
-    virtual void setEnabled(bool enabled) = 0;
+    virtual void setEnabled(bool /*enabled*/) {}
     virtual void clear() {}
 
     virtual QString openFileFilter() { return QString(); }

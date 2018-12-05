@@ -43,7 +43,10 @@ SOURCES += \
     src/port/tcpudpport.cpp \
     src/port/serialport.cpp \
     src/views/viewmanager.cpp \
-    src/views/terminal/textedit.cpp \
+    src/views/texttr/textedit.cpp \
+    src/views/texttr/texttrview.cpp \
+    src/views/terminal/termview.cpp \
+    src/views/terminal/terminalview.cpp \
     src/views/oscilloscope/oscilloscopeview.cpp \
     src/views/oscilloscope/channelitem.cpp \
     src/views/oscilloscope/oscopetimestamp.cpp \
@@ -59,8 +62,7 @@ SOURCES += \
     src/settings/optionsdialog.cpp \
     src/settings/settingswidget.cpp \
     src/settings/settingswidgets.cpp \
-    src/settings/translate.cpp \
-    src/views/terminal/texttrview.cpp
+    src/settings/translate.cpp
 
 HEADERS  += \
     include/aboutbox.h \
@@ -76,7 +78,10 @@ HEADERS  += \
     src/port/serialport.h \
     src/views/viewmanager.h \
     src/views/abstractview.h \
-    src/views/terminal/textedit.h \
+    src/views/texttr/textedit.h \
+    src/views/texttr/texttrview.h \
+    src/views/terminal/termview.h \
+    src/views/terminal/terminalview.h \
     src/views/oscilloscope/oscilloscopeview.h \
     src/views/oscilloscope/channelitem.h \
     src/views/oscilloscope/oscopetimestamp.h \
@@ -94,8 +99,7 @@ HEADERS  += \
     src/settings/optionsdialog.h \
     src/settings/settingswidget.h \
     src/settings/settingswidgets.h \
-    src/settings/translate.h \
-    src/views/terminal/texttrview.h
+    src/settings/translate.h
 
 DISTFILES += \
     resource/images/clear.png \

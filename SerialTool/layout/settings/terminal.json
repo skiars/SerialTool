@@ -1,0 +1,89 @@
+{
+  "title": "Terminal",
+  "view": [
+    {
+      "type": "group",
+      "title": "Font",
+      "layout": "form",
+      "view": [
+        {
+          "type": "font-family",
+          "label": "Font Family",
+          "key": "FontFamily"
+        },
+        {
+          "type": "spin-box",
+          "label": "Font Size",
+          "key": "FontSize",
+          "minimum": 6,
+          "maximum": 32
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "title": "Text Editor",
+      "layout": "form",
+      "view": [
+        {
+          "type": "combo-box",
+          "label": "Text Codec",
+          "key": "TerminalTextCodec",
+          "items": [
+            "ASCII",
+            "GB-2312",
+            "GB-18030",
+            "UTF-8",
+            "UTF-16BE",
+            "UTF-16LE"
+          ]
+        },
+        {
+          "type": "combo-box",
+          "label": "Highlight",
+          "key": "TerminalHighlight",
+          "items": [
+            "None",
+            "Bash",
+            "C/C++",
+            "Lua",
+            "JSON"
+          ]
+        },
+        {
+          "type": "block",
+          "label": "Tab Size",
+          "layout": "grid",
+          "view": [
+            {
+              "type": "spin-box",
+              "key": "TerminalTabWidth",
+              "minimum": 2,
+              "maximum": 16,
+              "size-policy": "fixed",
+              "at": "0, 0"
+            },
+            {
+              "type": "check-box",
+              "text": "Tabs Insert Spaces",
+              "key": "TerminalTabsInsertSpaces",
+              "at": "0, 1"
+            },
+            {
+              "type": "check-box",
+              "text": "Auto Indent",
+              "key": "TerminalAutoIndent",
+              "at": "1, 0"
+            },
+            {
+              "type": "check-box",
+              "text": "Indentation Guides",
+              "key": "TerminalIndentationGuides",
+              "at": "1, 1"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
