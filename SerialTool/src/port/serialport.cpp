@@ -1,4 +1,4 @@
-#include "serialport.h"
+﻿#include "serialport.h"
 #include "ui_serialport.h"
 #include "portsetbox.h"
 #include <QSerialPort>
@@ -15,18 +15,18 @@ SerialPort::SerialPort(QWidget *parent) :
     ui(new Ui::SerialPort)
 {
     ui->setupUi(this);
-    serialPort = new QSerialPort;
-    timer = new QTimer;
+    serialPort = new QSerialPort(this);
+    m_scanTimer = new QTimer(this);
 
     QRegExpValidator *pReg = new QRegExpValidator(QRegExp("^\\d{2,7}$"));
     ui->baudRateBox->lineEdit()->setValidator(pReg);
-
+    serialPort->setTextModeEnabled(true);
 #if defined(Q_OS_LINUX)
     ui->portNameBox->setEditable(true);
 #endif
 
     connect(serialPort, &QSerialPort::readyRead, this, &SerialPort::readyRead);
-    connect(timer, &QTimer::timeout, this, &SerialPort::onTimerUpdate);
+    connect(m_scanTimer, &QTimer::timeout, this, &SerialPort::onTimerUpdate);
     connect(ui->baudRateBox, &QComboBox::currentTextChanged, this, &SerialPort::setBaudRate);
     connect(ui->portNameBox, SIGNAL(currentIndexChanged(int)), this, SIGNAL(portChanged()));
 #if defined(Q_OS_LINUX)
@@ -34,14 +34,12 @@ SerialPort::SerialPort(QWidget *parent) :
 #endif
 
     scanPort();
-    timer->start(1000);
+    m_scanTimer->start(1000);
 }
 
 SerialPort::~SerialPort()
 {
     delete ui;
-    delete serialPort;
-    delete timer;
 }
 
 void SerialPort::retranslate()

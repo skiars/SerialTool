@@ -1,4 +1,4 @@
-#ifndef SERIALPORT_H
+﻿#ifndef SERIALPORT_H
 #define SERIALPORT_H
 
 #include "abstractport.h"
@@ -44,7 +44,7 @@ private slots:
 private:
     Ui::SerialPort *ui;
     QSerialPort *serialPort;
-    QTimer *timer;
+    QTimer *m_scanTimer;
 };
 
 class SerialPortFactory : public AbstractPortFactory

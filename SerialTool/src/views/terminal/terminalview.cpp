@@ -1,6 +1,7 @@
-#include "terminalview.h"
+﻿#include "terminalview.h"
 #include "termview.h"
 #include <QHBoxLayout>
+#include <QTextCodec>
 #include <QDebug>
 
 TerminalView::TerminalView(QWidget *parent) : AbstractView(parent)
@@ -22,7 +23,9 @@ TerminalView::~TerminalView()
 
 void TerminalView::sendData(const QString &string)
 {
-    emit transmitData(string.toLocal8Bit());
+    QTextCodec *code = QTextCodec::codecForName("GB-2312");
+    QByteArray array = code->fromUnicode(string);
+    emit transmitData(array);
 }
 
 void TerminalView::receiveData(const QByteArray &array)

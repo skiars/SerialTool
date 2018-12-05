@@ -1,4 +1,4 @@
-#include "settingswidgets.h"
+﻿#include "settingswidgets.h"
 #include "translate.h"
 #include <QSettings>
 #include <QJsonObject>
@@ -57,7 +57,7 @@ void AbstractSettingsWidget::setMutexStatus(const QVariant &status)
 void AbstractSettingsWidget::setEnabled(bool enabled, const void *widget)
 {
     if (widget != nullptr) {
-        uint32_t wid = reinterpret_cast<uint32_t>(widget);
+        uint32_t wid = (uint32_t)reinterpret_cast<size_t>(widget);
         if (enabled) {
             m_disableList.removeOne(wid);
         } else {
