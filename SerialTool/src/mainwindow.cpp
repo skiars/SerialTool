@@ -8,7 +8,6 @@
 #include <QTranslator>
 #include <QFileDialog>
 #include <QDesktopServices>
-#include "optionsbox.h"
 #include "aboutbox.h"
 #include "version.h"
 #include "defaultconfig.h"

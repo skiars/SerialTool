@@ -78,6 +78,7 @@ private slots:
     void onCheckStatusChanged();
 
 private:
+    QString m_text;
     QCheckBox *m_checkBox;
 };
 

@@ -4,7 +4,7 @@
 #include <QAction>
 #include <QFileDialog>
 #include "abstractview.h"
-#include "terminal/terminalview.h"
+#include "terminal/texttrview.h"
 #include "oscilloscope/oscilloscopeview.h"
 #include "filetransmit/filetransmitview.h"
 
@@ -13,7 +13,7 @@ ViewManager::ViewManager(QString *docPath, QTabWidget *tabWidget)
     m_views = new QVector<AbstractView *>;
 
     // create views
-    m_views->append(new TerminalView());
+    m_views->append(new TextTRView());
     m_views->append(new OscilloscopeView());
     m_views->append(new FileTransmitView());
 

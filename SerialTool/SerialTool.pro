@@ -36,7 +36,6 @@ SOURCES += \
     src/main.cpp \
     src/mainwindow.cpp \
     src/controller.cpp \
-    src/optionsbox.cpp \
     src/portsetbox.cpp \
     src/defaultconfig.cpp \
     src/updatedialog.cpp \
@@ -44,7 +43,6 @@ SOURCES += \
     src/port/tcpudpport.cpp \
     src/port/serialport.cpp \
     src/views/viewmanager.cpp \
-    src/views/terminal/terminalview.cpp \
     src/views/terminal/textedit.cpp \
     src/views/oscilloscope/oscilloscopeview.cpp \
     src/views/oscilloscope/channelitem.cpp \
@@ -61,13 +59,13 @@ SOURCES += \
     src/settings/optionsdialog.cpp \
     src/settings/settingswidget.cpp \
     src/settings/settingswidgets.cpp \
-    src/settings/translate.cpp
+    src/settings/translate.cpp \
+    src/views/terminal/texttrview.cpp
 
 HEADERS  += \
     include/aboutbox.h \
     include/mainwindow.h \
     include/controller.h \
-    include/optionsbox.h \
     include/portsetbox.h \
     include/version.h \
     include/defaultconfig.h \
@@ -78,7 +76,6 @@ HEADERS  += \
     src/port/serialport.h \
     src/views/viewmanager.h \
     src/views/abstractview.h \
-    src/views/terminal/terminalview.h \
     src/views/terminal/textedit.h \
     src/views/oscilloscope/oscilloscopeview.h \
     src/views/oscilloscope/channelitem.h \
@@ -97,7 +94,8 @@ HEADERS  += \
     src/settings/optionsdialog.h \
     src/settings/settingswidget.h \
     src/settings/settingswidgets.h \
-    src/settings/translate.h
+    src/settings/translate.h \
+    src/views/terminal/texttrview.h
 
 DISTFILES += \
     resource/images/clear.png \
@@ -116,16 +114,15 @@ RESOURCES += \
 
 FORMS += \
     ui/aboutbox.ui \
-    ui/optionsbox.ui \
     ui/portsetbox.ui \
     ui/vediobox.ui \
     ui/tcpudpport.ui \
-    ui/terminalview.ui \
     ui/valuedisplay.ui \
     ui/serialport.ui \
     ui/mainwindow.ui \
     ui/filetransmitview.ui \
     ui/updatedialog.ui \
-    ui/oscilloscopeview.ui
+    ui/oscilloscopeview.ui \
+    ui/texttrview.ui
 
 LIBS += -lqscintilla2_qt5

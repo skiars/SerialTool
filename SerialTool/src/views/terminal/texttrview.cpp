@@ -1,13 +1,13 @@
-#include "terminalview.h"
-#include "ui_terminalview.h"
+#include "texttrview.h"
+#include "ui_texttrview.h"
 #include <QSettings>
 #include <QTextCodec>
 #include <QTimer>
 #include <QKeyEvent>
 
-TerminalView::TerminalView(QWidget *parent) :
+TextTRView::TextTRView(QWidget *parent) :
     AbstractView(parent),
-    ui(new Ui::TerminalView)
+    ui(new Ui::TextTRView)
 {
     ui->setupUi(this);
 
@@ -20,22 +20,22 @@ TerminalView::TerminalView(QWidget *parent) :
     setTextCodec("GB-2312"); // default
 
     connect(ui->wrapLineBox, SIGNAL(stateChanged(int)), this, SLOT(onWrapBoxChanged(int)));
-    connect(ui->sendButton, &QPushButton::clicked, this, &TerminalView::onSendButtonClicked);
-    connect(ui->resendBox, &QCheckBox::stateChanged, this, &TerminalView::updateResendTimerStatus);
-    QObject::connect(m_resendTimer, &QTimer::timeout, this, &TerminalView::sendData);
+    connect(ui->sendButton, &QPushButton::clicked, this, &TextTRView::onSendButtonClicked);
+    connect(ui->resendBox, &QCheckBox::stateChanged, this, &TextTRView::updateResendTimerStatus);
+    QObject::connect(m_resendTimer, &QTimer::timeout, this, &TextTRView::sendData);
     connect(ui->resendIntervalBox, SIGNAL(valueChanged(int)), this, SLOT(setResendInterval(int)));
     connect(ui->historyBox, SIGNAL(activated(const QString &)), this, SLOT(onHistoryBoxChanged(const QString &)));
     connect(ui->wrapLineBox, SIGNAL(stateChanged(int)), this, SLOT(onWrapBoxChanged(int)));
 }
 
-TerminalView::~TerminalView()
+TextTRView::~TextTRView()
 {
     delete ui;
     delete m_resendTimer;
     delete m_asciiBuf;
 }
 
-void TerminalView::keyPressEvent(QKeyEvent *event)
+void TextTRView::keyPressEvent(QKeyEvent *event)
 {
     if (event->modifiers() == Qt::ControlModifier) {
         if (event->key() == Qt::Key_Return) {
@@ -44,13 +44,13 @@ void TerminalView::keyPressEvent(QKeyEvent *event)
     }
 }
 
-void TerminalView::retranslate()
+void TextTRView::retranslate()
 {
     ui->retranslateUi(this);
 }
 
 // load terminal config
-void TerminalView::loadConfig(QSettings *config)
+void TextTRView::loadConfig(QSettings *config)
 {
     bool status;
     QRadioButton *rbtn;
@@ -82,7 +82,7 @@ void TerminalView::loadConfig(QSettings *config)
     config->endGroup();
 }
 
-void TerminalView::saveConfig(QSettings *config)
+void TextTRView::saveConfig(QSettings *config)
 {
     QString str;
 
@@ -105,7 +105,7 @@ void TerminalView::saveConfig(QSettings *config)
     config->endGroup();
 }
 
-void TerminalView::loadSettings(QSettings *config)
+void TextTRView::loadSettings(QSettings *config)
 {
     QString fontFamily("'" + config->value("FontFamily").toString().replace("+", "','") + "'");
     QString fontStyle(config->value("FontStyle").toString());
@@ -124,7 +124,7 @@ void TerminalView::loadSettings(QSettings *config)
     setIndentationGuides(config->value("TerminalIndentationGuides").toBool());
 }
 
-void TerminalView::loadHistory(QSettings *config)
+void TextTRView::loadHistory(QSettings *config)
 {
     config->beginGroup("HistoryBox");
     int count = config->beginReadArray("Items");
@@ -137,7 +137,7 @@ void TerminalView::loadHistory(QSettings *config)
     config->endGroup();
 }
 
-void TerminalView::saveHistory(QSettings *config)
+void TextTRView::saveHistory(QSettings *config)
 {
     config->beginGroup("HistoryBox");
     int count = ui->historyBox->count();
@@ -150,14 +150,14 @@ void TerminalView::saveHistory(QSettings *config)
     config->endGroup();
 }
 
-void TerminalView::setHighlight(const QString &language)
+void TextTRView::setHighlight(const QString &language)
 {
     // Send and Receive area highlight.
     ui->textEditTx->setHighLight(language);
     ui->textEditRx->setHighLight(language);
 }
 
-void TerminalView::receiveData(const QByteArray &array)
+void TextTRView::receiveData(const QByteArray &array)
 {
     QString string;
 
@@ -169,19 +169,19 @@ void TerminalView::receiveData(const QByteArray &array)
     ui->textEditRx->append(string);
 }
 
-void TerminalView::clear()
+void TextTRView::clear()
 {
     ui->textEditRx->clear();
     m_asciiBuf->clear();
 }
 
-void TerminalView::setFontFamily(QString fontFamily, int size, QString style)
+void TextTRView::setFontFamily(QString fontFamily, int size, QString style)
 {
     ui->textEditRx->setFonts(fontFamily, size, Qt::black, style);
     ui->textEditTx->setFonts(fontFamily, size, Qt::black, style);
 }
 
-void TerminalView::setEnabled(bool enabled)
+void TextTRView::setEnabled(bool enabled)
 {
     QString str;
 
@@ -194,7 +194,7 @@ void TerminalView::setEnabled(bool enabled)
 }
 
 // send data
-void TerminalView::sendData()
+void TextTRView::sendData()
 {
     QByteArray array;
 
@@ -207,12 +207,12 @@ void TerminalView::sendData()
     emit transmitData(array);
 }
 
-void TerminalView::onWrapBoxChanged(int status)
+void TextTRView::onWrapBoxChanged(int status)
 {
     ui->textEditRx->setWrap(status);
 }
 
-void TerminalView::onSendButtonClicked()
+void TextTRView::onSendButtonClicked()
 {
     QString str = ui->textEditTx->text();
     if (!str.isEmpty()) {
@@ -232,7 +232,7 @@ void TerminalView::onSendButtonClicked()
     }
 }
 
-void TerminalView::updateResendTimerStatus()
+void TextTRView::updateResendTimerStatus()
 {
     if (ui->sendButton->isEnabled() && ui->resendBox->isChecked()) {
         m_resendTimer->start(ui->resendIntervalBox->text().toInt());
@@ -242,12 +242,12 @@ void TerminalView::updateResendTimerStatus()
 }
 
 //  set resend interval time
-void TerminalView::setResendInterval(int msc)
+void TextTRView::setResendInterval(int msc)
 {
     m_resendTimer->setInterval(msc);
 }
 
-void TerminalView::setTextCodec(const QString &name)
+void TextTRView::setTextCodec(const QString &name)
 {
     if (name == "GB-2312") {
         m_textCodec = GB2312;
@@ -270,12 +270,12 @@ void TerminalView::setTextCodec(const QString &name)
     }
 }
 
-void TerminalView::onHistoryBoxChanged(const QString &string)
+void TextTRView::onHistoryBoxChanged(const QString &string)
 {
     ui->textEditTx->setText(string);
 }
 
-void TerminalView::arrayToHex(QString &str, const QByteArray &array, int countOfLine)
+void TextTRView::arrayToHex(QString &str, const QByteArray &array, int countOfLine)
 {
     static int count;
     int len = array.length();
@@ -298,7 +298,7 @@ void TerminalView::arrayToHex(QString &str, const QByteArray &array, int countOf
 }
 
 // array转UTF8
-void TerminalView::arrayToUTF8(QString &str, const QByteArray &array)
+void TextTRView::arrayToUTF8(QString &str, const QByteArray &array)
 {
     int lastIndex, cut = 0;
     bool isCut = false;
@@ -327,7 +327,7 @@ void TerminalView::arrayToUTF8(QString &str, const QByteArray &array)
 }
 
 // array转双字节编码格式(GB2312等)
-void TerminalView::arrayToDualByte(QString &str, const QByteArray &array)
+void TextTRView::arrayToDualByte(QString &str, const QByteArray &array)
 {
     int lastIndex;
     bool isCut = false;
@@ -352,7 +352,7 @@ void TerminalView::arrayToDualByte(QString &str, const QByteArray &array)
 }
 
 // array转Unicode
-void TerminalView::arrayToUTF16(QString &str, const QByteArray &array)
+void TextTRView::arrayToUTF16(QString &str, const QByteArray &array)
 {
     int lastIndex;
     bool isCut = false;;
@@ -375,7 +375,7 @@ void TerminalView::arrayToUTF16(QString &str, const QByteArray &array)
 }
 
 // array转ASCII
-void TerminalView::arrayToASCII(QString &str, const QByteArray &array)
+void TextTRView::arrayToASCII(QString &str, const QByteArray &array)
 {
     if (m_asciiBuf->isEmpty()) {
         str = QString::fromLatin1(array);
@@ -387,7 +387,7 @@ void TerminalView::arrayToASCII(QString &str, const QByteArray &array)
 }
 
 // 这个函数可以避免中文接收的乱码
-void TerminalView::arrayToString(QString &str, const QByteArray &array)
+void TextTRView::arrayToString(QString &str, const QByteArray &array)
 {
     switch (m_textCodec) {
     case GB2312:
@@ -407,7 +407,7 @@ void TerminalView::arrayToString(QString &str, const QByteArray &array)
 }
 
 // 保存文件
-void TerminalView::saveText(const QString &fname)
+void TextTRView::saveText(const QString &fname)
 {
     QFile file(fname);
 
@@ -417,32 +417,32 @@ void TerminalView::saveText(const QString &fname)
     }
 }
 
-void TerminalView::setTabsInsertSpaces(bool enable)
+void TextTRView::setTabsInsertSpaces(bool enable)
 {
     ui->textEditTx->setIndentationsUseTabs(!enable);
 }
 
-void TerminalView::setTabWidth(int width)
+void TextTRView::setTabWidth(int width)
 {
     ui->textEditTx->setTabWidth(width);
 }
 
-void TerminalView::setAutoIndent(bool enable)
+void TextTRView::setAutoIndent(bool enable)
 {
     ui->textEditTx->setAutoIndent(enable);
 }
 
-void TerminalView::setIndentationGuides(bool enable)
+void TextTRView::setIndentationGuides(bool enable)
 {
     ui->textEditTx->setIndentationGuides(enable);
 }
 
-QString TerminalView::saveFileFilter()
+QString TextTRView::saveFileFilter()
 {
     return tr("Terminal Text File (*.txt)");
 }
 
-void TerminalView::saveFile(const QString &fileName, const QString &filter)
+void TextTRView::saveFile(const QString &fileName, const QString &filter)
 {
     if (filter == tr("Terminal Text File (*.txt)")) {
         saveText(fileName);

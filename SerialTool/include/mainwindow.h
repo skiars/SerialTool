@@ -21,11 +21,6 @@ public:
     MainWindow(QWidget *parent = Q_NULLPTR);
     ~MainWindow();
 
-    void saveConfig();
-    QSettings *getConfig() { return m_config; }
-    void setLanguage(const QString &string);
-    void setStyleSheet(const QString &string);
-
 public slots:
     void loadSettings();
 
@@ -45,6 +40,9 @@ private slots:
 
 private:
     void loadConfig();
+    void saveConfig();
+    void setLanguage(const QString &string);
+    void setStyleSheet(const QString &string);
     void closeEvent(QCloseEvent *event);
     void setWindowStaysOnTop(bool enabled);
 

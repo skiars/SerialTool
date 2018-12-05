@@ -144,13 +144,14 @@ SettingsCheckBox::SettingsCheckBox(const QJsonObject &json,
 {
     m_checkBox = new QCheckBox(this);
     m_layout->addWidget(m_checkBox);
-    m_checkBox->setText(json.value("text").toString());
+    m_text = json.value("text").toString();
+    m_checkBox->setText(m_text);
     connect(m_checkBox, &QCheckBox::stateChanged, this, &SettingsCheckBox::onCheckStatusChanged);
 }
 
 void SettingsCheckBox::retranslate(const Translate *tr)
 {
-    m_checkBox->setText(tr->tr(m_checkBox->text()));
+    m_checkBox->setText(tr->tr(m_text));
 }
 
 void SettingsCheckBox::loadSettings(QSettings *config)

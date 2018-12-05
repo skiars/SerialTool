@@ -1,21 +1,21 @@
-#ifndef TERMINALVIEW_H
-#define TERMINALVIEW_H
+#ifndef TEXTTRVIEW_H
+#define TEXTTRVIEW_H
 
 #include "../abstractview.h"
 
 namespace Ui {
-class TerminalView;
+class TextTRView;
 }
 
-class TerminalView : public AbstractView
+class TextTRView : public AbstractView
 {
     Q_OBJECT
 
 public:
-    explicit TerminalView(QWidget *parent = nullptr);
-    ~TerminalView();
+    explicit TextTRView(QWidget *parent = nullptr);
+    ~TextTRView();
 
-    QString title() { return tr("Terminal"); }
+    QString title() { return tr("Text Tx/Rx"); }
     void retranslate();
     void loadConfig(QSettings *config);
     void saveConfig(QSettings *config);
@@ -66,7 +66,7 @@ private:
         UTF16
     };
 
-    Ui::TerminalView *ui;
+    Ui::TextTRView *ui;
     QTimer *m_resendTimer;
     QByteArray *m_asciiBuf;
     enum TextCodec m_textCodec;
