@@ -1,11 +1,14 @@
 ﻿#include "termview.h"
 #include <QTextBlock>
 #include <QScrollBar>
+#include <QPainter>
+#include <QFontMetrics>
 #include <QDebug>
 
 TermView::TermView(QWidget *parent) : QPlainTextEdit(parent)
 {
     m_lastPostion = 0;
+    setWordWrapMode(QTextOption::WrapAnywhere);
     connect(this, SIGNAL(cursorPositionChanged()), SLOT(onCursorPosChanged()) );
 }
 
@@ -17,12 +20,9 @@ void TermView::onCursorPosChanged()
 void TermView::keyPressEvent(QKeyEvent *event)
 {
     switch (event->key()) {
-    case Qt::Key_Up:
-        loadHistory(Prev);
-        return;
-    case Qt::Key_Down:
-        loadHistory(Next);
-        return;
+    case Qt::Key_Home: moveHome(); return;
+    case Qt::Key_Up: loadHistory(Prev); return;
+    case Qt::Key_Down: loadHistory(Next); return;
     case Qt::Key_Left:
         if (textCursor().position() <= m_lastPostion) {
             return;
@@ -31,11 +31,7 @@ void TermView::keyPressEvent(QKeyEvent *event)
     case Qt::Key_Return:
     case Qt::Key_Enter:
         if (m_enabled) {
-            QPlainTextEdit::appendPlainText("");
-            appendHistory(m_input);
-            scrollToBottom();
-            emit enterNewline(m_input + "\r\n");
-            m_input.clear();
+            sendLine();
         } else {
             return;
         }
@@ -52,13 +48,12 @@ void TermView::keyPressEvent(QKeyEvent *event)
             return;
         }
         break;
-    case Qt::Key_Home:
-        break;
     default:
         break;
     }
     QPlainTextEdit::keyPressEvent(event);
     m_input = inputText();
+    m_historyPos = m_history.size();
 }
 
 void TermView::append(const QString &string)
@@ -68,12 +63,6 @@ void TermView::append(const QString &string)
     m_lastPostion = toPlainText().length();
     scrollToBottom();
     m_input.clear();
-}
-
-void TermView::appendHistory(const QString &string)
-{
-    m_history.append(string);
-    m_historyPos = m_history.size();
 }
 
 QString TermView::inputText()
@@ -119,7 +108,7 @@ void TermView::selectAll()
 void TermView::moveHome()
 {
     QTextCursor cursor = textCursor();
-    cursor.setPosition(m_lastPostion + 1, QTextCursor::MoveAnchor);
+    cursor.setPosition(m_lastPostion, QTextCursor::MoveAnchor);
     setTextCursor(cursor);
 }
 
@@ -127,6 +116,22 @@ void TermView::scrollToBottom()
 {
     QScrollBar *scroll = verticalScrollBar();
     scroll->setValue(scroll->maximum());
+}
+
+void TermView::sendLine()
+{
+    QPlainTextEdit::appendPlainText("");
+    scrollToBottom();
+    if (m_historyPos < m_history.size()) {
+        emit enterNewline(m_history[m_historyPos] + "\r\n");
+    } else {
+        emit enterNewline(m_input + "\r\n");
+    }
+    if (!m_input.isEmpty()) {
+        m_history.append(m_input);
+    }
+    m_historyPos = m_history.size();
+    m_input.clear();
 }
 
 void TermView::clear()

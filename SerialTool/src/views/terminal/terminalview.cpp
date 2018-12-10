@@ -2,6 +2,7 @@
 #include "termview.h"
 #include <QHBoxLayout>
 #include <QTextCodec>
+#include <QSettings>
 #include <QDebug>
 
 TerminalView::TerminalView(QWidget *parent) : AbstractView(parent)
@@ -19,6 +20,16 @@ TerminalView::TerminalView(QWidget *parent) : AbstractView(parent)
 TerminalView::~TerminalView()
 {
 
+}
+
+void TerminalView::loadSettings(QSettings *config)
+{
+    QString fontFamily("'" + config->value("FontFamily").toString().replace("+", "','") + "'");
+    int fontSize = config->value("FontSize").toInt();
+
+    fontSize = fontSize < 6 ? 10 : fontSize;
+    m_termView->setStyleSheet("font-family: " + fontFamily + ";" +
+                              "font-size: " + QString::number(fontSize) + "pt;");
 }
 
 void TerminalView::sendData(const QString &string)

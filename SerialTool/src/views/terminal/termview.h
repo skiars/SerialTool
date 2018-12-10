@@ -28,10 +28,10 @@ private:
     };
     QString inputText();
     void loadHistory(HistoryMove mode = Prev);
-    void appendHistory(const QString &string);
     void selectAll();
     void moveHome();
     void scrollToBottom();
+    void sendLine();
 
 private:
     int m_lastPostion = 0, m_historyPos = 0;

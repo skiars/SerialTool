@@ -1,4 +1,4 @@
-#include "texttrview.h"
+﻿#include "texttrview.h"
 #include "ui_texttrview.h"
 #include <QSettings>
 #include <QTextCodec>
@@ -107,7 +107,7 @@ void TextTRView::saveConfig(QSettings *config)
 
 void TextTRView::loadSettings(QSettings *config)
 {
-    QString fontFamily("'" + config->value("FontFamily").toString().replace("+", "','") + "'");
+    QString fontFamily(config->value("FontFamily").toString());
     QString fontStyle(config->value("FontStyle").toString());
     int fontSize = config->value("FontSize").toInt();
 
