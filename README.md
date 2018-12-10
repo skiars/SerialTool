@@ -37,9 +37,12 @@ SerialTool的波形显示模块使用简单的协议进行数据传输，我们�
 如果您支持本软件，欢迎贡献源代码或者向作者提出建议。
 
 ## 演示
+
 <p align="center">
 <img src="./screenshot/shot_001.gif" alt="Demonstration">
 </p>
+
+这是使用SerialTool的终端功能（还在开发中）与烧录了[Berry](https://github.com/gztss/berry)固件的STM32F103单片机交互的例子。您可以根据需要定义自己的语法高亮配置文件而不需要修改C++代码。
 
 ## 特性
 * 使用Qt开发，跨平台。目前支持Windows和Linux
@@ -71,6 +74,12 @@ SerialTool的波形显示模块使用简单的协议进行数据传输，我们�
 * 使用的插件:
   * QScintilla: [Documentation](http://pyqt.sourceforge.net/Docs/QScintilla2), [Download](https://riverbankcomputing.com/software/qscintilla/download)
   * Qt Charts: 此插件在Qt 5.7以及更高的版本中包含在Qt安装文件中，使用Qt 5.6时需要自行编译。
+
+## 交流
+
+QQ群：961508887
+
+当然，有问题的建议发[issue](https://github.com/gztss/SerialTool/issues)。
 
 ## 开源协议
 
