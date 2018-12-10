@@ -1,4 +1,4 @@
-#ifndef TERMVIEW_H
+﻿#ifndef TERMVIEW_H
 #define TERMVIEW_H
 
 #include <QPlainTextEdit>
@@ -22,10 +22,21 @@ protected:
     virtual void keyPressEvent(QKeyEvent *event);
 
 private:
+    enum HistoryMove {
+        Prev,
+        Next
+    };
     QString inputText();
+    void loadHistory(HistoryMove mode = Prev);
+    void appendHistory(const QString &string);
+    void selectAll();
+    void moveHome();
+    void scrollToBottom();
 
 private:
-    int m_lastPostion = 0;
+    int m_lastPostion = 0, m_historyPos = 0;
+    QVector<QString> m_history;
+    QString m_input;
     bool m_enabled = false;
 };
 
