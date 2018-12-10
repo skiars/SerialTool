@@ -1,4 +1,3 @@
-
 <p align="center">
   <a>
     <img src="https://raw.githubusercontent.com/wiki/gztss/SerialTool/image/logo.png" alt="logo" width=64 height=64>
@@ -36,6 +35,11 @@ SerialTool支持基础的文本传输。文本传输界面支持16进制与ASCII
 SerialTool的波形显示模块使用简单的协议进行数据传输，我们已经为用户封装好了平台无关的[C语言协议库](./SerialTool/slave)，具体的协议说明请参考[串口示波器协议说明](../../plot_protocol.md)。用户可以将采集的波形保存为文本文件，然后使用Matlab等工具进行数据分析（您需要自己编写程序，SerialTool的波形存档为csv格式）。当然，您也可以使用SerialTool载入波形文件。
 
 如果您支持本软件，欢迎贡献源代码或者向作者提出建议。
+
+## 演示
+<p align="center">
+<img src="./screenshot/shot_001.gif" alt="Demonstration">
+</p>
 
 ## 特性
 * 使用Qt开发，跨平台。目前支持Windows和Linux

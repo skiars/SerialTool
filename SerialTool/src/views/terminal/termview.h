@@ -37,7 +37,7 @@ private:
 
 private:
     int m_lastPostion = 0, m_historyPos = 0;
-    QVector<QString> m_history;
+    QStringList m_history;
     Highlighter *m_highlight;
     QString m_input;
     int m_enabled = false;

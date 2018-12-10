@@ -50,6 +50,7 @@ void TermView::keyPressEvent(QKeyEvent *event)
             return;
         }
         break;
+    case Qt::Key_Tab:return;
     default:
         break;
     }
