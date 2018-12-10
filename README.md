@@ -42,7 +42,7 @@ SerialTool的波形显示模块使用简单的协议进行数据传输，我们�
 <img src="./screenshot/shot_001.gif" alt="Demonstration">
 </p>
 
-这是使用SerialTool的终端功能（还在开发中）与烧录了[Berry](https://github.com/gztss/berry)固件的STM32F103单片机交互的例子。您可以根据需要定义自己的语法高亮配置文件而不需要修改C++代码。
+这是使用SerialTool的终端功能（还在开发中）与烧录了[Berry](https://github.com/gztss/berry)脚本语言固件的STM32F103单片机交互的例子。您可以根据需要定义自己的语法高亮配置文件而不需要修改C++代码。
 
 ## 特性
 * 使用Qt开发，跨平台。目前支持Windows和Linux
