@@ -46,6 +46,7 @@ SOURCES += \
     src/views/texttr/textedit.cpp \
     src/views/texttr/texttrview.cpp \
     src/views/terminal/termview.cpp \
+    src/views/terminal/highlighter.cpp \
     src/views/terminal/terminalview.cpp \
     src/views/oscilloscope/oscilloscopeview.cpp \
     src/views/oscilloscope/channelitem.cpp \
@@ -81,6 +82,7 @@ HEADERS  += \
     src/views/texttr/textedit.h \
     src/views/texttr/texttrview.h \
     src/views/terminal/termview.h \
+    src/views/terminal/highlighter.h \
     src/views/terminal/terminalview.h \
     src/views/oscilloscope/oscilloscopeview.h \
     src/views/oscilloscope/channelitem.h \

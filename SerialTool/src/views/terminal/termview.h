@@ -3,6 +3,8 @@
 
 #include <QPlainTextEdit>
 
+class Highlighter;
+
 class TermView : public QPlainTextEdit
 {
     Q_OBJECT
@@ -36,8 +38,9 @@ private:
 private:
     int m_lastPostion = 0, m_historyPos = 0;
     QVector<QString> m_history;
+    Highlighter *m_highlight;
     QString m_input;
-    bool m_enabled = false;
+    int m_enabled = false;
 };
 
 #endif // TERMVIEW_H

@@ -1,0 +1,40 @@
+{
+    "name": "Berry",
+    "rules": [
+        {
+            "comment": "keyword",
+            "color": "#D17FEE",
+            "pattern": "\\b(if|elif|else|for|while|do|end|break|continue|return|import)\\b"
+        },
+        {
+            "comment": "keyword1",
+            "color": "#63B8FF",
+            "pattern": "\\b(var|def|class|global|true|false|nil|self|super|parent)\\b"
+        },
+        {
+            "comment": "numeric",
+            "color": "#9AC0CD",
+            "pattern": "\\b((0x)?[0-9]+)\\b"
+        },
+        {
+            "comment": "field",
+            "color": "#7EC0EE",
+            "pattern": "\\.([a-zA-Z_][a-zA-Z0-9_]*)"
+        },
+        {
+            "comment": "operator",
+            "color": "#EEC900",
+            "pattern": "[\\+\\-\\*/\\=<>:;\\(\\)\\[\\]\\{\\}]|&&|\\|\\|"
+        },
+        {
+            "comment": "string",
+            "color": "#CD8162",
+            "pattern": "(\"(\\\\.|[^\"])*\")|('(\\\\.|[^'])*')"
+        },
+        {
+            "comment": "comment",
+            "color": "#3CB371",
+            "pattern": "\\#.*"
+        }
+    ]
+}

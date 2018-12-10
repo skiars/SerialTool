@@ -5,15 +5,19 @@
 #include <QSettings>
 #include <QDebug>
 
+#define BASE_STYLE \
+    "background-color: #1A1A1A;" \
+    "color: #FFF8DC;"
+
 TerminalView::TerminalView(QWidget *parent) : AbstractView(parent)
 {
     QHBoxLayout *layout = new QHBoxLayout(this);
     m_termView = new TermView(this);
     layout->addWidget(m_termView);
+    layout->setMargin(4);
     this->setLayout(layout);
-
-    m_termView->setStyleSheet("font-family: 'Courier New'");
-
+    m_termView->setStyleSheet(BASE_STYLE
+                              "font-family: 'Courier New';");
     connect(m_termView, SIGNAL(enterNewline(const QString &)), this, SLOT(sendData(const QString &)));
 }
 
@@ -28,7 +32,8 @@ void TerminalView::loadSettings(QSettings *config)
     int fontSize = config->value("FontSize").toInt();
 
     fontSize = fontSize < 6 ? 10 : fontSize;
-    m_termView->setStyleSheet("font-family: " + fontFamily + ";" +
+    m_termView->setStyleSheet(BASE_STYLE
+                              "font-family: " + fontFamily + ";" +
                               "font-size: " + QString::number(fontSize) + "pt;");
 }
 

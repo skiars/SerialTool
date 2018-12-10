@@ -1,4 +1,5 @@
 ﻿#include "termview.h"
+#include "highlighter.h"
 #include <QTextBlock>
 #include <QScrollBar>
 #include <QPainter>
@@ -8,6 +9,7 @@
 TermView::TermView(QWidget *parent) : QPlainTextEdit(parent)
 {
     m_lastPostion = 0;
+    m_highlight = new Highlighter(document());
     setWordWrapMode(QTextOption::WrapAnywhere);
     connect(this, SIGNAL(cursorPositionChanged()), SLOT(onCursorPosChanged()) );
 }
