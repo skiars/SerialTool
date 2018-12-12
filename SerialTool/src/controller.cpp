@@ -51,6 +51,7 @@ void Controller::setPortManager(PortManager *manager)
     m_port = manager;
     connect(m_port, &PortManager::readyRead, this, &Controller::readPortData);
     connect(m_views, &ViewManager::transmitData, this, &Controller::writePortData);
+    connect(m_toolBoxs, &ToolBoxManager::transmitData, this, &Controller::writePortData);
 }
 
 void Controller::readPortData()

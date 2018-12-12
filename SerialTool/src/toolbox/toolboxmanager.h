@@ -20,6 +20,9 @@ public:
     void receiveData(const QByteArray &array);
     void setWindowOpacity(qreal level);
 
+signals:
+    void transmitData(const QByteArray &);
+
 private slots:
     void onActionTriggered();
 

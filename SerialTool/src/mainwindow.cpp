@@ -26,7 +26,7 @@ MainWindow::MainWindow(QWidget *parent) :
     m_config = new QSettings(configPath, QSettings::IniFormat);
 
     ui->setupUi(this);
-    setWindowTitle(SOFTWARE_NAME " V" SOFTWARE_VERSION);
+    setWindowTitle(SOFTWARE_TITLE);
 
     m_port = new PortManager(ui->toolBar1, ui->portSetAction);
     m_controller = new Controller(&m_docPath,

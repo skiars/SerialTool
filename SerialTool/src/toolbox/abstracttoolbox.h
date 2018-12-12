@@ -12,6 +12,9 @@ public:
     virtual void retranslate() {}
     virtual void receiveData(const QByteArray &array) { (void)array; }
     virtual void setFilePath(const QString &path) { (void)path; }
+
+signals:
+    void transmitData(const QByteArray &);
 };
 
 class AbstractToolBoxFactory : public QObject

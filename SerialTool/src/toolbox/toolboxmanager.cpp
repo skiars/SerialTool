@@ -48,6 +48,8 @@ void ToolBoxManager::onActionTriggered()
         toolBox->setFilePath(*m_docPath);
         toolBox->setWindowOpacity(m_opacity);
         toolBox->show();
+        connect(toolBox, SIGNAL(transmitData(const QByteArray &)),
+                this, SIGNAL(transmitData(const QByteArray &)));
     }
 }
 
