@@ -35,4 +35,6 @@ signals:
 public slots:
 };
 
+Q_DECLARE_INTERFACE(AbstractView, "gztss.SerialTool.AbstractView/1.0")
+
 #endif // ABSTRACTVIEW_H

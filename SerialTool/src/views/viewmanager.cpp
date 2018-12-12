@@ -3,6 +3,8 @@
 #include <QTabWidget>
 #include <QAction>
 #include <QFileDialog>
+#include <QPluginLoader>
+#include <QDebug>
 #include "abstractview.h"
 #include "texttr/texttrview.h"
 #include "terminal/terminalview.h"
@@ -21,6 +23,7 @@ ViewManager::ViewManager(QString *docPath, QTabWidget *tabWidget)
 
     m_docPath = docPath;
     m_tabWidget = tabWidget;
+    m_views->append(loadExtensions("extensions"));
     m_currentView = m_views->at(0);
     for (AbstractView *view : *m_views) {
         tabWidget->addTab(view, view->title());
@@ -133,4 +136,19 @@ void ViewManager::openFile()
     }
     *m_docPath = QFileInfo(fileName).path();
     m_currentView->openFile(fileName, filter);
+}
+
+QVector<AbstractView *> ViewManager::loadExtensions(const QString &path)
+{
+    QDir dir(path);
+    QVector<AbstractView *> list;
+    for (QString fileName : dir.entryList(QDir::Files)) {
+        QPluginLoader loader(dir.absoluteFilePath((fileName)));
+        AbstractView *view = qobject_cast<AbstractView *>(loader.instance());
+        if (view) {
+            qDebug() << "file:" << fileName;
+            list.append(view);
+        }
+    }
+    return list;
 }

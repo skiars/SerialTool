@@ -33,6 +33,9 @@ private slots:
     void openFile();
 
 private:
+    QVector<AbstractView *> loadExtensions(const QString &path);
+
+private:
     QVector<AbstractView *> *m_views;
     AbstractView *m_currentView;
     QAction *m_openFileAction = nullptr, *m_saveFileAction = nullptr;
