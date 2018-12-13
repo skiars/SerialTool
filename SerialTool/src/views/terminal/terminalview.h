@@ -1,4 +1,4 @@
-﻿#ifndef TERMINALVIEW_H
+#ifndef TERMINALVIEW_H
 #define TERMINALVIEW_H
 
 #include "../abstractview.h"
@@ -14,6 +14,7 @@ public:
     ~TerminalView();
 
     QString title() { return tr("Terminal"); }
+    QString iid() { return "terminal"; }
     void loadSettings(QSettings *config);
     void receiveData(const QByteArray &array);
     void setEnabled(bool enabled);

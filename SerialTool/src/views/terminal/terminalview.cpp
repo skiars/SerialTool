@@ -1,4 +1,4 @@
-﻿#include "terminalview.h"
+#include "terminalview.h"
 #include "termview.h"
 #include <QHBoxLayout>
 #include <QTextCodec>
@@ -14,7 +14,7 @@ TerminalView::TerminalView(QWidget *parent) : AbstractView(parent)
     QHBoxLayout *layout = new QHBoxLayout(this);
     m_termView = new TermView(this);
     layout->addWidget(m_termView);
-    layout->setMargin(4);
+    layout->setMargin(2);
     this->setLayout(layout);
     m_termView->setStyleSheet(BASE_STYLE
                               "font-family: 'Courier New';");

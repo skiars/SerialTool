@@ -4,10 +4,10 @@
 #include "port/portmanager.h"
 #include <QDebug>
 
-Controller::Controller(QString *docPath, QTabWidget *tabWidget, QMenu *menu,
+Controller::Controller(QString *docPath, QMainWindow *window, QMenu *menu,
                        QAction *openAction, QAction *saveAction)
 {
-    m_views = new ViewManager(docPath, tabWidget);
+    m_views = new ViewManager(docPath, window);
     m_toolBoxs = new ToolBoxManager(docPath, menu);
 
     m_views->setFileAction(openAction, saveAction);

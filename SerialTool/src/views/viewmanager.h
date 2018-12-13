@@ -4,15 +4,15 @@
 #include <QObject>
 
 class AbstractView;
-class QTabWidget;
 class QAction;
 class QSettings;
+class QMainWindow;
 
 class ViewManager : public QObject
 {
     Q_OBJECT
 public:
-    explicit ViewManager(QString *docPath, QTabWidget *tabWidget);
+    explicit ViewManager(QString *docPath, QMainWindow *window);
     ~ViewManager();
 
     void loadConfig(QSettings *config);
@@ -39,7 +39,7 @@ private:
     QVector<AbstractView *> *m_views;
     AbstractView *m_currentView;
     QAction *m_openFileAction = nullptr, *m_saveFileAction = nullptr;
-    QTabWidget *m_tabWidget;
+    QMainWindow *m_tabWidget;
     QString *m_docPath;
 };
 

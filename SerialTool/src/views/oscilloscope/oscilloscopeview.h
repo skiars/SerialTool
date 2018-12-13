@@ -22,6 +22,7 @@ public:
     OscilloscopeView(QWidget *parent = nullptr);
     ~OscilloscopeView();
     QString title() { return tr("Plot"); }
+    QString iid() { return "oscilloscope"; }
     void retranslate();
     void loadConfig(QSettings *config);
     void saveConfig(QSettings *config);

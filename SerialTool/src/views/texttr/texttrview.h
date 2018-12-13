@@ -16,6 +16,7 @@ public:
     ~TextTRView();
 
     QString title() { return tr("Text Tx/Rx"); }
+    QString iid() { return "text_tx/rx"; }
     void retranslate();
     void loadConfig(QSettings *config);
     void saveConfig(QSettings *config);

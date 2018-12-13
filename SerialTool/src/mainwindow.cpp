@@ -30,7 +30,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     m_port = new PortManager(ui->toolBar1, ui->portSetAction);
     m_controller = new Controller(&m_docPath,
-        ui->tabWidget, ui->menu_2, ui->actionOpen, ui->actionSave);
+        this, ui->menu_2, ui->actionOpen, ui->actionSave);
     m_controller->setPortManager(m_port);
 
     // 状态栏设置
@@ -156,7 +156,8 @@ void MainWindow::loadConfig()
 
     // 打开页面配置
     m_config->beginGroup("Workspace");
-    ui->tabWidget->setCurrentIndex(m_config->value("TabIndex").toInt());
+    restoreGeometry(m_config->value("MainWindowGeometry").toByteArray());
+    restoreState(m_config->value("MainWindowState").toByteArray());
     ui->toolBar1->setVisible(m_config->value("ToolBarVisible").toBool());
     ui->actionVisibleToolbar->setChecked(m_config->value("ToolBarVisible").toBool());
     ui->statusBar->setVisible(m_config->value("StatusBarVisible").toBool());
@@ -174,11 +175,11 @@ void MainWindow::saveConfig()
 {
     // 打开页面配置
     m_config->beginGroup("Workspace");
-    m_config->setValue("TabIndex",
-        QVariant(ui->tabWidget->currentIndex()));
-    m_config->setValue("ToolBarVisible", QVariant(ui->toolBar1->isVisible()));
-    m_config->setValue("StatusBarVisible", QVariant(ui->statusBar->isVisible()));
-    m_config->setValue("WindowStaysOnTop", QVariant((windowFlags() & Qt::WindowStaysOnTopHint) != 0));
+    m_config->setValue("MainWindowGeometry", saveGeometry());
+    m_config->setValue("MainWindowState", saveState());
+    m_config->setValue("ToolBarVisible", ui->toolBar1->isVisible());
+    m_config->setValue("StatusBarVisible", ui->statusBar->isVisible());
+    m_config->setValue("WindowStaysOnTop", (windowFlags() & Qt::WindowStaysOnTopHint) != 0);
     m_config->endGroup();
 
     // 路经

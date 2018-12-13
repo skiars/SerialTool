@@ -1,6 +1,7 @@
 #include "viewmanager.h"
 #include <QSettings>
-#include <QTabWidget>
+#include <QMainWindow>
+#include <QDockWidget>
 #include <QAction>
 #include <QFileDialog>
 #include <QPluginLoader>
@@ -11,7 +12,7 @@
 #include "oscilloscope/oscilloscopeview.h"
 #include "filetransmit/filetransmitview.h"
 
-ViewManager::ViewManager(QString *docPath, QTabWidget *tabWidget)
+ViewManager::ViewManager(QString *docPath, QMainWindow *window)
 {
     m_views = new QVector<AbstractView *>;
 
@@ -22,14 +23,27 @@ ViewManager::ViewManager(QString *docPath, QTabWidget *tabWidget)
     m_views->append(new FileTransmitView());
 
     m_docPath = docPath;
-    m_tabWidget = tabWidget;
+    m_tabWidget = window;
     m_views->append(loadExtensions("extensions"));
     m_currentView = m_views->at(0);
+    delete window->takeCentralWidget();
+    window->setDockNestingEnabled(true);
+    int index = 0;
+    QDockWidget *align = nullptr;
     for (AbstractView *view : *m_views) {
-        tabWidget->addTab(view, view->title());
+        QDockWidget *dock = new QDockWidget(view->title(), window);
+        dock->setObjectName(view->iid());
+        dock->setFeatures(QDockWidget::AllDockWidgetFeatures);
+        dock->setWidget(view);
+        if (index++) {
+            window->tabifyDockWidget(align, dock);
+        } else {
+            window->addDockWidget(Qt::LeftDockWidgetArea, dock);
+            align = dock;
+        }
         connect(view, &AbstractView::transmitData, this, &ViewManager::transmitData);
     }
-    connect(tabWidget, SIGNAL(currentChanged(int)), this, SLOT(tabIndexChanged(int)));
+    //connect(tabWidget, SIGNAL(currentChanged(int)), this, SLOT(tabIndexChanged(int)));
 }
 
 ViewManager::~ViewManager()
@@ -67,16 +81,14 @@ void ViewManager::retranslate()
         AbstractView *view = m_views->at(i);
 
         view->retranslate();
-        m_tabWidget->setTabText(i, view->title());
+        // m_tabWidget->setTabText(i, view->title());
     }
 }
 
 void ViewManager::receiveData(const QByteArray &array)
 {
     for (AbstractView *view : *m_views) {
-        if (view->holdReceive() || m_currentView == view) {
-            view->receiveData(array);
-        }
+        view->receiveData(array);
     }
 }
 
@@ -89,7 +101,9 @@ void ViewManager::setEnabled(bool enabled)
 
 void ViewManager::clear(void)
 {
-    m_currentView->clear();
+    for (AbstractView *view : *m_views) {
+        view->clear();
+    }
 }
 
 void ViewManager::setFileAction(QAction *openAction, QAction *saveAction)

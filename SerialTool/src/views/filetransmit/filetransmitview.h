@@ -17,6 +17,7 @@ public:
     ~FileTransmitView();
 
     QString title() { return tr("File Transmit"); }
+    QString iid() { return "file_transmit"; }
     void retranslate();
     void loadConfig(QSettings *config);
     void saveConfig(QSettings *config);

@@ -10,11 +10,12 @@ class AbstractView : public QWidget
     Q_OBJECT
 public:
     explicit AbstractView(QWidget *parent = nullptr) : QWidget(parent) {}
+    virtual QString title() = 0;
+    virtual QString iid() = 0; // Independent ID
     virtual void loadConfig(QSettings */*config*/) {}
     virtual void saveConfig(QSettings */*config*/) {}
     virtual void loadSettings(QSettings */*config*/) {}
     virtual void retranslate() {}
-    virtual QString title() { return "Abstract View"; }
     virtual void receiveData(const QByteArray &/*array*/) {}
     virtual bool holdReceive() { return false; }
     virtual void setEnabled(bool /*enabled*/) {}
@@ -31,10 +32,13 @@ public:
 
 signals:
     void transmitData(const QByteArray &);
+    void occupyBegin(int);
+    void occupyEnd(int);
+    void occupyCancel();
 
 public slots:
 };
 
-Q_DECLARE_INTERFACE(AbstractView, "gztss.SerialTool.AbstractView/1.0")
+Q_DECLARE_INTERFACE(AbstractView, "gztss.SerialTool.AbstractView/1.1")
 
 #endif // ABSTRACTVIEW_H

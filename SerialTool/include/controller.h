@@ -6,7 +6,7 @@
 class QMenu;
 class QAction;
 class QSettings;
-class QTabWidget;
+class QMainWindow;
 class PortManager;
 class ViewManager;
 class ToolBoxManager;
@@ -15,7 +15,7 @@ class Controller : public QObject
 {
     Q_OBJECT
 public:
-    explicit Controller(QString *docPath, QTabWidget *tabWidget,
+    explicit Controller(QString *docPath, QMainWindow *window,
                         QMenu *menu, QAction *openAction, QAction *saveAction);
     void setPortManager(PortManager *manager);
     void loadConfig(QSettings *config);
