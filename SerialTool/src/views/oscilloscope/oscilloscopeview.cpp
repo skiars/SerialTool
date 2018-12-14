@@ -21,7 +21,7 @@ QT_CHARTS_USE_NAMESPACE
 OscilloscopeView::OscilloscopeView(QWidget *parent) :
     AbstractView(parent),
     ui(new Ui::OscilloscopeView),
-    m_chart(0),
+    m_chart(nullptr),
     m_timer(new QTimer(this)),
     m_decode(new WaveDecode)
 {

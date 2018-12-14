@@ -12,28 +12,23 @@ public:
     explicit AbstractView(QWidget *parent = nullptr) : QWidget(parent) {}
     virtual QString title() = 0;
     virtual QString iid() = 0; // Independent ID
-    virtual void loadConfig(QSettings * /*config*/) {}
-    virtual void saveConfig(QSettings * /*config*/) {}
-    virtual void loadSettings(QSettings * /*config*/) {}
+    virtual void loadConfig(QSettings * /* config */) {}
+    virtual void saveConfig(QSettings * /* config */) {}
+    virtual void loadSettings(QSettings * /* config */) {}
     virtual void retranslate() {}
-    virtual void receiveData(const QByteArray & /*array*/) {}
-    virtual bool holdReceive() { return false; }
+    virtual void receiveData(const QByteArray & /* array */) {}
     virtual void setEnabled(bool /*enabled*/) {}
     virtual void clear() {}
 
     virtual QString openFileFilter() { return QString(); }
     virtual QString saveFileFilter() { return QString(); }
-    virtual void saveFile(const QString &fileName, const QString &filter) {
-        (void)fileName; (void)filter;
-    }
-    virtual void openFile(const QString &fileName, const QString &filter) {
-        (void)fileName; (void)filter;
-    }
+    virtual void saveFile(const QString & /* fileName */, const QString & /* filter */) {}
+    virtual void openFile(const QString & /* fileName */, const QString & /* filter */) {}
 
-    void takeMessage(const QString &sender, const QByteArray &message);
+    virtual void takeMessage(const QString & /* sender */, const QByteArray & /* message */) {}
 
 signals:
-    void transmitData(const QByteArray &);
+    void transmitData(const QByteArray &data);
     void sendMessage(const QString &receiver, const QByteArray &message);
 };
 

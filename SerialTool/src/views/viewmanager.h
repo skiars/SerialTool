@@ -28,6 +28,7 @@ signals:
     void transmitData(const QByteArray &);
 
 private slots:
+    void dispatchMessage(const QString &receiver, const QByteArray &message);
     void saveFile();
     void openFile();
 

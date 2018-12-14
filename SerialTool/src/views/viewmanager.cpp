@@ -3,12 +3,13 @@
 #include <QMainWindow>
 #include <QAction>
 #include <QFileDialog>
+#include <QDockWidget>
 #include <QPluginLoader>
 #include <QApplication>
 #include <QMessageBox>
 #include <QDebug>
 #include "abstractview.h"
-#include "dockwidget.h"
+#include "scriptextension/scriptextensionview.h"
 #include "texttr/texttrview.h"
 #include "terminal/terminalview.h"
 #include "oscilloscope/oscilloscopeview.h"
@@ -34,7 +35,7 @@ ViewManager::ViewManager(QString *docPath, QMainWindow *window) :
     for (AbstractView *view : *m_views) {
         QDockWidget *dock = new QDockWidget(view->title(), window);
         dock->setObjectName(view->iid());
-        dock->setFeatures(DockWidget::AllDockWidgetFeatures);
+        dock->setFeatures(QDockWidget::AllDockWidgetFeatures);
         dock->setWidget(view);
         if (index++) {
             window->tabifyDockWidget(align, dock);
@@ -43,6 +44,7 @@ ViewManager::ViewManager(QString *docPath, QMainWindow *window) :
             align = dock;
         }
         connect(view, &AbstractView::transmitData, this, &ViewManager::transmitData);
+        connect(view, &AbstractView::sendMessage, this, &ViewManager::dispatchMessage);
     }
 }
 
@@ -82,6 +84,16 @@ void ViewManager::retranslate()
 
         view->retranslate();
         // m_tabWidget->setTabText(i, view->title());
+    }
+}
+
+void ViewManager::dispatchMessage(const QString &receiver, const QByteArray &message)
+{
+    AbstractView *sender = dynamic_cast<AbstractView *>(QObject::sender());
+    for (AbstractView *view : *m_views) {
+        if (view->iid() == receiver || receiver.isEmpty()) {
+            view->takeMessage(sender->iid(), message);
+        }
     }
 }
 
@@ -175,6 +187,14 @@ QVector<AbstractView *> ViewManager::loadExtensions(const QString &path)
         AbstractView *view = dynamic_cast<AbstractView *>(loader.instance());
         if (view) {
             qDebug() << "file:" << fileName;
+            view->setParent(m_window);
+            list.append(view);
+        }
+    }
+    for (QString fileName : dir.entryList(QStringList("*.js"), QDir::Files)) {
+        QString name = dir.absoluteFilePath(fileName);
+        AbstractView *view = new ScriptExtensionView(name, m_window);
+        if (view) {
             list.append(view);
         }
     }

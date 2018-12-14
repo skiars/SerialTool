@@ -3,14 +3,13 @@
 # Project created by QtCreator 2017-02-01T17:03:23
 #
 #-------------------------------------------------
-QT       += core gui widgets serialport network charts
-QT       -= console
+QT       += core gui widgets serialport network charts script uitools
 
 TARGET = SerialTool
 
 TEMPLATE = app
 
-CONFIG += qscintilla2
+CONFIG  += qscintilla2
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked as deprecated (the exact warnings
@@ -45,6 +44,7 @@ SOURCES += \
     src/port/tcpudpport.cpp \
     src/port/serialport.cpp \
     src/views/viewmanager.cpp \
+    src/views/scriptextension/scriptextensionview.cpp \
     src/views/texttr/textedit.cpp \
     src/views/texttr/texttrview.cpp \
     src/views/terminal/termview.cpp \
@@ -81,6 +81,7 @@ HEADERS  += \
     src/port/serialport.h \
     src/views/viewmanager.h \
     src/views/abstractview.h \
+    src/views/scriptextension/scriptextensionview.h \
     src/views/texttr/textedit.h \
     src/views/texttr/texttrview.h \
     src/views/terminal/termview.h \
