@@ -28,18 +28,20 @@ signals:
     void transmitData(const QByteArray &);
 
 private slots:
-    void tabIndexChanged(int index);
     void saveFile();
     void openFile();
 
 private:
     QVector<AbstractView *> loadExtensions(const QString &path);
+    AbstractView* findActiveView();
 
 private:
+    struct Hotspot {
+        AbstractView *view;
+        int postion;
+    };
     QVector<AbstractView *> *m_views;
-    AbstractView *m_currentView;
-    QAction *m_openFileAction = nullptr, *m_saveFileAction = nullptr;
-    QMainWindow *m_tabWidget;
+    QMainWindow *m_window;
     QString *m_docPath;
 };
 
