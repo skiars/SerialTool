@@ -1,4 +1,4 @@
-#include "optionsdialog.h"
+﻿#include "optionsdialog.h"
 #include "settingswidget.h"
 #include <QSettings>
 #include <QVBoxLayout>
@@ -12,7 +12,7 @@ OptionsDialog::OptionsDialog(QSettings *settings, QWidget *parent) :
     QVBoxLayout *layout = new QVBoxLayout(this);
     setLayout(layout);
     m_settingsWidget = new SettingsWidget(this);
-    m_settingsWidget->layout("./layout/settings/index.json");
+    m_settingsWidget->layout("./config/layout/settings/index.json");
     m_settingsWidget->loadSettings(m_config);
     layout->addWidget(m_settingsWidget);
 

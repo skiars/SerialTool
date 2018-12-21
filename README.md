@@ -45,6 +45,7 @@ SerialTool的波形显示模块使用简单的协议进行数据传输，我们�
 这是使用SerialTool的终端功能（还在开发中）与烧录了[Berry](https://github.com/gztss/berry)脚本语言固件的STM32F103单片机交互的例子。您可以根据需要定义自己的语法高亮配置文件而不需要修改C++代码。
 
 ## 特性
+
 * 使用Qt开发，跨平台。目前支持Windows和Linux
 * 中文接收显示不乱码
 * 国际化支持
@@ -60,6 +61,7 @@ SerialTool的波形显示模块使用简单的协议进行数据传输，我们�
 ## [查看Wiki](../../wiki)
 
 ## 下载地址
+
 * [Latest release](https://github.com/gztss/SerialTool/releases/latest)
 * [GitHub](https://github.com/Le-Seul/SerialTool/releases)
 * [百度网盘](http://pan.baidu.com/s/1c18ZXW8) (不推荐😂😂)
@@ -74,6 +76,45 @@ SerialTool的波形显示模块使用简单的协议进行数据传输，我们�
 * 使用的插件:
   * QScintilla: [Documentation](http://pyqt.sourceforge.net/Docs/QScintilla2), [Download](https://riverbankcomputing.com/software/qscintilla/download)
   * Qt Charts: 此插件在Qt 5.7以及更高的版本中包含在Qt安装文件中，使用Qt 5.6时需要自行编译。
+  * Qt Scripts: Qt 5自带Qt Scripts，安装时勾选即可。
+
+## 构建
+
+### 安装Qt开发工具
+
+1. 到[这里](http://download.qt.io/archive/qt/)下载你需要的Qt版本。注意在Qt5.7之前你需要自行编译Qt Charts模块。
+2. 运行下载的Qt安装文件。在Windows下直接双击即可，Linux下需要给安装文件加上可执行权限。然后根据需要配置Qt，直到“选择组件 (Select Components)”界面。
+3. 在“选择组件 (Select Components)”界面的Qt选项下需要勾选一个Qt主模块（例如MinGW 7.3.0 64-bit、MSVC 2017 64-bit等），此外还要勾选Qt Charts模块和Qt Script模块。如果你的系统中没有安装需要的编译器，你还要在Tools选项下中勾选需要的编译器（如MinGW 7.3.0 64bit）。
+4. 根据提示安装Qt。如果需要的话你可以为Qt设置环境变量。
+
+### 安装QScintilla
+
+1. 下载[QScintilla](https://riverbankcomputing.com/software/qscintilla/download)源码并解压缩。
+2. 在Windows下，打开 *“开始菜单 -> 程序列表 -> Qt 5.12.0 -> Qt 5.12.0 for Desktop (MinGW 7.3.0 64-bit)”*。Linux下直接打开终端即可（需要[设置Qt的环境变量](https://www.linuxprobe.com/linux-qt.html)）。
+3. 打开QScintilla_gpl-2.10.8/Qt4Qt5文件夹。具体操作为：
+   * 假设Windows下路径为 "C:\QScintilla_gpl-2.10.8\Qt4Qt5"，执行操作
+     ``` cmd
+     cd C:\QScintilla_gpl-2.10.8\Qt4Qt5
+     qmake
+     mingw32-make
+     mingw32-make install
+     qmake CONFIG+=debug
+     mingw32-make
+     mingw32-make install
+     ```
+   * 假设Linux下路径为 "~/QScintilla_gpl-2.10.8/Qt4Qt5" 则执行操作
+     ``` bash
+     cd ~/QScintilla_gpl-2.10.8/Qt4Qt5
+     qmake
+     make
+     make install
+     ```
+
+### 编译SerialTool
+
+1. 使用Qt Creator打开 "SerialTool/SerialTool/SerialTool.pro"文件。
+2. 在Qt Creator右下角选择配置为Release（可选）。
+3. 编译项目。
 
 ## 交流
 

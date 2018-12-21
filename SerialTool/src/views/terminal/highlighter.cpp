@@ -8,7 +8,7 @@
 Highlighter::Highlighter(QTextDocument *parent)
     : QSyntaxHighlighter(parent)
 {
-    loadRule("../SerialTool/layout/highlight/berry.json");
+    loadRule("./config/highlight/berry.json");
 }
 
 void Highlighter::highlightBlock(const QString &text)
