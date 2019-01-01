@@ -5,7 +5,7 @@
 #-------------------------------------------------
 QT       += core gui widgets serialport network charts script uitools
 
-TARGET = SerialTool
+TARGET = SerialTool_pre
 
 TEMPLATE = app
 

@@ -102,7 +102,9 @@ void SettingsComboBox::loadSettings(QSettings *config)
 void SettingsComboBox::saveSettings(QSettings *config)
 {
     int index = m_comboBox->currentIndex();
-    config->setValue(m_key, m_items[index > 0 ? index : 0]);
+    if (index >= 0) {
+        config->setValue(m_key, m_items[index]);
+    }
 }
 
 void SettingsComboBox::parseItems(const QString &str)
@@ -316,4 +318,23 @@ void SettingsSpinBox::saveSettings(QSettings *config)
     } else {
         config->setValue(m_key,  dynamic_cast<QDoubleSpinBox *>(m_spinBox)->value());
     }
+}
+
+SettingsLineEdit::SettingsLineEdit(const QJsonObject &json,
+                                   const QString &path,
+                                   QWidget *parent)
+                                 : AbstractSettingsWidget(json, path, parent)
+{
+    m_lineEdit = new QLineEdit(this);
+    m_layout->addWidget(m_lineEdit);
+}
+
+void SettingsLineEdit::loadSettings(QSettings *config)
+{
+    m_lineEdit->setText(config->value(m_key).toString());
+}
+
+void SettingsLineEdit::saveSettings(QSettings *config)
+{
+    config->setValue(m_key,  m_lineEdit->text());
 }

@@ -4,6 +4,7 @@
 #include <QTextCodec>
 #include <QTimer>
 #include <QKeyEvent>
+#include <QDateTime>
 
 TextTRView::TextTRView(QWidget *parent) :
     AbstractView(parent),
@@ -122,6 +123,9 @@ void TextTRView::loadSettings(QSettings *config)
     setTabWidth(config->value("TerminalTabWidth").toInt());
     setAutoIndent(config->value("TerminalAutoIndent").toBool());
     setIndentationGuides(config->value("TerminalIndentationGuides").toBool());
+    m_timeStamp = config->value("TerminalUseTimeStamp").toBool();
+    m_frameSeparator = config->value("TerminalFrameSeparator").toString();
+    m_timeStampFormat = config->value("TerminalTimeStampFormat").toString();
 }
 
 void TextTRView::loadHistory(QSettings *config)
@@ -160,13 +164,16 @@ void TextTRView::setHighlight(const QString &language)
 void TextTRView::receiveData(const QByteArray &array)
 {
     QString string;
-
     if (ui->portReadAscii->isChecked()) {
         arrayToString(string, array);
     } else {
         arrayToHex(string, array, 16);
     }
-    ui->textEditRx->append(string);
+    if (m_timeStamp) {
+        appendTimeStamp(string);
+    } else {
+        ui->textEditRx->append(string);
+    }
 }
 
 void TextTRView::clear()
@@ -403,6 +410,28 @@ void TextTRView::arrayToString(QString &str, const QByteArray &array)
     default: // ASCII
         arrayToASCII(str, array);
         break;
+    }
+}
+
+void TextTRView::appendTimeStamp(const QString &string)
+{
+    QRegularExpression re(".+?(" + m_frameSeparator + "|$)");
+    QRegularExpressionMatch match = re.match(string);
+    QRegularExpressionMatchIterator it = re.globalMatch(string);
+    QString curTime = QDateTime::currentDateTime()
+            .toString(m_timeStampFormat);
+    while (it.hasNext()) {
+        QString span = it.next().captured(0);
+        if (m_nextFrame) {
+            ui->textEditRx->append(curTime);
+        }
+        m_nextFrame = span.indexOf(
+                    QRegularExpression(m_frameSeparator + "$")) != -1;
+        if (m_nextFrame) {
+            span.chop(m_frameSeparator.length());
+            span.append('\n');
+        }
+        ui->textEditRx->append(span);
     }
 }
 

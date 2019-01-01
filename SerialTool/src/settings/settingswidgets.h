@@ -148,4 +148,17 @@ private:
     QAbstractSpinBox *m_spinBox;
 };
 
+class SettingsLineEdit : public AbstractSettingsWidget
+{
+public:
+    explicit SettingsLineEdit(const QJsonObject &json,
+            const QString &path, QWidget *parent = nullptr);
+
+    void loadSettings(QSettings *config);
+    void saveSettings(QSettings *config);
+
+private:
+    QLineEdit *m_lineEdit;
+};
+
 #endif // ABSTRACTSETTINGSWIDGET_H

@@ -188,6 +188,8 @@ QWidget* SettingsWidget::addSettingsWidget(QString type, const QJsonObject &json
         widget = new SettingsFontFamily(json, m_path, m_currentTab);
     } else if (type == "spin-box") {
         widget = new SettingsSpinBox(json, m_path, m_currentTab);
+    } else if (type == "line-edit") {
+        widget = new SettingsLineEdit(json, m_path, m_currentTab);
     }
 
     if (widget) {

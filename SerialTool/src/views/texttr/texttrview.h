@@ -50,6 +50,8 @@ private:
     void arrayToDualByte(QString &str, const QByteArray &array);
     void arrayToASCII(QString &str, const QByteArray &array);
 
+    void appendTimeStamp(const QString &string);
+
 private slots:
     void sendData();
     void onWrapBoxChanged(int status);
@@ -72,6 +74,8 @@ private:
     QByteArray *m_asciiBuf;
     enum TextCodec m_textCodec;
     QByteArray m_codecName;
+    bool m_nextFrame = true, m_timeStamp = false;
+    QString m_timeStampFormat, m_frameSeparator;
 };
 
 #endif // TEXTTRVIEW_H
