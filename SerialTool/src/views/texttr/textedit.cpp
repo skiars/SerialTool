@@ -45,14 +45,14 @@ void TextEdit::setFonts(QString fonts, int size, QColor color, QString style)
     SendScintilla(SCI_STYLESETSIZE, STYLE_DEFAULT, size);
     SendScintilla(SCI_STYLESETFORE, STYLE_DEFAULT, color);
     if (style.indexOf("bold") != -1) { // 粗体字
-        SendScintilla(SCI_STYLESETBOLD, (int)0, true);
+        SendScintilla(SCI_STYLESETBOLD, 0, true);
     } else {
-        SendScintilla(SCI_STYLESETBOLD, (int)0, (long)false);
+        SendScintilla(SCI_STYLESETBOLD, 0, false);
     }
     if (style.indexOf("italic") != -1) { // 斜体字
-        SendScintilla(SCI_STYLESETITALIC, (int)0, true);
+        SendScintilla(SCI_STYLESETITALIC, 0, true);
     } else {
-        SendScintilla(SCI_STYLESETITALIC, (int)0, (long)false);
+        SendScintilla(SCI_STYLESETITALIC, 0, false);
     }
     SendScintilla(SCI_STYLECLEARALL); // 设置全局风格
 
@@ -94,7 +94,7 @@ void TextEdit::onTextChanged()
     if (scrollEnd && isWrap) {
         int lineEnd = lineCount - 1; // 末行
         int lineLen = SendScintilla(SCI_LINELENGTH, lineEnd);
-        SendScintilla(SCI_LINESCROLL, lineLen, lineEnd);
+        SendScintilla(SCI_LINESCROLL, static_cast<unsigned long>(lineLen), lineEnd);
     }
 }
 
@@ -169,7 +169,7 @@ void TextEdit::highlightCpp()
         "wchar_t while";
 
     SendScintilla(SCI_SETLEXER, SCLEX_CPP); // C++解析器
-    SendScintilla(SCI_SETKEYWORDS, (unsigned long)0, g_szKeywords);// 设置关键字
+    SendScintilla(SCI_SETKEYWORDS, nullptr, g_szKeywords);// 设置关键字
 
     // 下面设置各种语法元素前景色
     SendScintilla(SCI_STYLESETFORE, QsciLexerCPP::Default, 0x38312A);   // 默认
@@ -197,7 +197,7 @@ void TextEdit::highlightBash()
     }
 
     SendScintilla(SCI_SETLEXER, SCLEX_BASH); // bash解析器
-    SendScintilla(SCI_SETKEYWORDS, (unsigned long)0, keyWords.data());// 设置关键字
+    SendScintilla(SCI_SETKEYWORDS, nullptr, keyWords.data());// 设置关键字
     // 下面设置各种语法元素前景色
     SendScintilla(SCI_STYLESETFORE, QsciLexerBash::Default, 0x38312A); // 默认
     SendScintilla(SCI_STYLESETFORE, QsciLexerBash::Keyword, 0x8B8B00);   // 关键字
@@ -216,7 +216,7 @@ void TextEdit::highlightLua()
         "if in local nil not or repeat return then true until while";
 
     SendScintilla(SCI_SETLEXER, SCLEX_LUA); // lua解析器
-    SendScintilla(SCI_SETKEYWORDS, (unsigned long)0, g_szKeywords);// 设置关键字
+    SendScintilla(SCI_SETKEYWORDS, nullptr, g_szKeywords);// 设置关键字
     // 下面设置各种语法元素前景色
     SendScintilla(SCI_STYLESETFORE, QsciLexerLua::Default, 0x38312A); // 默认
     SendScintilla(SCI_STYLESETFORE, QsciLexerLua::Keyword, 0x8B8B00);   // 关键字
@@ -232,7 +232,7 @@ void TextEdit::highlightJSON()
     const char* g_szKeywords = "true false null";
 
     SendScintilla(SCI_SETLEXER, SCLEX_JSON); // lua解析器
-    SendScintilla(SCI_SETKEYWORDS, (unsigned long)0, g_szKeywords);// 设置关键字
+    SendScintilla(SCI_SETKEYWORDS, nullptr, g_szKeywords);// 设置关键字
     // 下面设置各种语法元素前景色
     SendScintilla(SCI_STYLESETFORE, QsciLexerJSON::Default, 0x38312A); // 默认
     SendScintilla(SCI_STYLESETFORE, QsciLexerJSON::Keyword, 0x8B8B00);   // 关键字

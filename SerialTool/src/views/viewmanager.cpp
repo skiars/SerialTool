@@ -81,9 +81,7 @@ void ViewManager::retranslate()
 {
     for (int i = 0; i < m_views->size(); ++i) {
         AbstractView *view = m_views->at(i);
-
         view->retranslate();
-        // m_tabWidget->setTabText(i, view->title());
     }
 }
 

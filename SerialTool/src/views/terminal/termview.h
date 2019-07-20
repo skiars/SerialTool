@@ -1,9 +1,7 @@
-﻿#ifndef TERMVIEW_H
+#ifndef TERMVIEW_H
 #define TERMVIEW_H
 
 #include <QPlainTextEdit>
-
-class Highlighter;
 
 class TermView : public QPlainTextEdit
 {
@@ -34,11 +32,11 @@ private:
     void moveHome();
     void scrollToBottom();
     void sendLine();
+    void sendString(const QString &string);
 
 private:
     int m_lastPostion = 0, m_historyPos = 0;
     QStringList m_history;
-    Highlighter *m_highlight;
     QString m_input;
     int m_enabled = false;
 };

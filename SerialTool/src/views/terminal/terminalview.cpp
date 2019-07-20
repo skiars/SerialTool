@@ -41,11 +41,13 @@ void TerminalView::sendData(const QString &string)
 {
     QTextCodec *code = QTextCodec::codecForName("GB-2312");
     QByteArray array = code->fromUnicode(string);
+    qDebug() << "send: " << array;
     emit transmitData(array);
 }
 
 void TerminalView::receiveData(const QByteArray &array)
 {
+    qDebug() << "recv: " << array;
     m_termView->append(QString::fromLocal8Bit(array));
 }
 

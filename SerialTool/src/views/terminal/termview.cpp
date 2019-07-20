@@ -1,5 +1,4 @@
-﻿#include "termview.h"
-#include "highlighter.h"
+#include "termview.h"
 #include <QTextBlock>
 #include <QScrollBar>
 #include <QPainter>
@@ -9,7 +8,6 @@
 TermView::TermView(QWidget *parent) : QPlainTextEdit(parent)
 {
     m_lastPostion = 0;
-    m_highlight = new Highlighter(document());
     setWordWrapMode(QTextOption::WrapAnywhere);
     connect(this, SIGNAL(cursorPositionChanged()), SLOT(onCursorPosChanged()) );
 }
@@ -21,51 +19,38 @@ void TermView::onCursorPosChanged()
 
 void TermView::keyPressEvent(QKeyEvent *event)
 {
+    QString str;
     switch (event->key()) {
-    case Qt::Key_Home: moveHome(); return;
-    case Qt::Key_Up: loadHistory(Prev); return;
-    case Qt::Key_Down: loadHistory(Next); return;
+    case Qt::Key_Backspace:
+        str += "\x08";
+        break;
     case Qt::Key_Left:
-        if (textCursor().position() <= m_lastPostion) {
-            return;
-        }
+        str += "\x1B\x5B\x44";
+        break;
+    case Qt::Key_Right:
+        str += "\x1B\x5B\x43";
+        break;
+    case Qt::Key_Up:
+        str += "\x1B\x5B\x41";
+        break;
+    case Qt::Key_Down:
+        str += "\x1B\x5B\x42";
+        break;
+    case Qt::Key_Enter:
         break;
     case Qt::Key_Return:
-    case Qt::Key_Enter:
-        if (m_enabled) {
-            sendLine();
-        } else {
-            return;
-        }
-        m_lastPostion = textCursor().position();
-        return;
-    case Qt::Key_Backspace:
-        if (m_lastPostion >= textCursor().position()) {
-            return;
-        }
+        str += "\r";
         break;
-    case Qt::Key_A:
-        if (event->modifiers() == Qt::ControlModifier) {
-            selectAll();
-            return;
-        }
-        break;
-    case Qt::Key_Tab:return;
     default:
+        str += event->text();
         break;
     }
-    QPlainTextEdit::keyPressEvent(event);
-    m_input = inputText();
-    m_historyPos = m_history.size();
+    emit enterNewline(str);
 }
 
 void TermView::append(const QString &string)
 {
-    moveCursor(QTextCursor::End);
     insertPlainText(string);
-    m_lastPostion = toPlainText().length();
-    scrollToBottom();
-    m_input.clear();
 }
 
 QString TermView::inputText()
@@ -135,6 +120,11 @@ void TermView::sendLine()
     }
     m_historyPos = m_history.size();
     m_input.clear();
+}
+
+void TermView::sendString(const QString &string)
+{
+    emit enterNewline(string);
 }
 
 void TermView::clear()

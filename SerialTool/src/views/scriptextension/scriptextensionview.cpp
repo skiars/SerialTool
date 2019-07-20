@@ -89,7 +89,8 @@ void ScriptExtensionView::retranslate()
 void ScriptExtensionView::receiveData(const QByteArray &array)
 {
     QScriptValue view = m_script->evaluate("view");
-    view.property("receiveData").call(view, QScriptValueList() << m_script->newVariant(array));
+    QString string(QString::fromLocal8Bit(array));
+    view.property("receiveData").call(view, QScriptValueList() << string);
 }
 
 void ScriptExtensionView::setEnabled(bool enabled)
