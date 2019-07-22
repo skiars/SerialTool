@@ -13,7 +13,7 @@ ScriptExtensionView::ScriptExtensionView(const QString &fileName, QWidget *paren
 {
     QFile file(fileName);
     if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        loadUi(fileName.chopped(3) + ".ui");
+        loadUi(fileName.left(fileName.size() - 3) + ".ui");
         QScriptValue scriptObj = m_script->newQObject(this);
         m_script->globalObject().setProperty("view", scriptObj);
         m_script->evaluate(file.readAll());

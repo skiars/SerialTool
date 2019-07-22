@@ -5,6 +5,7 @@
 #include <QScrollBar>
 #include <QApplication>
 #include <QClipboard>
+#include <QAction>
 #include <QDebug>
 #include <QMenu>
 
@@ -27,7 +28,7 @@ QVTerminal::QVTerminal(QWidget *parent)
 
     _layout = new QVTLayout();
 
-    _pasteAction = new QAction("Paste");
+    _pasteAction = new QAction("Paste", this);
     _pasteAction->setShortcut(QKeySequence("Ctrl+V"));
     connect(_pasteAction, &QAction::triggered, this, &QVTerminal::paste);
     addAction(_pasteAction);

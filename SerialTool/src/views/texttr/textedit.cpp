@@ -47,12 +47,12 @@ void TextEdit::setFonts(QString fonts, int size, QColor color, QString style)
     if (style.indexOf("bold") != -1) { // 粗体字
         SendScintilla(SCI_STYLESETBOLD, 0, true);
     } else {
-        SendScintilla(SCI_STYLESETBOLD, 0, false);
+        SendScintilla(SCI_STYLESETBOLD, 0, static_cast<long>(false));
     }
     if (style.indexOf("italic") != -1) { // 斜体字
         SendScintilla(SCI_STYLESETITALIC, 0, true);
     } else {
-        SendScintilla(SCI_STYLESETITALIC, 0, false);
+        SendScintilla(SCI_STYLESETITALIC, 0, static_cast<long>(false));
     }
     SendScintilla(SCI_STYLECLEARALL); // 设置全局风格
 
