@@ -1,24 +1,19 @@
 #include "terminalview.h"
-#include "termview.h"
+#include "qvterminal/qvterminal.h"
 #include <QHBoxLayout>
 #include <QTextCodec>
 #include <QSettings>
 #include <QDebug>
 
-#define BASE_STYLE \
-    "background-color: #1A1A1A;" \
-    "color: #FFF8DC;"
-
 TerminalView::TerminalView(QWidget *parent) : AbstractView(parent)
 {
     QHBoxLayout *layout = new QHBoxLayout(this);
-    m_termView = new TermView(this);
-    layout->addWidget(m_termView);
+    m_term = new QVTerminal(this);
+    layout->addWidget(m_term);
     layout->setMargin(2);
     this->setLayout(layout);
-    m_termView->setStyleSheet(BASE_STYLE
-                              "font-family: 'Courier New';");
-    connect(m_termView, SIGNAL(enterNewline(const QString &)), this, SLOT(sendData(const QString &)));
+    m_term->format()->font()->setFamily("Consolas");
+    connect(m_term, SIGNAL(transmitData(const QByteArray &)), this, SIGNAL(transmitData(const QByteArray &)));
 }
 
 TerminalView::~TerminalView()
@@ -32,9 +27,9 @@ void TerminalView::loadSettings(QSettings *config)
     int fontSize = config->value("FontSize").toInt();
 
     fontSize = fontSize < 6 ? 10 : fontSize;
-    m_termView->setStyleSheet(BASE_STYLE
-                              "font-family: " + fontFamily + ";" +
-                              "font-size: " + QString::number(fontSize) + "pt;");
+    //m_termView->setStyleSheet(BASE_STYLE
+    //                          "font-family: " + fontFamily + ";" +
+    //                          "font-size: " + QString::number(fontSize) + "pt;");
 }
 
 void TerminalView::sendData(const QString &string)
@@ -47,16 +42,15 @@ void TerminalView::sendData(const QString &string)
 
 void TerminalView::receiveData(const QByteArray &array)
 {
-    qDebug() << "recv: " << array;
-    m_termView->append(QString::fromLocal8Bit(array));
+    m_term->appendData(array);
 }
 
 void TerminalView::setEnabled(bool enabled)
 {
-    m_termView->setEnabled(enabled);
+    m_term->setEnabled(enabled);
 }
 
 void TerminalView::clear()
 {
-    m_termView->clear();
+    //m_term->clear();
 }

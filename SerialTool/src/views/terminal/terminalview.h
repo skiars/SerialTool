@@ -3,7 +3,7 @@
 
 #include "../abstractview.h"
 
-class TermView;
+class QVTerminal;
 
 class TerminalView : public AbstractView
 {
@@ -24,7 +24,7 @@ private slots:
     void sendData(const QString &string);
 
 private:
-    TermView *m_termView;
+    QVTerminal *m_term;
 };
 
 #endif // TERMINALVIEW_H

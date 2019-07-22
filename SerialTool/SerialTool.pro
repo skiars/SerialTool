@@ -47,9 +47,12 @@ SOURCES += \
     src/views/scriptextension/scriptextensionview.cpp \
     src/views/texttr/textedit.cpp \
     src/views/texttr/texttrview.cpp \
-    src/views/terminal/termview.cpp \
-    src/views/terminal/highlighter.cpp \
     src/views/terminal/terminalview.cpp \
+    src/views/terminal/qvterminal/qvtchar.cpp \
+    src/views/terminal/qvterminal/qvtcharformat.cpp \
+    src/views/terminal/qvterminal/qvterminal.cpp \
+    src/views/terminal/qvterminal/qvtlayout.cpp \
+    src/views/terminal/qvterminal/qvtline.cpp \
     src/views/oscilloscope/oscilloscopeview.cpp \
     src/views/oscilloscope/channelitem.cpp \
     src/views/oscilloscope/oscopetimestamp.cpp \
@@ -84,9 +87,12 @@ HEADERS  += \
     src/views/scriptextension/scriptextensionview.h \
     src/views/texttr/textedit.h \
     src/views/texttr/texttrview.h \
-    src/views/terminal/termview.h \
-    src/views/terminal/highlighter.h \
     src/views/terminal/terminalview.h \
+    src/views/terminal/qvterminal/qvtchar.h \
+    src/views/terminal/qvterminal/qvtcharformat.h \
+    src/views/terminal/qvterminal/qvterminal.h \
+    src/views/terminal/qvterminal/qvtlayout.h \
+    src/views/terminal/qvterminal/qvtline.h \
     src/views/oscilloscope/oscilloscopeview.h \
     src/views/oscilloscope/channelitem.h \
     src/views/oscilloscope/oscopetimestamp.h \
