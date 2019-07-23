@@ -13,7 +13,7 @@
 #include <QProcess>
 #include <QFile>
 
-#define LASTRELEASE_URL "https://api.github.com/repos/gztss/SerialTool/releases/latest"
+#define LASTRELEASE_URL "https://api.github.com/repos/skiars/SerialTool/releases/latest"
 
 UpdateDialog::UpdateDialog(QWidget *parent) :
     QDialog(parent),

@@ -44,6 +44,7 @@ protected slots:
 
 private:
     void formatChar(const QChar &c);
+    void moveCursor(int xpos, int ypos);
 
 private:
     QIODevice *_device;
@@ -76,6 +77,7 @@ private:
 
     // QWidget interface
 protected:
+    virtual bool event(QEvent *event);
     virtual void keyPressEvent(QKeyEvent *event);
     virtual void paintEvent(QPaintEvent *event);
     virtual void resizeEvent(QResizeEvent *event);

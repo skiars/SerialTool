@@ -15,7 +15,9 @@ QVTLine &QVTLayout::lineAt(int i)
     return _lines[i];
 }
 
-void QVTLayout::appendLine()
+void QVTLayout::appendLine(int count)
 {
-    _lines.append(QVTLine());
+    while (count--) {
+        _lines.append(QVTLine());
+    }
 }

@@ -9,7 +9,7 @@
 #define _STR_(s)            #s
 #define __STR(s)            _STR_(s)
 
-#define BUILD_VERSION       _STR_(74638M)
+#define BUILD_VERSION       _STR_(87564M)
 #define SOFTWARE_VERSION    __STR(MAIN_VERSION)
 
 #if QT_NO_DEBUG

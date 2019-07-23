@@ -19,6 +19,6 @@ Auto Indent	自动缩进
 Indentation Guides	缩进指南
 Plot	绘图
 Graphics Options	图形选项
-Update Interv (ms)	刷新速率 (ms)
+Update Interval (ms)	刷新速率 (ms)
 Use OpenGL	使用OpenGL
 Use Antialias	抗锯齿

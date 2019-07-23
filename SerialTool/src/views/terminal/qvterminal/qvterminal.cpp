@@ -23,11 +23,8 @@ QVTerminal::QVTerminal(QWidget *parent)
     _echo = false;
     _crlf = false;
     _state = QVTerminal::Text;
-
     setFormat(QVTCharFormat());
-
     _layout = new QVTLayout();
-
     _pasteAction = new QAction("Paste", this);
     _pasteAction->setShortcut(QKeySequence("Ctrl+V"));
     connect(_pasteAction, &QAction::triggered, this, &QVTerminal::paste);
@@ -36,14 +33,12 @@ QVTerminal::QVTerminal(QWidget *parent)
 
 QVTerminal::~QVTerminal()
 {
-
 }
 
 void QVTerminal::setIODevice(QIODevice *device)
 {
     _device = device;
-    if (_device)
-    {
+    if (_device) {
         connect(_device, &QIODevice::readyRead, this, &QVTerminal::read);
         read();
     }
@@ -55,11 +50,9 @@ void QVTerminal::appendData(const QByteArray &data)
 
     setUpdatesEnabled(false);
     QByteArray::const_iterator it = data.cbegin();
-    while (it != data.cend())
-    {
+    while (it != data.cend()) {
         QChar c = *it;
-        switch (_state)
-        {
+        switch (_state) {
         case QVTerminal::Text:
             switch (c.unicode()) {
             case '\033':
@@ -75,13 +68,12 @@ void QVTerminal::appendData(const QByteArray &data)
             case '\n':
                 appendString(text);
                 text.clear();
-                _layout->appendLine();
-                _cursorPos.setY(_cursorPos.y() + 1);
+                moveCursor(0, 1);
                 break;
             case '\b':
                 appendString(text);
                 text.clear();
-                _cursorPos.setX(_cursorPos.x() > 0 ? _cursorPos.x() - 1 : 0);
+                moveCursor(-1, 0);
                 break;
             default:
                 if (c.isPrint()) {
@@ -135,10 +127,8 @@ void QVTerminal::appendData(const QByteArray &data)
         it++;
     }
     appendString(text);
-
     verticalScrollBar()->setRange(0, _ch * (_layout->lineCount() + 1) - viewport()->size().height());
     verticalScrollBar()->setValue(verticalScrollBar()->maximum());
-
     setUpdatesEnabled(true);
     update();
 }
@@ -149,8 +139,34 @@ void QVTerminal::formatChar(const QChar &c)
     case 'K':
         clearToEnd();
         break;
+    case 'A':
+        moveCursor(0, -_formatValue);
+        break;
+    case 'B':
+        moveCursor(0, _formatValue);
+        break;
+    case 'C':
+        moveCursor(_formatValue, 0);
+        break;
+    case 'D':
+        moveCursor(-_formatValue, 0);
+        break;
     default:
         break;
+    }
+}
+
+void QVTerminal::moveCursor(int xpos, int ypos)
+{
+    _cursorPos += QPoint(xpos, ypos);
+    if (_cursorPos.x() < 0) {
+        _cursorPos.setX(0);
+    }
+    if (_cursorPos.y() < 0) {
+        _cursorPos.setY(0);
+    }
+    if (_cursorPos.y() >= _layout->lineCount()) {
+        _layout->appendLine(_cursorPos.y() - _layout->lineCount() + 1);
     }
 }
 
@@ -163,24 +179,15 @@ void QVTerminal::paste()
 
 QColor QVTerminal::vt100color(char c)
 {
-    switch (c)
-    {
-    case '1':
-        return QColor(Qt::red);
-    case '2':
-        return QColor(Qt::green);
-    case '3':
-        return QColor(Qt::yellow);
-    case '4':
-        return QColor(Qt::blue);
-    case '5':
-        return QColor(Qt::magenta);
-    case '6':
-        return QColor(Qt::cyan);
-    case '7':
-        return QColor(Qt::white);
-    default:
-        return QColor(Qt::black);
+    switch (c) {
+    case '1': return QColor(Qt::red);
+    case '2': return QColor(Qt::green);
+    case '3': return QColor(Qt::yellow);
+    case '4': return QColor(Qt::blue);
+    case '5': return QColor(Qt::magenta);
+    case '6': return QColor(Qt::cyan);
+    case '7': return QColor(Qt::white);
+    default:  return QColor(Qt::black);
     }
 }
 
@@ -194,8 +201,7 @@ void QVTerminal::read()
 
 void QVTerminal::appendString(QString str)
 {
-    foreach (QChar c, str)
-    {
+    foreach (QChar c, str) {
         QVTChar termChar(c, _curentFormat);
         _layout->lineAt(_cursorPos.y()).append(termChar, _cursorPos.x());
         _cursorPos.setX(_cursorPos.x() + 1);
@@ -226,8 +232,9 @@ void QVTerminal::setCrlf(bool crlf)
 void QVTerminal::writeData(QByteArray data)
 {
     _device->write(data);
-    if (_echo)
+    if (_echo) {
         appendData(data);
+    }
 }
 
 bool QVTerminal::echo() const
@@ -254,6 +261,15 @@ void QVTerminal::setFormat(const QVTCharFormat &format)
     _ch = fm.height();
 }
 
+bool QVTerminal::event(QEvent *event)
+{
+    if (event->type() == QEvent::KeyPress) {
+        keyPressEvent(static_cast<QKeyEvent*>(event));
+        return true;
+    }
+    return QAbstractScrollArea::event(event);
+}
+
 void QVTerminal::keyPressEvent(QKeyEvent *event)
 {
     QByteArray data;
@@ -271,10 +287,13 @@ void QVTerminal::keyPressEvent(QKeyEvent *event)
         data.append("\033[D");
         break;
     case Qt::Key_Home:
-        data.append(0x01);
+        data.append('\x01');
         break;
     case Qt::Key_End:
-        data.append(0x05);
+        data.append('\x05');
+        break;
+    case Qt::Key_Tab:
+        data.append('\t');
         break;
     case Qt::Key_Backspace:
         data.append('\b');
@@ -295,7 +314,6 @@ void QVTerminal::paintEvent(QPaintEvent */* paintEvent */)
     p.setPen(QColor(187, 187, 187));
     p.setBrush(QColor(0x23, 0x26, 0x29));
     p.setFont(*_format.font());
-    p.setRenderHint(QPainter::Antialiasing);
 
     p.fillRect(viewport()->rect(), QColor(0x23, 0x26, 0x29));
 
@@ -320,14 +338,13 @@ void QVTerminal::paintEvent(QPaintEvent */* paintEvent */)
         pos.setX(0);
         for (auto vtc : _layout->lineAt(l).chars()) {
             p.setPen(pos == curPos ? vtc.background() : vtc.foreground());
-            p.drawText(QRect(pos, QSize(_cw, _ch)).normalized(), Qt::AlignCenter, QString(vtc.c()));
-            //p.setBrush(QBrush());
-            //p.drawRect(QRect(pos, QSize(_cw, -_ch)));
+            p.drawText(QRect(pos, QSize(_cw, _ch)), Qt::AlignCenter, vtc.c());
+            p.setBrush(QBrush());
+            //p.drawRect(QRect(pos, QSize(_cw, _ch)));
             pos.setX(pos.x() + _cw);
         }
         pos.setY(pos.y() + _ch);
     }
-
 }
 
 void QVTerminal::resizeEvent(QResizeEvent */* event */)

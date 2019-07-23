@@ -12,7 +12,7 @@ public:
     int lineCount() const;
     QVTLine &lineAt(int i);
 
-    void appendLine();
+    void appendLine(int count = 1);
 
 protected:
     QList< QVTLine > _lines;
