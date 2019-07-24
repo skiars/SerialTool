@@ -62,8 +62,7 @@ private:
     // cursor
     QVTCharFormat _format;
     QVTCharFormat _curentFormat;
-    int _cw;
-    int _ch;
+    int _cw, _ch, _cascent;
     QPoint _cursorPos;
     QTimer _cursorTimer;
     bool _cvisible;

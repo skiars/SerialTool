@@ -259,6 +259,7 @@ void QVTerminal::setFormat(const QVTCharFormat &format)
     QFontMetrics fm(*_format.font());
     _cw = fm.boundingRect('M').width();
     _ch = fm.height();
+    _cascent = fm.ascent();
 }
 
 bool QVTerminal::event(QEvent *event)
@@ -317,8 +318,7 @@ void QVTerminal::paintEvent(QPaintEvent */* paintEvent */)
 
     p.fillRect(viewport()->rect(), QColor(0x23, 0x26, 0x29));
 
-    QPoint pos;
-    pos.setY(0);
+    QPoint pos(0, 0);
 
     int firstLine = verticalScrollBar()->value() / _ch;
     int lastLine = viewport()->size().height() / _ch + firstLine;
@@ -338,8 +338,8 @@ void QVTerminal::paintEvent(QPaintEvent */* paintEvent */)
         pos.setX(0);
         for (auto vtc : _layout->lineAt(l).chars()) {
             p.setPen(pos == curPos ? vtc.background() : vtc.foreground());
-            p.drawText(QRect(pos, QSize(_cw, _ch)), Qt::AlignCenter, vtc.c());
-            p.setBrush(QBrush());
+            p.drawText(pos.x(), pos.y() + _cascent, vtc.c());
+            //p.setBrush(QBrush());
             //p.drawRect(QRect(pos, QSize(_cw, _ch)));
             pos.setX(pos.x() + _cw);
         }
