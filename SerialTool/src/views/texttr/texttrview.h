@@ -70,6 +70,7 @@ private:
     };
 
     Ui::TextTRView *ui;
+    int m_hexCount = 0;
     QTimer *m_resendTimer;
     QByteArray *m_asciiBuf;
     enum TextCodec m_textCodec;

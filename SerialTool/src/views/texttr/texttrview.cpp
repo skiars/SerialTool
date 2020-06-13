@@ -1,4 +1,4 @@
-﻿#include "texttrview.h"
+#include "texttrview.h"
 #include "ui_texttrview.h"
 #include <QSettings>
 #include <QTextCodec>
@@ -163,16 +163,24 @@ void TextTRView::setHighlight(const QString &language)
 
 void TextTRView::receiveData(const QByteArray &array)
 {
-    QString string;
+    QString string, pre;
     if (ui->portReadAscii->isChecked()) {
+        if (m_hexCount > 0) {
+            pre = '\n';
+        }
+        m_hexCount = -1;
         arrayToString(string, array);
     } else {
+        if (m_hexCount == -1) {
+            m_hexCount = 0;
+            pre = '\n';
+        }
         arrayToHex(string, array, 16);
     }
     if (m_timeStamp) {
         appendTimeStamp(string);
     } else {
-        ui->textEditRx->append(string);
+        ui->textEditRx->append(pre + string);
     }
 }
 
@@ -180,6 +188,7 @@ void TextTRView::clear()
 {
     ui->textEditRx->clear();
     m_asciiBuf->clear();
+    m_hexCount = 0;
 }
 
 void TextTRView::setFontFamily(QString fontFamily, int size, QString style)
@@ -284,22 +293,21 @@ void TextTRView::onHistoryBoxChanged(const QString &string)
 
 void TextTRView::arrayToHex(QString &str, const QByteArray &array, int countOfLine)
 {
-    static int count;
     int len = array.length();
-    str.resize(len * 3 + (len + count) / countOfLine);
+    str.resize(len * 3 + (len + m_hexCount) / countOfLine);
     for (int i = 0, j = 0; i < len; ++i) {
-        quint8 outChar = array[i], t;   //每字节填充一次，直到结束
+        uint8_t outChar = uint8_t(array[i]), t;   //每字节填充一次，直到结束
         //十六进制的转换
-        t = (outChar >> 4);
+        t = (outChar >> 4) & 0x0F;
         str[j++] = t + (t < 10 ? '0' : 'A' - 10);
         t = outChar & 0x0F;
         str[j++] = t + (t < 10 ? '0' : 'A' - 10);
         str[j++] = ' ';
-        if (count >= countOfLine - 1) {
-            count = 0;
+        if (m_hexCount >= countOfLine - 1) {
+            m_hexCount = 0;
             str[j++] = '\n';
         } else {
-            ++count;
+            ++m_hexCount;
         }
     }
 }
@@ -315,7 +323,7 @@ void TextTRView::arrayToUTF8(QString &str, const QByteArray &array)
     if (m_asciiBuf->at(lastIndex) & 0x80) { // 0xxx xxxx -> OK
         // UTF8最大编码为4字节，因此向前搜寻三字节
         for (int i = lastIndex; i >= 0 && ++cut < 4; --i) {
-            uint8_t byte = m_asciiBuf->at(i);
+            uint8_t byte = uint8_t(m_asciiBuf->at(i));
             if (((cut < 2) && (byte & 0xE0) == 0xC0) ||
                 ((cut < 3) && (byte & 0xF0) == 0xE0) ||
                 (byte & 0xF8) == 0xF0) {
