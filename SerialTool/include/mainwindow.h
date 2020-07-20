@@ -30,6 +30,7 @@ private slots:
     void openPort();
     void closePort();
     void onPortSwitchActionTriggered();
+    void onPortSwitchAction2Triggered();
     void dispPortStatus();
     void clear();
     void setOptions();
@@ -55,6 +56,7 @@ private:
     QLabel *m_rxCntLabel, *m_txCntLabel, *m_portInfoLabel;
     QVector<QTranslator*> m_translator;
     PortManager *m_port;
+    PortManager *restart_port;
     Controller *m_controller;
 };
 

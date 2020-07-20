@@ -61,7 +61,7 @@
      <x>0</x>
      <y>0</y>
      <width>600</width>
-     <height>23</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu">
@@ -136,6 +136,7 @@
    <addaction name="portSetAction"/>
    <addaction name="separator"/>
    <addaction name="portSwitchAction"/>
+   <addaction name="portSwitchAction2"/>
    <addaction name="portRunAction"/>
    <addaction name="clearAction"/>
    <addaction name="separator"/>
@@ -173,6 +174,22 @@
    </property>
    <property name="shortcut">
     <string>Alt+S</string>
+   </property>
+  </action>
+  <action name="portSwitchAction2">
+   <property name="icon">
+    <iconset resource="../resource/serialtool.qrc">
+     <normaloff>:/SerialTool/images/start.ico</normaloff>
+     <normalon>:/SerialTool/images/exit.ico</normalon>:/SerialTool/images/start.ico</iconset>
+   </property>
+   <property name="text">
+    <string>Open Port &amp; Auto Restart</string>
+   </property>
+   <property name="toolTip">
+    <string>Open Port &amp; Auto Restart</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Alt+S</string>
    </property>
   </action>
   <action name="portRunAction">

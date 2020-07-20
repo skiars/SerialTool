@@ -49,6 +49,7 @@ MainWindow::MainWindow(QWidget *parent) :
     // create connection between axes and scroll bars:
     connect(ui->portRunAction, SIGNAL(triggered()), this, SLOT(changeRunFlag()));
     connect(ui->portSwitchAction, SIGNAL(triggered()), this, SLOT(onPortSwitchActionTriggered()));
+        connect(ui->portSwitchAction2, SIGNAL(triggered()), this, SLOT(onPortSwitchAction2Triggered()));
     connect(ui->clearAction, SIGNAL(triggered()), this, SLOT(clear()));
     connect(&m_timer, &QTimer::timeout, this, &MainWindow::onSecTimerTimeout);
     connect(ui->actionOption, SIGNAL(triggered()), this, SLOT(setOptions()));
@@ -248,6 +249,10 @@ void MainWindow::openPort()
         QIcon icon(":/SerialTool/images/close.ico");
         ui->portSwitchAction->setIcon(icon);
         ui->portSwitchAction->setText(tr("Close Port"));
+
+        ui->portSwitchAction2->setIcon(icon);
+        ui->portSwitchAction2->setText(tr("Close Port"));
+
         ui->portRunAction->setEnabled(true);
         m_controller->setEnabled(m_runFlag);
         dispPortStatus(); // 更新端口状态显示
@@ -262,6 +267,10 @@ void MainWindow::closePort()
     QIcon icon(":/SerialTool/images/connect.ico");
     ui->portSwitchAction->setIcon(icon);
     ui->portSwitchAction->setText(tr("Open Port"));
+
+    ui->portSwitchAction2->setIcon(icon);
+    ui->portSwitchAction2->setText(tr("Open Port & Auto Restart"));
+
     ui->portRunAction->setEnabled(false);
     m_controller->setEnabled(false);
     dispPortStatus(); // 更新端口状态显示
@@ -276,6 +285,20 @@ void MainWindow::onPortSwitchActionTriggered()
         openPort();
     }
 }
+
+
+// 打开串口槽函数
+void MainWindow::onPortSwitchAction2Triggered()
+{
+    if (ui->portRunAction->isEnabled() == true) { // 现在需要关闭端口
+        closePort();
+        restart_port=NULL;
+    } else { // 端口关闭时打开端口
+        openPort();
+        restart_port=m_port;
+    }
+}
+
 
 void MainWindow::clear()
 {
