@@ -99,6 +99,7 @@
     <addaction name="actionVisibleStatusBar"/>
     <addaction name="separator"/>
     <addaction name="actionStaysOnTop"/>
+    <addaction name="actionRemoveConfig"/>
    </widget>
    <widget class="QMenu" name="menu_5">
     <property name="title">
@@ -303,6 +304,11 @@
   <action name="actionUpdate">
    <property name="text">
     <string>Update</string>
+   </property>
+  </action>
+  <action name="actionRemoveConfig">
+   <property name="text">
+    <string>Reset Config</string>
    </property>
   </action>
  </widget>
