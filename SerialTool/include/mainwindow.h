@@ -32,6 +32,7 @@ private slots:
     void onPortSwitchActionTriggered();
     void dispPortStatus();
     void clear();
+    void removeConfig();
     void setOptions();
     void onStaysOnTopTriggered();
     void about();

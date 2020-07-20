@@ -61,7 +61,7 @@
      <x>0</x>
      <y>0</y>
      <width>600</width>
-     <height>23</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu">
@@ -99,6 +99,7 @@
     <addaction name="actionVisibleStatusBar"/>
     <addaction name="separator"/>
     <addaction name="actionStaysOnTop"/>
+    <addaction name="actionRemoveConfig"/>
    </widget>
    <widget class="QMenu" name="menu_5">
     <property name="title">
@@ -286,6 +287,11 @@
   <action name="actionUpdate">
    <property name="text">
     <string>Update</string>
+   </property>
+  </action>
+  <action name="actionRemoveConfig">
+   <property name="text">
+    <string>Reset Config</string>
    </property>
   </action>
  </widget>

@@ -20,8 +20,11 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
-    QString configPath(QStandardPaths::writableLocation(
-        QStandardPaths::AppConfigLocation) + "/config.ini");
+//    QString configPath(QStandardPaths::writableLocation(
+//        QStandardPaths::AppConfigLocation) + "/config.ini");
+
+    QString configPath( QCoreApplication::applicationDirPath() + "/config.ini");
+
     syncDefaultConfig(configPath);
     m_config = new QSettings(configPath, QSettings::IniFormat);
 
@@ -50,6 +53,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->portRunAction, SIGNAL(triggered()), this, SLOT(changeRunFlag()));
     connect(ui->portSwitchAction, SIGNAL(triggered()), this, SLOT(onPortSwitchActionTriggered()));
     connect(ui->clearAction, SIGNAL(triggered()), this, SLOT(clear()));
+    connect(ui->actionRemoveConfig, SIGNAL(triggered()), this, SLOT(removeConfig()));
     connect(&m_timer, &QTimer::timeout, this, &MainWindow::onSecTimerTimeout);
     connect(ui->actionOption, SIGNAL(triggered()), this, SLOT(setOptions()));
     connect(ui->actionClose, SIGNAL(triggered()), this, SLOT(close()));
@@ -282,6 +286,24 @@ void MainWindow::clear()
     m_controller->clear();
 }
 
+// 删除配置文件并退出
+void MainWindow::removeConfig(){
+
+//    QString configPath(QStandardPaths::writableLocation(
+//        QStandardPaths::AppConfigLocation) + "/config.ini");
+//    syncDefaultConfig(configPath);
+
+//    QFile file(configPath);
+//    file.open(QFile::WriteOnly|QFile::Truncate);
+//    file.close();
+
+    QString fileName = QCoreApplication::applicationDirPath() + "/config.ini";
+    QFile fileTemp(fileName);
+    fileTemp.remove();
+    QApplication* app;
+    app->exit(0);
+}
+
 void MainWindow::setWindowStaysOnTop(bool enabled)
 {
     QString str = enabled ? ":/SerialTool/images/pin_down.ico"
@@ -303,6 +325,7 @@ void MainWindow::onStaysOnTopTriggered()
 
 void MainWindow::about()
 {
+
     AboutBox aboutBox(this);
 
     aboutBox.exec();

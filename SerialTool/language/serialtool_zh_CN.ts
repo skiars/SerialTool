@@ -144,142 +144,147 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../ui/mainwindow.ui" line="82"/>
+        <location filename="../ui/mainwindow.ui" line="69"/>
         <source>File</source>
         <translation>文件</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.ui" line="91"/>
+        <location filename="../ui/mainwindow.ui" line="78"/>
         <source>Tools</source>
         <translation>工具</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.ui" line="98"/>
+        <location filename="../ui/mainwindow.ui" line="85"/>
         <source>Edit</source>
         <translation>编辑</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.ui" line="108"/>
+        <location filename="../ui/mainwindow.ui" line="95"/>
         <source>View</source>
         <translation>视图</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.ui" line="118"/>
+        <location filename="../ui/mainwindow.ui" line="106"/>
         <source>Help</source>
         <translation>帮助</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.ui" line="132"/>
-        <location filename="../ui/mainwindow.ui" line="245"/>
+        <location filename="../ui/mainwindow.ui" line="120"/>
+        <location filename="../ui/mainwindow.ui" line="233"/>
         <source>Tool Bar</source>
         <translation>工具栏</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.ui" line="164"/>
+        <location filename="../ui/mainwindow.ui" line="152"/>
         <source>Save</source>
         <translation>保存</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.ui" line="167"/>
+        <location filename="../ui/mainwindow.ui" line="155"/>
         <source>Ctrl+S</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.ui" line="176"/>
+        <location filename="../ui/mainwindow.ui" line="164"/>
         <source>Options</source>
         <translation>选项</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.ui" line="185"/>
-        <location filename="../src/mainwindow.cpp" line="263"/>
+        <location filename="../ui/mainwindow.ui" line="173"/>
+        <location filename="../src/mainwindow.cpp" line="268"/>
         <source>Open Port</source>
         <translation>打开端口</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.ui" line="188"/>
+        <location filename="../ui/mainwindow.ui" line="176"/>
         <source>Alt+S</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.ui" line="201"/>
-        <location filename="../src/mainwindow.cpp" line="213"/>
+        <location filename="../ui/mainwindow.ui" line="189"/>
+        <location filename="../src/mainwindow.cpp" line="218"/>
         <source>Pause Tx/Rx</source>
         <translation>暂停发送/接收</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.ui" line="204"/>
+        <location filename="../ui/mainwindow.ui" line="192"/>
         <source>Alt+R</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.ui" line="213"/>
+        <location filename="../ui/mainwindow.ui" line="201"/>
         <source>Clear Buffer</source>
         <translation>清空缓冲</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.ui" line="216"/>
+        <location filename="../ui/mainwindow.ui" line="204"/>
         <source>Alt+C</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.ui" line="225"/>
+        <location filename="../ui/mainwindow.ui" line="213"/>
         <source>Port Settings</source>
         <translation>端口设置</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.ui" line="234"/>
+        <location filename="../ui/mainwindow.ui" line="222"/>
         <source>Close</source>
         <translation>关闭</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.ui" line="256"/>
+        <location filename="../ui/mainwindow.ui" line="244"/>
         <source>Status Bar</source>
         <translation>状态栏</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.ui" line="261"/>
+        <location filename="../ui/mainwindow.ui" line="249"/>
         <source>About</source>
         <translation>关于</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.ui" line="264"/>
+        <location filename="../ui/mainwindow.ui" line="252"/>
         <source>F1</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwindow.ui" line="257"/>
+        <location filename="../ui/mainwindow.ui" line="260"/>
+        <source>Wiki</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../ui/mainwindow.ui" line="269"/>
         <location filename="../ui/mainwindow.ui" line="272"/>
-        <source>Wiki</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../ui/mainwindow.ui" line="281"/>
-        <location filename="../ui/mainwindow.ui" line="284"/>
         <source>Open</source>
         <translation>打开</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.ui" line="287"/>
+        <location filename="../ui/mainwindow.ui" line="275"/>
         <source>Ctrl+O</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.ui" line="296"/>
+        <location filename="../ui/mainwindow.ui" line="284"/>
         <source>Stays On Top</source>
         <translation>置于顶层</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.ui" line="301"/>
+        <location filename="../ui/mainwindow.ui" line="289"/>
         <source>Update</source>
         <translation>更新</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="208"/>
+        <location filename="../ui/mainwindow.ui" line="294"/>
+        <source>Reset Config</source>
+        <translation>清除设置</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="213"/>
         <source>Start Tx/Rx</source>
         <translation>开始发送/接收</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="249"/>
+        <location filename="../src/mainwindow.cpp" line="254"/>
         <source>Close Port</source>
         <translation>关闭端口</translation>
     </message>
@@ -402,12 +407,12 @@
         <translation>波特率</translation>
     </message>
     <message>
-        <location filename="../src/port/serialport.cpp" line="94"/>
+        <location filename="../src/port/serialport.cpp" line="92"/>
         <source>Error</source>
         <translation>错误</translation>
     </message>
     <message>
-        <location filename="../src/port/serialport.cpp" line="95"/>
+        <location filename="../src/port/serialport.cpp" line="93"/>
         <source>Can not open the port!
 Port may be occupied or configured incorrectly!</source>
         <translation>无法打开端口！
@@ -488,6 +493,14 @@ Please check the port number.</source>
     </message>
 </context>
 <context>
+    <name>TerminalView</name>
+    <message>
+        <location filename="../src/views/terminal/terminalview.h" line="16"/>
+        <source>Terminal</source>
+        <translation type="unfinished">终端</translation>
+    </message>
+</context>
+<context>
     <name>TextTRView</name>
     <message>
         <location filename="../ui/texttrview.ui" line="77"/>
@@ -520,23 +533,23 @@ Please check the port number.</source>
         <translation>发送</translation>
     </message>
     <message>
-        <location filename="../src/views/terminal/texttrview.cpp" line="189"/>
+        <location filename="../src/views/texttr/texttrview.cpp" line="205"/>
         <source>Ctrl + Enter to send</source>
         <translation>Ctrl + Enter发送</translation>
     </message>
     <message>
-        <location filename="../src/views/terminal/texttrview.cpp" line="190"/>
+        <location filename="../src/views/texttr/texttrview.cpp" line="206"/>
         <source>Connect port and start transmission to enable this button</source>
         <translation>连接端口并开启传输来启用此按钮</translation>
     </message>
     <message>
-        <location filename="../src/views/terminal/texttrview.cpp" line="442"/>
-        <location filename="../src/views/terminal/texttrview.cpp" line="447"/>
+        <location filename="../src/views/texttr/texttrview.cpp" line="479"/>
+        <location filename="../src/views/texttr/texttrview.cpp" line="484"/>
         <source>Terminal Text File (*.txt)</source>
         <translation>终端文本文件 (*.txt)</translation>
     </message>
     <message>
-        <location filename="../src/views/terminal/texttrview.h" line="18"/>
+        <location filename="../src/views/texttr/texttrview.h" line="18"/>
         <source>Text Tx/Rx</source>
         <translation>文本收发</translation>
     </message>
@@ -681,12 +694,24 @@ Please check the port number.</source>
 <context>
     <name>ViewManager</name>
     <message>
-        <location filename="../src/views/viewmanager.cpp" line="113"/>
+        <location filename="../src/views/viewmanager.cpp" line="146"/>
         <source>Save</source>
         <translation>保存</translation>
     </message>
     <message>
-        <location filename="../src/views/viewmanager.cpp" line="126"/>
+        <location filename="../src/views/viewmanager.cpp" line="155"/>
+        <location filename="../src/views/viewmanager.cpp" line="174"/>
+        <source>Warning</source>
+        <translation type="unfinished">警告</translation>
+    </message>
+    <message>
+        <location filename="../src/views/viewmanager.cpp" line="156"/>
+        <location filename="../src/views/viewmanager.cpp" line="175"/>
+        <source>This view does not support this operation.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/views/viewmanager.cpp" line="165"/>
         <source>Open</source>
         <translation>打开</translation>
     </message>
