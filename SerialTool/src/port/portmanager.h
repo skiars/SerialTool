@@ -26,11 +26,14 @@ public:
     bool portStatus(QString *string);
     bool isOpen();
     void portSetDialog();
+    QString autoOpen(bool open);
 
 signals:
     void readyRead();
     void portError();
     void portChanged();
+
+
 
 private:
     void setupPort(AbstractPort *port);

@@ -22,7 +22,7 @@ public:
     virtual bool isOpen() = 0;
     virtual bool usePortSetDialog() { return false; }
     virtual void portSetDialog() {}
-
+    virtual QString autoOpen(bool open)=0;
 signals:
     void readyRead();
     void portError();

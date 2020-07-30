@@ -29,6 +29,7 @@ public:
     bool isOpen();
     bool usePortSetDialog() { return true; }
     void portSetDialog();
+    QString autoOpen(bool open);
 
 private:
     void scanPort();
@@ -45,6 +46,7 @@ private:
     Ui::SerialPort *ui;
     QSerialPort *serialPort;
     QTimer *m_scanTimer;
+    QString autoOpenPortName;
 };
 
 class SerialPortFactory : public AbstractPortFactory

@@ -184,10 +184,7 @@
      <normalon>:/SerialTool/images/exit.ico</normalon>:/SerialTool/images/start.ico</iconset>
    </property>
    <property name="text">
-    <string>Open Port &amp; Auto Restart</string>
-   </property>
-   <property name="toolTip">
-    <string>Open Port &amp; Auto Restart</string>
+    <string>Auto Restart Port</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Alt+S</string>
