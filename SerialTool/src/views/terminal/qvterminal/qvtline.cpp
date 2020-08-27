@@ -20,6 +20,13 @@ void QVTLine::append(const QVTChar &c, int position)
     }
 }
 
+void QVTLine::reduce(int position)
+{
+    if (position >= 0 && position < _chars.count()) {
+        _chars.remove(position,1);
+    }
+}
+
 const QVector<QVTChar> &QVTLine::chars() const
 {
     return _chars;
