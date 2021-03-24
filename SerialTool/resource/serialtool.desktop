@@ -2,7 +2,7 @@
 Name=SerialTool
 Name[en_US]=serialtool
 Name[zh_CN]=serialtool
-Exec=SerialTool
+Exec=serialtool
 Terminal=false
 Type=Application
 Icon=serialtool.ico
