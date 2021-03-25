@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>io.github.skiars.serialtool</id>
+  
+  <name>serialtool</name>
+  <summary>serialtool</summary>
+  
+  <metadata_license>CC-BY-SA-4.0</metadata_license>
+  <project_license>AGPL-3.0-only</project_license>
+  
+  <description>
+    <p>
+      A practical Serial-Port/TCP/UDP debugging tool.
+    </p>
+  </description>
+  
+  <launchable type="desktop-id">io.github.skiars.serialtool.desktop</launchable>
+  <screenshots>
+    <screenshot type="default">
+      <image>https://github.com/Skiars/SerialTool/raw/master/screenshot/shot_001.gif</image>
+    </screenshot>
+  </screenshots>
+</component>
