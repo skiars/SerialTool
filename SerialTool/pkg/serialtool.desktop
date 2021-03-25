@@ -8,4 +8,4 @@ Type=Application
 Icon=serialtool.ico
 Comment=A practical Serial-Port/TCP/UDP debugging tool.
 Comment[zh_CN]=一个实用的串口/ TCP / UDP 调试工具。
-Categories=Development;Tool;Serial;
+Categories=Development;Debugger;
