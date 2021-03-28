@@ -39,6 +39,7 @@ public slots:
 protected slots:
     void read();
     void appendString(QString str);
+    void reduceString(int position);
     void toggleCursor();
     void clearToEnd();
 

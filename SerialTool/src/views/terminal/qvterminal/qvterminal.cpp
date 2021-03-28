@@ -50,12 +50,17 @@ void QVTerminal::appendData(const QByteArray &data)
 
     setUpdatesEnabled(false);
     QByteArray::const_iterator it = data.cbegin();
+
+    qDebug() << "appendData="+data;
+
     while (it != data.cend()) {
         QChar c = *it;
         switch (_state) {
         case QVTerminal::Text:
             switch (c.unicode()) {
             case '\033':
+                // \033即\x1B即ASCII 27，ESC
+                // 匹配ESC[，即CSI	，Control Sequence Introducer
                 appendString(text);
                 text.clear();
                 _state = QVTerminal::Escape;
@@ -113,6 +118,9 @@ void QVTerminal::appendData(const QByteArray &data)
                     } else {
                         _state = QVTerminal::Text;
                     }
+                }else if(c=='J') {
+                    reduceString(-1);
+                    _state = QVTerminal::Text;
                 } else {
                     formatChar(c);
                     _state = QVTerminal::Text;
@@ -127,6 +135,7 @@ void QVTerminal::appendData(const QByteArray &data)
         it++;
     }
     appendString(text);
+
     verticalScrollBar()->setRange(0, _ch * (_layout->lineCount() + 1) - viewport()->size().height());
     verticalScrollBar()->setValue(verticalScrollBar()->maximum());
     setUpdatesEnabled(true);
@@ -201,10 +210,21 @@ void QVTerminal::read()
 
 void QVTerminal::appendString(QString str)
 {
+//      qDebug() << "appendString="+str;
     foreach (QChar c, str) {
         QVTChar termChar(c, _curentFormat);
         _layout->lineAt(_cursorPos.y()).append(termChar, _cursorPos.x());
         _cursorPos.setX(_cursorPos.x() + 1);
+    }
+}
+
+void QVTerminal::reduceString(int mode)
+{
+    if(mode>0)
+         _layout->lineAt(_cursorPos.y()).reduce(_cursorPos.x()+1);
+    else{
+        _layout->lineAt(_cursorPos.y()).reduce(_cursorPos.x());
+    //   _cursorPos.setX(_cursorPos.x() -1);
     }
 }
 
@@ -298,6 +318,20 @@ void QVTerminal::keyPressEvent(QKeyEvent *event)
         break;
     case Qt::Key_Backspace:
         data.append('\b');
+        break;
+    // ref.PC-Style Function Keys
+    // https://invisible-island.net/xterm/ctlseqs/ctlseqs.html
+    case Qt::Key_Delete:
+        data.append("\033[3~");
+        break;
+    case Qt::Key_Insert:
+        data.append("\033[2~");
+        break;
+    case Qt::Key_PageUp:
+        data.append("\033[5~");
+        break;
+    case Qt::Key_PageDown:
+        data.append("\033[6~");
         break;
     case Qt::Key_Return:
         data.append('\n');
