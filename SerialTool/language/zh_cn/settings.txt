@@ -13,12 +13,12 @@ Font Size	字号
 Text Edit	文本编辑器
 Text Codec	字符编码
 Highlight	高亮模式
-Tab Size	Tab宽度
-Tabs Insert Spaces	Tab插入空格
+Tab Size	Tab 宽度
+Tabs Insert Spaces	Tab 插入空格
 Auto Indent	自动缩进
 Indentation Guides	缩进指南
 Plot	绘图
 Graphics Options	图形选项
 Update Interval (ms)	刷新速率 (ms)
-Use OpenGL	使用OpenGL
+Use OpenGL	使用 OpenGL
 Use Antialias	抗锯齿
