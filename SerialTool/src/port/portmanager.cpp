@@ -67,6 +67,10 @@ void PortManager::loadSettings(QSettings *config)
     m_config->beginGroup("Settings");
 }
 
+QString PortManager::autoOpen(bool open){
+    return  m_currentPort->autoOpen(open);
+}
+
 bool PortManager::open()
 {
     return m_currentPort->open();

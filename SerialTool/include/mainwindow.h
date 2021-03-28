@@ -30,8 +30,10 @@ private slots:
     void openPort();
     void closePort();
     void onPortSwitchActionTriggered();
+    void onPortSwitchAction2Triggered();
     void dispPortStatus();
     void clear();
+    void removeConfig();
     void setOptions();
     void onStaysOnTopTriggered();
     void about();

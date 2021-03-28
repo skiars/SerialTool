@@ -38,6 +38,7 @@ public:
     void retranslate();
     bool portStatus(QString *string);
 
+    QString autoOpen(bool open);
 private:
     QString localHost();
     bool openTcpClient();
@@ -63,6 +64,7 @@ private:
     Protocol protocol;
     QString serverIP;
     QByteArray readArray;
+        QString autoOpenPortName;
 };
 
 class TcpUdpPortFactory : public AbstractPortFactory
