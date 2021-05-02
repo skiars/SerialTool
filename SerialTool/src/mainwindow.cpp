@@ -15,17 +15,13 @@
 #include "controller.h"
 #include "port/portmanager.h"
 #include "settings/optionsdialog.h"
-#include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
-//    QString configPath(QStandardPaths::writableLocation(
-//        QStandardPaths::AppConfigLocation) + "/config.ini");
-
-    QString configPath( QCoreApplication::applicationDirPath() + "/config.ini");
-
+    QString configPath(QStandardPaths::writableLocation(
+        QStandardPaths::AppConfigLocation) + "/config.ini");
     syncDefaultConfig(configPath);
     m_config = new QSettings(configPath, QSettings::IniFormat);
 
@@ -53,9 +49,8 @@ MainWindow::MainWindow(QWidget *parent) :
     // create connection between axes and scroll bars:
     connect(ui->portRunAction, SIGNAL(triggered()), this, SLOT(changeRunFlag()));
     connect(ui->portSwitchAction, SIGNAL(triggered()), this, SLOT(onPortSwitchActionTriggered()));
-    connect(ui->portSwitchAction2, SIGNAL(triggered()), this, SLOT(onPortSwitchAction2Triggered()));
+    connect(ui->actionReset, SIGNAL(triggered()), this, SLOT(reset()));
     connect(ui->clearAction, SIGNAL(triggered()), this, SLOT(clear()));
-    connect(ui->actionRemoveConfig, SIGNAL(triggered()), this, SLOT(removeConfig()));
     connect(&m_timer, &QTimer::timeout, this, &MainWindow::onSecTimerTimeout);
     connect(ui->actionOption, SIGNAL(triggered()), this, SLOT(setOptions()));
     connect(ui->actionClose, SIGNAL(triggered()), this, SLOT(close()));
@@ -63,7 +58,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionVisibleStatusBar, SIGNAL(triggered(bool)), ui->statusBar, SLOT(setVisible(bool)));
     connect(ui->toolBar1, SIGNAL(visibilityChanged(bool)), ui->actionVisibleToolbar, SLOT(setChecked(bool)));
     connect(m_port, SIGNAL(portChanged()), this, SLOT(dispPortStatus()));
-    connect(m_port, SIGNAL(portError()), this, SLOT(closePort()));
+    connect(m_port, SIGNAL(portError()), this, SLOT(error()));
     connect(ui->actionAbout, SIGNAL(triggered()), this, SLOT(about()));
     connect(ui->actionWiki, SIGNAL(triggered()), this, SLOT(openWiki()));
     connect(ui->actionStaysOnTop, SIGNAL(triggered()), this, SLOT(onStaysOnTopTriggered()));
@@ -233,7 +228,6 @@ void MainWindow::dispPortStatus()
     palette.setColor(QPalette::WindowText, status ? Qt::darkGreen : Qt::red);
     m_portInfoLabel->setText(string);
     m_portInfoLabel->setPalette(palette);
-
 }
 
 // 秒定时器溢出槽函数
@@ -246,34 +240,19 @@ void MainWindow::onSecTimerTimeout()
     m_rxCntLabel->setText(str);
     str = "TX: " + QString::number(m_controller->transmitCount()) + "Bytes";
     m_txCntLabel->setText(str);
-
-    QString label = m_portInfoLabel->text();
-    if(label.contains("CLOSED")){
-        if(m_port->isOpen()){
-            ui->portRunAction->setEnabled(true);
-            m_controller->setEnabled(m_runFlag);
-            dispPortStatus(); // 更新端口状态显示
-                qDebug() << "onSecTimerTimeout(), port isOpen but label shows closed";
-        }
-    }
-
 }
 
 // 打开端口
 void MainWindow::openPort()
 {
     if (m_port->open()) {
-        QIcon icon(":/SerialTool/images/close.ico");            
+        QIcon icon(":/SerialTool/images/close.ico");
         ui->portSwitchAction->setIcon(icon);
         ui->portSwitchAction->setText(tr("Close Port"));
-
-//        QIcon icon2(":/SerialTool/images/connectyellow.ico");
-        ui->portSwitchAction2->setIcon(icon);
-        ui->portSwitchAction2->setText(tr("Manual Restart Port"));
-
         ui->portRunAction->setEnabled(true);
         m_controller->setEnabled(m_runFlag);
         dispPortStatus(); // 更新端口状态显示
+        m_port->setAutoOpen(1);
     }
 }
 
@@ -285,12 +264,21 @@ void MainWindow::closePort()
     QIcon icon(":/SerialTool/images/connect.ico");
     ui->portSwitchAction->setIcon(icon);
     ui->portSwitchAction->setText(tr("Open Port"));
-
-    QIcon icon2(":/SerialTool/images/start.ico");
-    ui->portSwitchAction2->setIcon(icon2);
-    ui->portSwitchAction2->setText(tr("Auto Restart Port"));
-
     ui->portRunAction->setEnabled(false);
+    m_controller->setEnabled(false);
+    dispPortStatus(); // 更新端口状态显示
+    m_port->setAutoOpen(0);
+}
+
+void MainWindow::error()
+{
+    if (m_port->isOpen()) {
+        m_port->close();
+    }
+//    QIcon icon(":/SerialTool/images/connect.ico");
+//    ui->portSwitchAction->setIcon(icon);
+//    ui->portSwitchAction->setText(tr("Open Port"));
+//    ui->portRunAction->setEnabled(false);
     m_controller->setEnabled(false);
     dispPortStatus(); // 更新端口状态显示
 }
@@ -303,52 +291,18 @@ void MainWindow::onPortSwitchActionTriggered()
     } else { // 端口关闭时打开端口
         openPort();
     }
-m_port->autoOpen(false);
 }
 
-
-// 打开串口槽函数
-void MainWindow::onPortSwitchAction2Triggered()
+void MainWindow::reset()
 {
-    if (ui->portRunAction->isEnabled() == true) { // 现在需要关闭端口
-//        closePort();
-
-        QIcon icon(":/SerialTool/images/connect.ico");
-
-        ui->portSwitchAction2->setIcon(icon);
-        ui->portSwitchAction2->setText(tr("Auto Restart Port"));
-
-        dispPortStatus(); // 更新端口状态显示
-        m_port->autoOpen(false);
-
-    } else { // 端口关闭时打开端口
-        openPort();
-          qDebug() <<  (m_port->autoOpen(true)) ;
+    if (m_port->isOpen()) {
+        m_port->reset();
     }
 }
-
 
 void MainWindow::clear()
 {
     m_controller->clear();
-}
-
-// 删除配置文件并退出
-void MainWindow::removeConfig(){
-
-//    QString configPath(QStandardPaths::writableLocation(
-//        QStandardPaths::AppConfigLocation) + "/config.ini");
-//    syncDefaultConfig(configPath);
-
-//    QFile file(configPath);
-//    file.open(QFile::WriteOnly|QFile::Truncate);
-//    file.close();
-
-    QString fileName = QCoreApplication::applicationDirPath() + "/config.ini";
-    QFile fileTemp(fileName);
-    fileTemp.remove();
-    QApplication* app;
-    app->exit(0);
 }
 
 void MainWindow::setWindowStaysOnTop(bool enabled)
@@ -372,7 +326,6 @@ void MainWindow::onStaysOnTopTriggered()
 
 void MainWindow::about()
 {
-
     AboutBox aboutBox(this);
 
     aboutBox.exec();

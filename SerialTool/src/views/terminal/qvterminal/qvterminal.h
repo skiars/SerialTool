@@ -4,6 +4,7 @@
 #include <QAbstractScrollArea>
 #include <QAction>
 #include <QTimer>
+#include <QWidget>
 
 #include "qvtlayout.h"
 
@@ -33,8 +34,13 @@ signals:
 public slots:
     void writeData(QByteArray data);
 
+    void copy();
     void paste();
     void appendData(const QByteArray &data);
+
+    void clear();
+
+    void setEnabled(bool);
 
 protected slots:
     void read();
@@ -60,6 +66,8 @@ private:
     State _state;
     int _formatValue;
 
+    bool _enabled;
+
     // cursor
     QVTCharFormat _format;
     QVTCharFormat _curentFormat;
@@ -75,12 +83,19 @@ private:
     bool _echo;
     bool _crlf;
 
+    int chooseSatus = false;
+    QByteArray chooseText;
+    QPoint choosePosStart;
+    QPoint choosePosEnd;
+
     // QWidget interface
 protected:
     virtual bool event(QEvent *event);
     virtual void keyPressEvent(QKeyEvent *event);
     virtual void paintEvent(QPaintEvent *event);
     virtual void resizeEvent(QResizeEvent *event);
+    virtual void mouseReleaseEvent(QMouseEvent *event);
+    virtual void mouseMoveEvent(QMouseEvent *event);
     virtual void mousePressEvent(QMouseEvent* event);
 #ifndef QT_NO_CONTEXTMENU
     virtual void contextMenuEvent(QContextMenuEvent *event);
@@ -91,7 +106,8 @@ protected:
     virtual bool viewportEvent(QEvent *event);
     QColor vt100color(char c);
 
-    QAction *_pasteAction;
+//    QAction *_pasteAction;
+//    QAction *_copyAction;
 };
 
 #endif // QVTERMINAL_H

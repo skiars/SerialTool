@@ -9,6 +9,7 @@ TerminalView::TerminalView(QWidget *parent) : AbstractView(parent)
 {
     QHBoxLayout *layout = new QHBoxLayout(this);
     m_term = new QVTerminal(this);
+    m_term->setCursor(Qt :: IBeamCursor);
     layout->addWidget(m_term);
     layout->setMargin(2);
     this->setLayout(layout);
@@ -52,5 +53,5 @@ void TerminalView::setEnabled(bool enabled)
 
 void TerminalView::clear()
 {
-    //m_term->clear();
+    m_term->clear();
 }

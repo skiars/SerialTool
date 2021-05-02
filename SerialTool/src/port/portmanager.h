@@ -20,20 +20,19 @@ public:
     void saveConfig(QSettings *config);
     void loadSettings(QSettings *config);
     bool open();
+    void reset();
     void close();
+    void setAutoOpen(bool enable);
     QByteArray readAll();
     void write(const QByteArray &data);
     bool portStatus(QString *string);
     bool isOpen();
     void portSetDialog();
-    QString autoOpen(bool open);
 
 signals:
     void readyRead();
     void portError();
     void portChanged();
-
-
 
 private:
     void setupPort(AbstractPort *port);

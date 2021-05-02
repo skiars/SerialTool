@@ -25,10 +25,6 @@ QVTerminal::QVTerminal(QWidget *parent)
     _state = QVTerminal::Text;
     setFormat(QVTCharFormat());
     _layout = new QVTLayout();
-    _pasteAction = new QAction("Paste", this);
-    _pasteAction->setShortcut(QKeySequence("Ctrl+V"));
-    connect(_pasteAction, &QAction::triggered, this, &QVTerminal::paste);
-    addAction(_pasteAction);
 }
 
 QVTerminal::~QVTerminal()
@@ -50,9 +46,6 @@ void QVTerminal::appendData(const QByteArray &data)
 
     setUpdatesEnabled(false);
     QByteArray::const_iterator it = data.cbegin();
-
-    qDebug() << "appendData="+data;
-
     while (it != data.cend()) {
         QChar c = *it;
         switch (_state) {
@@ -135,7 +128,6 @@ void QVTerminal::appendData(const QByteArray &data)
         it++;
     }
     appendString(text);
-
     verticalScrollBar()->setRange(0, _ch * (_layout->lineCount() + 1) - viewport()->size().height());
     verticalScrollBar()->setValue(verticalScrollBar()->maximum());
     setUpdatesEnabled(true);
@@ -179,6 +171,15 @@ void QVTerminal::moveCursor(int xpos, int ypos)
     }
 }
 
+void QVTerminal::copy(){
+    if(chooseText.size() > 0){
+        qDebug() << "choose text: " << chooseText.data();
+        QClipboard *clipboard = QApplication::clipboard();   //获取系统剪贴板指针
+        clipboard->setText(chooseText.data());
+        chooseText.clear();
+    }
+}
+
 void QVTerminal::paste()
 {
     QByteArray data;
@@ -210,7 +211,6 @@ void QVTerminal::read()
 
 void QVTerminal::appendString(QString str)
 {
-//      qDebug() << "appendString="+str;
     foreach (QChar c, str) {
         QVTChar termChar(c, _curentFormat);
         _layout->lineAt(_cursorPos.y()).append(termChar, _cursorPos.x());
@@ -220,8 +220,8 @@ void QVTerminal::appendString(QString str)
 
 void QVTerminal::reduceString(int mode)
 {
-    if(mode>0)
-         _layout->lineAt(_cursorPos.y()).reduce(_cursorPos.x()+1);
+    if(mode > 0)
+        _layout->lineAt(_cursorPos.y()).reduce(_cursorPos.x()+1);
     else{
         _layout->lineAt(_cursorPos.y()).reduce(_cursorPos.x());
     //   _cursorPos.setX(_cursorPos.x() -1);
@@ -251,7 +251,8 @@ void QVTerminal::setCrlf(bool crlf)
 
 void QVTerminal::writeData(QByteArray data)
 {
-    _device->write(data);
+//    _device->write(data);
+    transmitData(data);
     if (_echo) {
         appendData(data);
     }
@@ -353,6 +354,10 @@ void QVTerminal::paintEvent(QPaintEvent */* paintEvent */)
     p.fillRect(viewport()->rect(), QColor(0x23, 0x26, 0x29));
 
     QPoint pos(0, 0);
+    QByteArray text;
+
+    QPoint chooseStart(-1, -1);
+    QPoint chooseEnd(-1, -1);
 
     int firstLine = verticalScrollBar()->value() / _ch;
     int lastLine = viewport()->size().height() / _ch + firstLine;
@@ -363,15 +368,61 @@ void QVTerminal::paintEvent(QPaintEvent */* paintEvent */)
     QPoint curPos(_cursorPos.x() * _cw, (_cursorPos.y() - firstLine) * _ch);
 
     // draw cursor
-    if (_cvisible) {
+    if (_cvisible && chooseSatus != 2) {
         p.fillRect(QRect(curPos, QSize(_cw, _ch)), _format.foreground());
     }
+
+    int diff_y = choosePosStart.y() - choosePosEnd.y();
+    if((-_ch <= diff_y && diff_y <= _ch && choosePosStart.x() > choosePosEnd.x()) || (choosePosStart.y() > choosePosEnd.y())){
+        chooseStart = choosePosEnd;
+        chooseEnd = choosePosStart;
+    }else{
+        chooseStart = choosePosStart;
+        chooseEnd = choosePosEnd;
+    }
+
+    bool chooseflag = 0;
+    int chooseLastLine = -1;
+
+    chooseText.clear();
 
     // draw text
     for (int l = firstLine; l < lastLine; l++) {
         pos.setX(0);
         for (auto vtc : _layout->lineAt(l).chars()) {
-            p.setPen(pos == curPos ? vtc.background() : vtc.foreground());
+            if(chooseSatus == 2){
+                if(chooseflag == 0){
+                    if((chooseStart.y() - _ch) < pos.y() && pos.y() < (chooseStart.y()) && pos.x() >= (chooseStart.x()-_cw) && pos.x() < chooseStart.x()+_cw){
+                        qDebug() << "chooseflag->1   pos:" << pos << "Start:" << chooseStart << "End: "<< chooseEnd;
+                        chooseflag = 1;
+                    }
+                }else if(chooseflag == 1){
+                    if((pos.y() > (chooseEnd.y()- _ch) && pos.x() > chooseEnd.x()) || (pos.y() > (chooseEnd.y()))){
+                        qDebug() << "chooseflag->0   pos:" << pos << "Start:" << chooseStart << "End: "<< chooseEnd;
+                        chooseflag = 0;
+                    }
+                }
+
+                if(chooseflag == 1){
+                    p.fillRect(QRect(pos, QSize(_cw, _ch)), _format.foreground());
+                    p.setPen(vtc.background());
+                    if(chooseLastLine != -1){
+                        if(chooseLastLine != l){
+                            chooseLastLine = l;
+                            chooseText.append("\r\n");
+                        }
+                    }else{
+                        chooseLastLine = l;
+                    }
+                    chooseText.append(vtc.c());
+                }else {
+                    p.setPen(pos == curPos ? vtc.background() : vtc.foreground());
+                }
+
+            }else{
+                p.setPen(pos == curPos ? vtc.background() : vtc.foreground());
+            }
+
             p.drawText(pos.x(), pos.y() + _cascent, vtc.c());
             //p.setBrush(QBrush());
             //p.drawRect(QRect(pos, QSize(_cw, _ch)));
@@ -391,29 +442,65 @@ void QVTerminal::resizeEvent(QResizeEvent */* event */)
     bar->setValue(bar->maximum() - pos);
 }
 
+void QVTerminal::mouseReleaseEvent(QMouseEvent *event){
+    choosePosEnd = event->pos();
+    setUpdatesEnabled(false);
+    setUpdatesEnabled(true);
+    update();
+}
+
+void QVTerminal::mouseMoveEvent(QMouseEvent *event){
+    chooseSatus = 2;
+    choosePosEnd = event->pos();
+    setUpdatesEnabled(false);
+    setUpdatesEnabled(true);
+    update();
+    QWidget::mouseMoveEvent(event);
+}
+
 void QVTerminal::mousePressEvent(QMouseEvent *event)
 {
-    if (event->button() == Qt::MidButton) {
-        if( QApplication::clipboard()->supportsSelection()) {
-            QByteArray data;
-            data.append(QApplication::clipboard()->text(QClipboard::Selection));
-            writeData(data);
+    choosePosStart = event->pos();
+    if (event->button() == Qt::RightButton) {
+        if(chooseSatus == 2){
+            QVTerminal::copy();
+        }else{
+            QVTerminal::paste();
         }
+    }else if (event->button() == Qt::LeftButton) {
+        chooseSatus = 1;
     }
+    chooseSatus = 0;
     QWidget::mousePressEvent(event);
 }
 
-#ifndef QT_NO_CONTEXTMENU
+//#ifndef QT_NO_CONTEXTMENU
 void QVTerminal::contextMenuEvent(QContextMenuEvent *event)
 {
-    QMenu menu(this);
-    menu.addAction(_pasteAction);
-    _pasteAction->setEnabled(!QApplication::clipboard()->text().isEmpty());
-    menu.exec(event->globalPos());
+
 }
-#endif // QT_NO_CONTEXTMENU
+//#endif // QT_NO_CONTEXTMENU
 
 bool QVTerminal::viewportEvent(QEvent *event)
 {
     return QAbstractScrollArea::viewportEvent(event);
+}
+
+
+void QVTerminal::clear()
+{
+//    if(_enabled){
+        delete _layout;
+        _layout = new QVTLayout();
+        _cursorPos.setX(0);
+        _cursorPos.setY(0);
+        setUpdatesEnabled(false);
+        setUpdatesEnabled(true);
+        update();
+//    }
+}
+
+void QVTerminal::setEnabled(bool enabled)
+{
+    _enabled = enabled;
 }

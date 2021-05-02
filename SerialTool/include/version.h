@@ -1,7 +1,7 @@
 #ifndef __VERSION_H
 #define __VERSION_H
 
-#define MAIN_VERSION        1.4.1(T)
+#define MAIN_VERSION        1.5.1
 
 #define SOFTWARE_NAME       "SerialTool"
 #define COPYRIGHT           "Copyleft 2017-2018, Wenliang Guan"
