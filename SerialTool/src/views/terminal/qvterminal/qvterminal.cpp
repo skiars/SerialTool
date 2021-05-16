@@ -128,8 +128,17 @@ void QVTerminal::appendData(const QByteArray &data)
         it++;
     }
     appendString(text);
+
+    bool updataScrollBar = false;
+    if(verticalScrollBar()->value() == verticalScrollBar()->maximum()){
+        updataScrollBar = true;
+    }
+    
     verticalScrollBar()->setRange(0, _ch * (_layout->lineCount() + 1) - viewport()->size().height());
-    verticalScrollBar()->setValue(verticalScrollBar()->maximum());
+    if(updataScrollBar){
+        verticalScrollBar()->setValue(verticalScrollBar()->maximum());
+    }
+
     setUpdatesEnabled(true);
     update();
 }
@@ -368,12 +377,27 @@ void QVTerminal::paintEvent(QPaintEvent */* paintEvent */)
     QPoint curPos(_cursorPos.x() * _cw, (_cursorPos.y() - firstLine) * _ch);
 
     // draw cursor
-    if (_cvisible && chooseSatus != 2) {
+    if (_cvisible && chooseSatus != 2 && chooseSatus != 3) {
         p.fillRect(QRect(curPos, QSize(_cw, _ch)), _format.foreground());
     }
 
+
+    int diff_l = chooseLine - firstLine;
+    if(diff_l >0){
+        choosePosStart.setY(choosePosStart.y() + (diff_l * _ch));
+        if(chooseSatus == 3){
+            choosePosEnd.setY(choosePosEnd.y() + (diff_l * _ch));
+        }
+    }else if(diff_l < 0){
+        choosePosStart.setY(choosePosStart.y() + (diff_l * _ch));
+        if(chooseSatus == 3){
+            choosePosEnd.setY(choosePosEnd.y() + (diff_l * _ch));
+        }
+    }
+    chooseLine = firstLine;
+
     int diff_y = choosePosStart.y() - choosePosEnd.y();
-    if((-_ch <= diff_y && diff_y <= _ch && choosePosStart.x() > choosePosEnd.x()) || (choosePosStart.y() > choosePosEnd.y())){
+    if((-_ch <= diff_y && diff_y <= _ch && choosePosStart.x() > choosePosEnd.x()) || (choosePosStart.y() > (choosePosEnd.y() + _ch))){
         chooseStart = choosePosEnd;
         chooseEnd = choosePosStart;
     }else{
@@ -390,15 +414,13 @@ void QVTerminal::paintEvent(QPaintEvent */* paintEvent */)
     for (int l = firstLine; l < lastLine; l++) {
         pos.setX(0);
         for (auto vtc : _layout->lineAt(l).chars()) {
-            if(chooseSatus == 2){
+            if(chooseSatus == 2 || chooseSatus == 3){
                 if(chooseflag == 0){
-                    if((chooseStart.y() - _ch) < pos.y() && pos.y() < (chooseStart.y()) && pos.x() >= (chooseStart.x()-_cw) && pos.x() < chooseStart.x()+_cw){
-                        qDebug() << "chooseflag->1   pos:" << pos << "Start:" << chooseStart << "End: "<< chooseEnd;
+                    if((chooseStart.y() - _ch) < pos.y() && pos.y() <= (chooseStart.y()) && pos.x() > (chooseStart.x()-_cw/2) && pos.x() < chooseStart.x()+_cw){
                         chooseflag = 1;
                     }
                 }else if(chooseflag == 1){
                     if((pos.y() > (chooseEnd.y()- _ch) && pos.x() > chooseEnd.x()) || (pos.y() > (chooseEnd.y()))){
-                        qDebug() << "chooseflag->0   pos:" << pos << "Start:" << chooseStart << "End: "<< chooseEnd;
                         chooseflag = 0;
                     }
                 }
@@ -443,6 +465,7 @@ void QVTerminal::resizeEvent(QResizeEvent */* event */)
 }
 
 void QVTerminal::mouseReleaseEvent(QMouseEvent *event){
+    chooseSatus = 3;
     choosePosEnd = event->pos();
     setUpdatesEnabled(false);
     setUpdatesEnabled(true);
@@ -462,13 +485,14 @@ void QVTerminal::mousePressEvent(QMouseEvent *event)
 {
     choosePosStart = event->pos();
     if (event->button() == Qt::RightButton) {
-        if(chooseSatus == 2){
+        if(chooseSatus == 2 || chooseSatus == 3){
             QVTerminal::copy();
         }else{
             QVTerminal::paste();
         }
     }else if (event->button() == Qt::LeftButton) {
         chooseSatus = 1;
+        chooseLine = verticalScrollBar()->value() / _ch;
     }
     chooseSatus = 0;
     QWidget::mousePressEvent(event);

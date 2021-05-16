@@ -83,6 +83,7 @@ private:
     bool _echo;
     bool _crlf;
 
+    int chooseLine = 0;
     int chooseSatus = false;
     QByteArray chooseText;
     QPoint choosePosStart;
