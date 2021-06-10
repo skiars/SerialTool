@@ -215,8 +215,12 @@ void TextTRView::sendData()
     QByteArray array;
 
     if (ui->portWriteAscii->isChecked() == true) {
-        QTextCodec *code = QTextCodec::codecForName(m_codecName);
-        array = code->fromUnicode(ui->textEditTx->text());
+        if(m_codecName == "ASCII"){
+            array = ui->textEditTx->text().toLatin1();
+        }else{
+            QTextCodec *code = QTextCodec::codecForName(m_codecName);
+            array = code->fromUnicode(ui->textEditTx->text());
+        }
     } else {
         array = QByteArray::fromHex(ui->textEditTx->text().toLatin1());
     }

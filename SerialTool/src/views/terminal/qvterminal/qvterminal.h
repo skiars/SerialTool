@@ -28,6 +28,9 @@ public:
     bool crlf() const;
     void setCrlf(bool crlf);
 
+    void setTextCodec(const QString &name);
+    void setTabWidth(int width);
+
 signals:
     void transmitData(const QByteArray &data);
 
@@ -44,7 +47,7 @@ public slots:
 
 protected slots:
     void read();
-    void appendString(QString str);
+    void appendString(QByteArray array);
     void reduceString(int position);
     void toggleCursor();
     void clearToEnd();
@@ -83,11 +86,13 @@ private:
     bool _echo;
     bool _crlf;
 
-    int chooseLine = 0;
-    int chooseSatus = false;
-    QByteArray chooseText;
-    QPoint choosePosStart;
-    QPoint choosePosEnd;
+    int _chooseSatus = false;
+    QByteArray _chooseText;
+    QPoint _choosePosStart;
+    QPoint _choosePosEnd;
+
+    QString _textCodec;
+    int _tabWidth;
 
     // QWidget interface
 protected:
