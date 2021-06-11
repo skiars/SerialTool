@@ -15,14 +15,16 @@ public:
     virtual void loadConfig(QSettings *config) = 0;
     virtual void saveConfig(QSettings *config) = 0;
     virtual bool open() = 0;
+    virtual void reset() = 0;
     virtual void close() = 0;
+    virtual void setAutoOpen(bool enable)= 0;
     virtual QByteArray readAll() = 0;
     virtual void write(const QByteArray &data) = 0;
     virtual bool portStatus(QString *string) = 0;
     virtual bool isOpen() = 0;
     virtual bool usePortSetDialog() { return false; }
     virtual void portSetDialog() {}
-    virtual QString autoOpen(bool open)=0;
+
 signals:
     void readyRead();
     void portError();

@@ -22,14 +22,15 @@ public:
     void saveConfig(QSettings *config);
     void setVisibleWidget(bool status);
     bool open();
+    void reset();
     void close();
+    void setAutoOpen(bool enable);
     QByteArray readAll();
     void write(const QByteArray &data);
     bool portStatus(QString *string);
     bool isOpen();
     bool usePortSetDialog() { return true; }
     void portSetDialog();
-    QString autoOpen(bool open);
 
 private:
     void scanPort();

@@ -13,7 +13,7 @@
         <file>images/clear.ico</file>
         <file>images/close.ico</file>
         <file>images/port config.ico</file>
-        <file>images/connectyellow.ico</file>
+        <file>images/reset.ico</file>
     </qresource>
     <qresource prefix="/license">
         <file>license.html</file>

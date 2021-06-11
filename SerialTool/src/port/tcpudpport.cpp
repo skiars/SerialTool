@@ -21,7 +21,6 @@ TcpUdpPort::TcpUdpPort(QWidget *parent) :
 
     connect(ui->protocolBox, &QComboBox::currentTextChanged, this, &TcpUdpPort::onProtocolChanged);
     connect(ui->ipEdit, &QLineEdit::textEdited, this, &TcpUdpPort::ipAddressEdited);
-        autoOpenPortName="";
 }
 
 TcpUdpPort::~TcpUdpPort()
@@ -180,17 +179,6 @@ bool TcpUdpPort::openUdpScoket()
     return true; // return, because the UDP protocol does not need to connect.
 }
 
-QString TcpUdpPort::autoOpen(bool open)
-{
-    // 这里目前还没有写实际的函数
-    if(open){
-       autoOpenPortName=protocol;
-    }else{
-       autoOpenPortName="";
-    }
-    return autoOpenPortName;
-}
-
 bool TcpUdpPort::open()
 {
     bool status = false;
@@ -213,6 +201,11 @@ bool TcpUdpPort::open()
         ui->portEdit->setReadOnly(true);
     }
     return status;
+}
+
+void TcpUdpPort::reset()
+{
+
 }
 
 void TcpUdpPort::close()
@@ -245,6 +238,10 @@ void TcpUdpPort::close()
     ui->protocolBox->setEnabled(true);
     ui->ipEdit->setReadOnly(false);
     ui->portEdit->setReadOnly(false);
+}
+
+void TcpUdpPort::setAutoOpen(bool enable){
+
 }
 
 void TcpUdpPort::newConnectSlot()

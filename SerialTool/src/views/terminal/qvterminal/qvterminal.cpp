@@ -8,6 +8,7 @@
 #include <QAction>
 #include <QDebug>
 #include <QMenu>
+#include <QTextCodec>
 
 QVTerminal::QVTerminal(QWidget *parent)
     : QAbstractScrollArea(parent)
@@ -25,10 +26,6 @@ QVTerminal::QVTerminal(QWidget *parent)
     _state = QVTerminal::Text;
     setFormat(QVTCharFormat());
     _layout = new QVTLayout();
-    _pasteAction = new QAction("Paste", this);
-    _pasteAction->setShortcut(QKeySequence("Ctrl+V"));
-    connect(_pasteAction, &QAction::triggered, this, &QVTerminal::paste);
-    addAction(_pasteAction);
 }
 
 QVTerminal::~QVTerminal()
@@ -50,9 +47,6 @@ void QVTerminal::appendData(const QByteArray &data)
 
     setUpdatesEnabled(false);
     QByteArray::const_iterator it = data.cbegin();
-
-    qDebug() << "appendData="+data;
-
     while (it != data.cend()) {
         QChar c = *it;
         switch (_state) {
@@ -73,6 +67,7 @@ void QVTerminal::appendData(const QByteArray &data)
             case '\n':
                 appendString(text);
                 text.clear();
+                _cursorPos.setX(0);
                 moveCursor(0, 1);
                 break;
             case '\b':
@@ -80,10 +75,13 @@ void QVTerminal::appendData(const QByteArray &data)
                 text.clear();
                 moveCursor(-1, 0);
                 break;
-            default:
-                if (c.isPrint()) {
-                    text.append(c);
+            case '\t':
+                for (int var = 0; var < ((_cursorPos.x()+text.length())%_tabWidth); ++var) {
+                    text.append(' ');
                 }
+                break;
+            default:
+                text.append(c.unicode());
             }
             break;
         case QVTerminal::Escape:
@@ -136,8 +134,16 @@ void QVTerminal::appendData(const QByteArray &data)
     }
     appendString(text);
 
+    bool updataScrollBar = false;
+    if(verticalScrollBar()->value() == verticalScrollBar()->maximum()){
+        updataScrollBar = true;
+    }
+    
     verticalScrollBar()->setRange(0, _ch * (_layout->lineCount() + 1) - viewport()->size().height());
-    verticalScrollBar()->setValue(verticalScrollBar()->maximum());
+    if(updataScrollBar){
+        verticalScrollBar()->setValue(verticalScrollBar()->maximum());
+    }
+
     setUpdatesEnabled(true);
     update();
 }
@@ -179,6 +185,88 @@ void QVTerminal::moveCursor(int xpos, int ypos)
     }
 }
 
+void QVTerminal::copy(){
+
+    _chooseText.clear();
+
+    QPoint chooseStart(-1, -1);
+    QPoint chooseEnd(-1, -1);
+
+    int diff_y = _choosePosStart.y() - _choosePosEnd.y();
+
+    if(diff_y > _ch){
+        chooseStart = _choosePosEnd;
+        chooseEnd = _choosePosStart;
+    }else if(diff_y > -_ch){
+        if(_choosePosStart.x() < _choosePosEnd.x()){
+            chooseStart.setX(_choosePosStart.x());
+            chooseEnd.setX(_choosePosEnd.x());
+        }else{
+            chooseStart.setX(_choosePosEnd.x());
+            chooseEnd.setX(_choosePosStart.x());
+        }
+        if(_choosePosStart.y() < _choosePosEnd.y()){
+            chooseStart.setY(_choosePosStart.y());
+            chooseEnd.setY(_choosePosEnd.y());
+        }else{
+            chooseStart.setY(_choosePosEnd.y());
+            chooseEnd.setY(_choosePosStart.y());
+        }
+    }else{
+        chooseStart = _choosePosStart;
+        chooseEnd = _choosePosEnd;
+    }
+
+    chooseStart.setY(chooseStart.y() - verticalScrollBar()->value() % _ch);
+    chooseEnd.setY(chooseEnd.y() - verticalScrollBar()->value() % _ch);
+
+    int firstLine = 0;
+    int lastLine = 0;
+
+    firstLine = chooseStart.y() / _ch;
+    lastLine =chooseEnd.y() / _ch;
+
+    if (lastLine > _layout->lineCount() - 1) {
+        lastLine = _layout->lineCount() - 1;
+    }
+
+    int chooseflag = 0;
+
+    QPoint fullpos(0, 0);
+    fullpos.setY(firstLine * _ch);
+
+    for (int line = firstLine; line <= lastLine; ++line) {
+        fullpos.setX(0);
+        for (auto vtc : _layout->lineAt(line).chars()) {
+            if(chooseflag == 0){
+                if(fullpos.y() <= chooseStart.y() && fullpos.x() > (chooseStart.x() - _cw/2) && fullpos.x() < (chooseStart.x() + _cw)){
+                    chooseflag = 1;
+                }
+            }else if(chooseflag == 1){
+                if((fullpos.y() > (chooseEnd.y() - _ch) && fullpos.x() > chooseEnd.x()) || (fullpos.y() > (chooseEnd.y()))){
+                    chooseflag = 0;
+                }
+            }
+
+            if(chooseflag == 1){
+                _chooseText.append(vtc.c());
+
+            }
+            fullpos.setX(fullpos.x() + (vtc.c()>255?2:1)*_cw);
+        }
+        if(chooseflag == 1 && line != lastLine){
+            _chooseText.append("\r\n");
+        }
+        fullpos.setY(fullpos.y() + _ch);
+    }
+
+    if(_chooseText.size() > 0){
+        QClipboard *clipboard = QApplication::clipboard();   //获取系统剪贴板指针
+        clipboard->setText(_chooseText.data());
+        _chooseText.clear();
+    }
+}
+
 void QVTerminal::paste()
 {
     QByteArray data;
@@ -208,20 +296,32 @@ void QVTerminal::read()
         appendData(_device->readAll());
 }
 
-void QVTerminal::appendString(QString str)
+void QVTerminal::appendString(QByteArray array)
 {
-//      qDebug() << "appendString="+str;
-    foreach (QChar c, str) {
-        QVTChar termChar(c, _curentFormat);
-        _layout->lineAt(_cursorPos.y()).append(termChar, _cursorPos.x());
-        _cursorPos.setX(_cursorPos.x() + 1);
+    if(_textCodec == "ASCII"){
+        foreach (QChar c, array) {
+            if(c.isPrint()){
+                QVTChar termChar(c, _curentFormat);
+                _layout->lineAt(_cursorPos.y()).append(termChar, _cursorPos.x());
+                _cursorPos.setX(_cursorPos.x() + 1);
+            }
+        }
+    }else{
+        QTextCodec *code = QTextCodec::codecForName(_textCodec.toLatin1());
+        QString lineStr = code->toUnicode(array);
+
+        foreach (QChar c, lineStr) {
+            QVTChar termChar(c, _curentFormat);
+            _layout->lineAt(_cursorPos.y()).append(termChar, _cursorPos.x());
+            _cursorPos.setX(_cursorPos.x() + 1);
+        }
     }
 }
 
 void QVTerminal::reduceString(int mode)
 {
-    if(mode>0)
-         _layout->lineAt(_cursorPos.y()).reduce(_cursorPos.x()+1);
+    if(mode > 0)
+        _layout->lineAt(_cursorPos.y()).reduce(_cursorPos.x()+1);
     else{
         _layout->lineAt(_cursorPos.y()).reduce(_cursorPos.x());
     //   _cursorPos.setX(_cursorPos.x() -1);
@@ -251,7 +351,8 @@ void QVTerminal::setCrlf(bool crlf)
 
 void QVTerminal::writeData(QByteArray data)
 {
-    _device->write(data);
+//    _device->write(data);
+    transmitData(data);
     if (_echo) {
         appendData(data);
     }
@@ -353,6 +454,10 @@ void QVTerminal::paintEvent(QPaintEvent */* paintEvent */)
     p.fillRect(viewport()->rect(), QColor(0x23, 0x26, 0x29));
 
     QPoint pos(0, 0);
+    QByteArray text;
+
+    QPoint chooseStart(-1, -1);
+    QPoint chooseEnd(-1, -1);
 
     int firstLine = verticalScrollBar()->value() / _ch;
     int lastLine = viewport()->size().height() / _ch + firstLine;
@@ -360,22 +465,63 @@ void QVTerminal::paintEvent(QPaintEvent */* paintEvent */)
         lastLine = _layout->lineCount();
     }
 
-    QPoint curPos(_cursorPos.x() * _cw, (_cursorPos.y() - firstLine) * _ch);
+
+    QPoint curPos(0, (_cursorPos.y() - firstLine) * _ch);
+    int cur_x = 0;
+    for (int index = 0; index < _cursorPos.x(); ++index) {
+        cur_x = (_layout->lineAt(_layout->lineCount()-1).chars()[index].c()>255?2:1) * _cw;
+    }
+    curPos.setX(cur_x);  
 
     // draw cursor
-    if (_cvisible) {
+    if (_cvisible && _chooseSatus != 2 && _chooseSatus != 3) {
         p.fillRect(QRect(curPos, QSize(_cw, _ch)), _format.foreground());
     }
+
+
+    int diff_y = _choosePosStart.y() - _choosePosEnd.y();
+    if((-_ch <= diff_y && diff_y <= _ch && _choosePosStart.x() > _choosePosEnd.x()) || (_choosePosStart.y() > (_choosePosEnd.y() + _ch))){
+        chooseStart = _choosePosEnd;
+        chooseEnd = _choosePosStart;
+    }else{
+        chooseStart = _choosePosStart;
+        chooseEnd = _choosePosEnd;
+    }
+
+    bool chooseflag = 0;
 
     // draw text
     for (int l = firstLine; l < lastLine; l++) {
         pos.setX(0);
         for (auto vtc : _layout->lineAt(l).chars()) {
-            p.setPen(pos == curPos ? vtc.background() : vtc.foreground());
+            if(_chooseSatus == 2 || _chooseSatus == 3){
+                QPoint fullpos(pos.x(), pos.y() + verticalScrollBar()->value());
+                if(chooseflag == 0){
+                    if((pos.x() == 0 && pos.y() == 0 && chooseStart.y() < verticalScrollBar()->value() && chooseEnd.y() >= verticalScrollBar()->value())||
+                       ((chooseStart.y() - _ch) < fullpos.y() && fullpos.y() <= (chooseStart.y()) && fullpos.x() > (chooseStart.x() - _cw/2) && fullpos.x() < chooseStart.x() + _cw)){
+                        chooseflag = 1;
+                    }
+                }else if(chooseflag == 1){
+                    if((fullpos.y() > (chooseEnd.y()- _ch) && fullpos.x() > chooseEnd.x()) || (fullpos.y() > (chooseEnd.y()))){
+                        chooseflag = 0;
+                    }
+                }
+
+                if(chooseflag == 1){
+                    p.fillRect(QRect(pos, QSize((vtc.c()>255?2:1) * _cw, _ch)), _format.foreground());
+                    p.setPen(vtc.background());
+                }else {
+                    p.setPen(pos == curPos ? vtc.background() : vtc.foreground());
+                }
+
+            }else{
+                p.setPen(pos == curPos ? vtc.background() : vtc.foreground());
+            }
+
             p.drawText(pos.x(), pos.y() + _cascent, vtc.c());
             //p.setBrush(QBrush());
             //p.drawRect(QRect(pos, QSize(_cw, _ch)));
-            pos.setX(pos.x() + _cw);
+            pos.setX(pos.x() + (vtc.c()>255?2:1) * _cw);
         }
         pos.setY(pos.y() + _ch);
     }
@@ -391,29 +537,147 @@ void QVTerminal::resizeEvent(QResizeEvent */* event */)
     bar->setValue(bar->maximum() - pos);
 }
 
-void QVTerminal::mousePressEvent(QMouseEvent *event)
-{
-    if (event->button() == Qt::MidButton) {
-        if( QApplication::clipboard()->supportsSelection()) {
-            QByteArray data;
-            data.append(QApplication::clipboard()->text(QClipboard::Selection));
-            writeData(data);
+void QVTerminal::mouseReleaseEvent(QMouseEvent *event){
+
+    if (event->button() == Qt::RightButton) {
+        
+    }else if (event->button() == Qt::LeftButton) {
+        if(_chooseSatus == 2){
+            if((abs(_choosePosEnd.x() - _choosePosStart.x()) < 3) && (abs(_choosePosEnd.y() - _choosePosStart.y()) < 5)){
+                _chooseSatus = 0;
+            }else{
+                _chooseSatus = 3;
+                if(event->pos().x() < 0){
+                    _choosePosEnd.setX(0);
+                }else{
+                    _choosePosEnd.setX(event->pos().x());
+                }
+                if(event->pos().y() < 0){
+                    _choosePosEnd.setY(verticalScrollBar()->value());
+                }else{
+                    _choosePosEnd.setY(verticalScrollBar()->value()+event->pos().y());
+                }
+            }
         }
     }
+    setUpdatesEnabled(false);
+    setUpdatesEnabled(true);
+    update();
+}
+
+void QVTerminal::mouseMoveEvent(QMouseEvent *event){
+
+    if(_chooseSatus == 1 || _chooseSatus == 2){
+        _chooseSatus = 2;
+        if(event->pos().y() > viewport()->size().height()){
+            verticalScrollBar()->setValue(verticalScrollBar()->value()+_ch);
+        }
+        if(event->pos().y() < 0){
+            verticalScrollBar()->setValue(verticalScrollBar()->value()-_ch);
+        }
+        if(event->pos().x() < 0){
+            event->pos().setX(0);
+        }
+        if(event->pos().x() < 0){
+            _choosePosEnd.setX(0);
+        }else{
+            _choosePosEnd.setX(event->pos().x());
+        }
+        if(event->pos().y() < 0){
+            _choosePosEnd.setY(verticalScrollBar()->value());
+        }else{
+            _choosePosEnd.setY(verticalScrollBar()->value()+event->pos().y());
+        }
+    }
+    setUpdatesEnabled(false);
+    setUpdatesEnabled(true);
+    update();
+
+    QWidget::mouseMoveEvent(event);
+}
+
+void QVTerminal::mousePressEvent(QMouseEvent *event)
+{
+
+    if (event->button() == Qt::RightButton) {
+        if(_chooseSatus == 3){
+            QVTerminal::copy();
+        }else{
+            QVTerminal::paste();
+        }
+        _chooseSatus = 0;
+    }else if (event->button() == Qt::LeftButton) {
+        _chooseSatus = 1;
+
+        if(event->pos().x() < 0){
+            _choosePosStart.setX(0);
+        }else{
+            _choosePosStart.setX(event->pos().x());
+        }
+        if(event->pos().y() < 0){
+            _choosePosStart.setY(verticalScrollBar()->value());
+        }else{
+            _choosePosStart.setY(verticalScrollBar()->value()+event->pos().y());
+        }
+    }
+
+    setUpdatesEnabled(false);
+    setUpdatesEnabled(true);
+    update();
+
     QWidget::mousePressEvent(event);
 }
 
-#ifndef QT_NO_CONTEXTMENU
+//#ifndef QT_NO_CONTEXTMENU
 void QVTerminal::contextMenuEvent(QContextMenuEvent *event)
 {
-    QMenu menu(this);
-    menu.addAction(_pasteAction);
-    _pasteAction->setEnabled(!QApplication::clipboard()->text().isEmpty());
-    menu.exec(event->globalPos());
+
 }
-#endif // QT_NO_CONTEXTMENU
+//#endif // QT_NO_CONTEXTMENU
 
 bool QVTerminal::viewportEvent(QEvent *event)
 {
     return QAbstractScrollArea::viewportEvent(event);
+}
+
+
+void QVTerminal::clear()
+{
+//    if(_enabled){
+        delete _layout;
+        _layout = new QVTLayout();
+        _cursorPos.setX(0);
+        _cursorPos.setY(0);
+        setUpdatesEnabled(false);
+        setUpdatesEnabled(true);
+        update();
+//    }
+}
+
+void QVTerminal::setEnabled(bool enabled)
+{
+    _enabled = enabled;
+}
+
+
+void QVTerminal::setTextCodec(const QString &name)
+{
+    if (name == "GB-2312") {
+        _textCodec = "GB-2312";
+    } else if (name == "GB-18030") {
+        _textCodec = "GB-18030";
+    } else if (name == "UTF-8") {
+        _textCodec = "UTF-8";
+    } else if (name == "UTF-16BE") {
+        _textCodec = "UTF-16BE";
+    } else if (name == "UTF-16LE") {
+        _textCodec = "UTF-16LE";
+    } else { // ASCII
+        _textCodec = "ASCII";
+    }
+}
+
+void QVTerminal::setTabWidth(int width)
+{
+    _tabWidth = width;
 }

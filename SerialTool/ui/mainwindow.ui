@@ -61,7 +61,7 @@
      <x>0</x>
      <y>0</y>
      <width>600</width>
-     <height>26</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu">
@@ -99,7 +99,6 @@
     <addaction name="actionVisibleStatusBar"/>
     <addaction name="separator"/>
     <addaction name="actionStaysOnTop"/>
-    <addaction name="actionRemoveConfig"/>
    </widget>
    <widget class="QMenu" name="menu_5">
     <property name="title">
@@ -137,7 +136,7 @@
    <addaction name="portSetAction"/>
    <addaction name="separator"/>
    <addaction name="portSwitchAction"/>
-   <addaction name="portSwitchAction2"/>
+   <addaction name="actionReset"/>
    <addaction name="portRunAction"/>
    <addaction name="clearAction"/>
    <addaction name="separator"/>
@@ -175,19 +174,6 @@
    </property>
    <property name="shortcut">
     <string>Alt+S</string>
-   </property>
-  </action>
-  <action name="portSwitchAction2">
-   <property name="icon">
-    <iconset resource="../resource/serialtool.qrc">
-     <normaloff>:/SerialTool/images/start.ico</normaloff>
-     <normalon>:/SerialTool/images/exit.ico</normalon>:/SerialTool/images/start.ico</iconset>
-   </property>
-   <property name="text">
-    <string>Auto Restart Port</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Alt+S</string>
    </property>
   </action>
   <action name="portRunAction">
@@ -303,9 +289,16 @@
     <string>Update</string>
    </property>
   </action>
-  <action name="actionRemoveConfig">
+  <action name="actionReset">
+   <property name="icon">
+    <iconset resource="../resource/serialtool.qrc">
+     <normaloff>:/SerialTool/images/reset.ico</normaloff>:/SerialTool/images/reset.ico</iconset>
+   </property>
    <property name="text">
-    <string>Reset Config</string>
+    <string>Reset</string>
+   </property>
+   <property name="toolTip">
+    <string>Reset</string>
    </property>
   </action>
  </widget>

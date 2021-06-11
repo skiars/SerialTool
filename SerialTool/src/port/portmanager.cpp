@@ -67,18 +67,23 @@ void PortManager::loadSettings(QSettings *config)
     m_config->beginGroup("Settings");
 }
 
-QString PortManager::autoOpen(bool open){
-    return  m_currentPort->autoOpen(open);
-}
-
 bool PortManager::open()
 {
     return m_currentPort->open();
 }
 
+void PortManager::reset()
+{
+    return m_currentPort->reset();
+}
+
 void PortManager::close()
 {
     return m_currentPort->close();
+}
+
+void PortManager::setAutoOpen(bool enable){
+    m_currentPort->setAutoOpen(enable);
 }
 
 QByteArray PortManager::readAll()

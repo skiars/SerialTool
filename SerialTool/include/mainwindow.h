@@ -29,11 +29,11 @@ private slots:
     void onSecTimerTimeout();
     void openPort();
     void closePort();
+    void error();
     void onPortSwitchActionTriggered();
-    void onPortSwitchAction2Triggered();
     void dispPortStatus();
+    void reset();
     void clear();
-    void removeConfig();
     void setOptions();
     void onStaysOnTopTriggered();
     void about();

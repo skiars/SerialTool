@@ -8,11 +8,16 @@
 TerminalView::TerminalView(QWidget *parent) : AbstractView(parent)
 {
     QHBoxLayout *layout = new QHBoxLayout(this);
+    
     m_term = new QVTerminal(this);
+    m_term->setCursor(Qt :: IBeamCursor);
+    m_term->format()->font()->setFamily("Consolas");
+
     layout->addWidget(m_term);
     layout->setMargin(2);
+    
     this->setLayout(layout);
-    m_term->format()->font()->setFamily("Consolas");
+
     connect(m_term, SIGNAL(transmitData(const QByteArray &)), this, SIGNAL(transmitData(const QByteArray &)));
 }
 
@@ -30,13 +35,16 @@ void TerminalView::loadSettings(QSettings *config)
     //m_termView->setStyleSheet(BASE_STYLE
     //                          "font-family: " + fontFamily + ";" +
     //                          "font-size: " + QString::number(fontSize) + "pt;");
+
+    // text codec
+    m_term->setTextCodec(config->value("TerminalTextCodec").toString());
+    m_term->setTabWidth(config->value("TerminalTabWidth").toInt());
 }
 
 void TerminalView::sendData(const QString &string)
 {
     QTextCodec *code = QTextCodec::codecForName("GB-2312");
     QByteArray array = code->fromUnicode(string);
-    qDebug() << "send: " << array;
     emit transmitData(array);
 }
 
@@ -52,5 +60,5 @@ void TerminalView::setEnabled(bool enabled)
 
 void TerminalView::clear()
 {
-    //m_term->clear();
+    m_term->clear();
 }

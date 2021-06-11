@@ -31,14 +31,15 @@ public:
     void saveConfig(QSettings *config);
     void setVisibleWidget(bool status);
     bool open();
+    void reset();
     void close();
+    void setAutoOpen(bool enable);
     QByteArray readAll();
     void write(const QByteArray &array);
     bool isOpen(void);
     void retranslate();
     bool portStatus(QString *string);
 
-    QString autoOpen(bool open);
 private:
     QString localHost();
     bool openTcpClient();
@@ -64,7 +65,6 @@ private:
     Protocol protocol;
     QString serverIP;
     QByteArray readArray;
-        QString autoOpenPortName;
 };
 
 class TcpUdpPortFactory : public AbstractPortFactory

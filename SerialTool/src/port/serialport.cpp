@@ -75,18 +75,6 @@ void SerialPort::setVisibleWidget(bool visible)
     this->setVisible(visible);
 }
 
- QString SerialPort::autoOpen(bool open)
-{
-     if(open && serialPort->isOpen()){
-//      autoOpenPortName=serialPort->portName();
-        autoOpenPortName= ui->portNameBox->currentText();
-//        qDebug() << "set autoOpenPortName="+autoOpenPortName;
-     }else{
-        autoOpenPortName="";
-     }
-     return autoOpenPortName;
-}
-
 bool SerialPort::open()
 {
     QString name = ui->portNameBox->currentText().section(' ', 0, 0);
@@ -96,12 +84,10 @@ bool SerialPort::open()
         name = "/dev/" + name;
     }
 #endif
-
-    qDebug() << "open(),ui.portName="+name;
-
     serialPort->setPortName(name);
     if (serialPort->open(QIODevice::ReadWrite)) {
         ui->portNameBox->setEnabled(false); // 禁止更改串口
+        autoOpenPortName = ui->portNameBox->currentText();
         return true;
     }
     QMessageBox err(QMessageBox::Critical,
@@ -113,10 +99,27 @@ bool SerialPort::open()
     return false;
 }
 
+void SerialPort::reset()
+{
+    serialPort->setRequestToSend(0);
+    serialPort->setRequestToSend(1);
+    serialPort->setRequestToSend(0);
+}
+
 void SerialPort::close()
 {
     serialPort->close();
     ui->portNameBox->setEnabled(true); // 允许更改串口
+//    autoOpenPortName = "";
+}
+
+void SerialPort::setAutoOpen(bool enable)
+{
+    if(enable && serialPort->isOpen()){
+       autoOpenPortName= ui->portNameBox->currentText();
+    }else{
+       autoOpenPortName="";
+    }
 }
 
 QByteArray SerialPort::readAll()
@@ -176,8 +179,6 @@ void SerialPort::scanPort()
     QComboBox *box = ui->portNameBox;
     QVector<QSerialPortInfo> vec;
 
-
-    
     //查找可用的串口
     foreach(const QSerialPortInfo &info, QSerialPortInfo::availablePorts()) {
         // 检测端口列表变更
@@ -186,7 +187,6 @@ void SerialPort::scanPort()
             sync = true;
         }
         vec.append(info);
-//      qDebug()<< "scanPort(), autoOpenPortName="+autoOpenPortName+", foreach="+info.portName();
     }
     // 需要同步或者ui->portNameBox存在无效端口
     if (sync || box->count() != vec.count()) {
@@ -203,10 +203,6 @@ void SerialPort::scanPort()
                 len = width;
             }
         }
-//        ;
-
-
-
         // 设置当前选中的端口
         if (!text.isEmpty() && (box->findText(text) != -1 || edited)) {
             box->setCurrentText(text);
@@ -220,26 +216,12 @@ void SerialPort::scanPort()
         box->view()->setMinimumWidth(len + 16);
     }
 
-
     if(!serialPort->isOpen() && autoOpenPortName.length()>1){
-          if ( (box->findText(autoOpenPortName) != -1 )) {
-              box->setCurrentText(autoOpenPortName);
-              if(open())
-                  qDebug()<< "scanPort(), autoOpenPortName="+autoOpenPortName+", text="+ box->currentText()+", opened";
-               else
-                  qDebug()<< "scanPort(), autoOpenPortName="+autoOpenPortName+", text="+ box->currentText()+", open fail";
-
-              if(serialPort->isOpen())
-                  qDebug()<< "scanPort(), autoOpenPortName="+autoOpenPortName+", portName="+ serialPort -> portName()+", opened";
-               else
-                  qDebug()<< "scanPort(), autoOpenPortName="+autoOpenPortName+", portName="+ serialPort -> portName()+", opene fail";
-
-          }else{
-              qDebug()<< "scanPort(), autoOpenPortName="+autoOpenPortName+", text="+ box->currentText()+", not find the port";
-          }
-
+        if ( (box->findText(autoOpenPortName) != -1 )) {
+            box->setCurrentText(autoOpenPortName);
+            open();
+        }
     }
-
 }
 
 void SerialPort::onTimerUpdate()
