@@ -336,7 +336,7 @@ void QVTerminal::toggleCursor()
 
 void QVTerminal::clearToEnd()
 {
-    _layout->lineAt(_cursorPos.y()).reserve(_cursorPos.x());
+    _layout->lineAt(_cursorPos.y()).clear();
 }
 
 bool QVTerminal::crlf() const
@@ -467,11 +467,9 @@ void QVTerminal::paintEvent(QPaintEvent */* paintEvent */)
 
 
     QPoint curPos(0, (_cursorPos.y() - firstLine) * _ch);
-    int cur_x = 0;
     for (int index = 0; index < _cursorPos.x(); ++index) {
-        cur_x = (_layout->lineAt(_layout->lineCount()-1).chars()[index].c()>255?2:1) * _cw;
-    }
-    curPos.setX(cur_x);  
+        curPos.setX(curPos.x() + (_layout->lineAt(_layout->lineCount() - 1).chars()[0].c()>255?2:1) * _cw);
+    } 
 
     // draw cursor
     if (_cvisible && _chooseSatus != 2 && _chooseSatus != 3) {
@@ -542,21 +540,19 @@ void QVTerminal::mouseReleaseEvent(QMouseEvent *event){
     if (event->button() == Qt::RightButton) {
         
     }else if (event->button() == Qt::LeftButton) {
-        if(_chooseSatus == 2){
-            if((abs(_choosePosEnd.x() - _choosePosStart.x()) < 3) && (abs(_choosePosEnd.y() - _choosePosStart.y()) < 5)){
-                _chooseSatus = 0;
+        if(abs(_choosePosEnd.x() - _choosePosStart.x()) < 5 && abs(_choosePosEnd.y() - _choosePosStart.y()) < 5){
+            _chooseSatus = 0;
+        }else{
+            _chooseSatus = 3;
+            if(event->pos().x() < 0){
+                _choosePosEnd.setX(0);
             }else{
-                _chooseSatus = 3;
-                if(event->pos().x() < 0){
-                    _choosePosEnd.setX(0);
-                }else{
-                    _choosePosEnd.setX(event->pos().x());
-                }
-                if(event->pos().y() < 0){
-                    _choosePosEnd.setY(verticalScrollBar()->value());
-                }else{
-                    _choosePosEnd.setY(verticalScrollBar()->value()+event->pos().y());
-                }
+                _choosePosEnd.setX(event->pos().x());
+            }
+            if(event->pos().y() < 0){
+                _choosePosEnd.setY(verticalScrollBar()->value());
+            }else{
+                _choosePosEnd.setY(verticalScrollBar()->value()+event->pos().y());
             }
         }
     }

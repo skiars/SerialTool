@@ -37,6 +37,11 @@ void QVTLine::reserve(int size)
     _chars.resize(size);
 }
 
+void QVTLine::clear(void)
+{
+    _chars.clear();
+}
+
 int QVTLine::size() const
 {
     return _chars.size();
