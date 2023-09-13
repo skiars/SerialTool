@@ -20,8 +20,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
-    QString configPath(QStandardPaths::writableLocation(
-        QStandardPaths::AppConfigLocation) + "/config.ini");
+    QString configPath("./config.ini");
     syncDefaultConfig(configPath);
     m_config = new QSettings(configPath, QSettings::IniFormat);
 

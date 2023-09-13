@@ -12,6 +12,7 @@ public:
     void append(const QVTChar &c, int position = -1);
     void reduce(int position);
     void reserve(int size);
+    void clear(void);
     const QVector<QVTChar> &chars() const;
     int size() const;
 
