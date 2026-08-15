@@ -5,33 +5,48 @@
 
 static XModemClass xmodem;
 
-FileThread::FileThread()
+FileThread::FileThread() :
+    protocol(XModem),
+    transMode(StopMode),
+    fSize(0),
+    fPos(0),
+    m_file(nullptr),
+    m_status(None),
+    m_timeoutCount(0),
+    m_stopping(false)
 {
     xmodem.setThread(this);
-    transMode = StopMode;
     start();
+}
 
-    connect(&m_timer, SIGNAL(timeout()), this, SLOT(onTimerUpdate()));
-
-    m_timer.setInterval(500);
+FileThread::~FileThread()
+{
+    stopThread();
+    wait();
 }
 
 // 发送文件
 void FileThread::setFileName(const QString &fileName)
 {
+    m_mutex.lock();
     this->fileName = fileName;
+    m_mutex.unlock();
 }
 
 // 设置传输协议
 void FileThread::setProtocol(Protocol mode)
 {
+    m_mutex.lock();
     protocol = mode;
+    m_mutex.unlock();
 }
 
 // 设置收发模式
 void FileThread::setTransMode(TransMode mode)
 {
+    m_mutex.lock();
     transMode = mode;
+    m_mutex.unlock();
 }
 
 // 启动传输
@@ -49,18 +64,21 @@ void FileThread::cancelTransmit()
 // 获取文件大小
 qint64 FileThread::fileSize()
 {
+    QMutexLocker lock(&m_mutex);
     return fSize;
 }
 
 // 获取文件偏移
 qint64 FileThread::filePos()
 {
+    QMutexLocker lock(&m_mutex);
     return fPos;
 }
 
 // 获取传输进度
 char FileThread::progress()
 {
+    QMutexLocker lock(&m_mutex);
     if (fSize == 0) {
         return 0;
     }
@@ -72,8 +90,18 @@ void FileThread::readData(const QByteArray &array)
 {
     m_mutex.lock();
     m_rxbuffer = array;
+    m_status = ReadData;
     m_mutex.unlock();
-    setStatus(ReadData);
+    m_cond.wakeOne();
+}
+
+// 请求线程退出
+void FileThread::stopThread()
+{
+    m_mutex.lock();
+    m_stopping = true;
+    m_mutex.unlock();
+    m_cond.wakeAll();
 }
 
 void FileThread::setStatus(Status status)
@@ -81,7 +109,7 @@ void FileThread::setStatus(Status status)
     m_mutex.lock();
     m_status = status;
     m_mutex.unlock();
-    m_sem.release();
+    m_cond.wakeOne();
 }
 
 // 发送数据
@@ -94,14 +122,25 @@ void FileThread::sendPortData(const QByteArray &array)
 void FileThread::run()
 {
     forever {
-        m_sem.acquire();
         m_mutex.lock();
+        while (m_status == None && !m_stopping) {
+            // 接收模式等待接收数据, 无数据时定时重发 NAK 请求
+            bool active = (transMode == ReceiveMode && m_file != nullptr);
+            bool woke = active ? m_cond.wait(&m_mutex, 500) : m_cond.wait(&m_mutex);
+            if (!woke && !m_stopping) {
+                m_mutex.unlock();
+                handleTimeout();
+                m_mutex.lock();
+            }
+        }
+        if (m_stopping) {
+            m_mutex.unlock();
+            break;
+        }
         Status status = m_status;
         QByteArray array = m_rxbuffer;
         m_status = None;
         m_mutex.unlock();
-
-        QTimer::singleShot(0, &m_timer,SLOT(stop()));
 
         switch (status) {
         case ReadData:
@@ -120,6 +159,20 @@ void FileThread::run()
     }
 }
 
+// 接收模式空闲超时处理, 在工作线程执行
+void FileThread::handleTimeout()
+{
+    if (transMode == ReceiveMode && m_file != nullptr) {
+        if (++m_timeoutCount > 10) {
+            closeFile();
+            transMode = StopMode;
+            emit timeout();
+        } else {
+            xmodem.sendNak();
+        }
+    }
+}
+
 void FileThread::writeFile(const char* buffer, int size)
 {
     m_file->write(buffer, size);
@@ -133,11 +186,15 @@ int FileThread::readFile(char* buffer, int size)
 void FileThread::receivePack_p(const QByteArray &array)
 {
     char result = 0;
+    QMutexLocker lock(&m_mutex);
+    qint64 pos = fPos;
 
     if (transMode == SendMode) { // 发送模式
         switch (protocol) {
         case XModem:
-            result = xmodem.transmit(array[0], fPos);
+            if (!array.isEmpty()) {
+                result = xmodem.transmit(array[0], pos);
+            }
             break;
         default:
             break;
@@ -145,13 +202,16 @@ void FileThread::receivePack_p(const QByteArray &array)
     } else if (transMode == ReceiveMode) { // 接收模式
         switch (protocol) {
         case XModem:
-            result = xmodem.receive(array, fPos);
+            result = xmodem.receive(array, pos);
             break;
         default:
             break;
         }
-        fSize = fPos;
+        m_timeoutCount = 0; // 收到数据则重置超时计数
     }
+    fPos = pos;
+    fSize = fPos;
+    lock.unlock();
     if (result) { // 传输结束
         closeFile();
         transMode = StopMode;
@@ -162,6 +222,7 @@ void FileThread::receivePack_p(const QByteArray &array)
 void FileThread::startTransmit_p()
 {
     bool res;
+    closeFile();
     m_file = new QFile(fileName);
     if (transMode == SendMode) {
         res = m_file->open(QFile::ReadOnly);
@@ -180,7 +241,6 @@ void FileThread::startTransmit_p()
             switch (protocol) {
             case XModem:
                 xmodem.startReceive();
-                QTimer::singleShot(0, &m_timer,SLOT(start()));
                 break;
             default:
                 break;
@@ -191,6 +251,7 @@ void FileThread::startTransmit_p()
         fSize = m_file->size();
         fPos = 0;
     } else {
+        closeFile();
         emit fileError(); // connot open file
     }
 }
@@ -209,19 +270,10 @@ void FileThread::cancelTransmit_p()
     transMode = StopMode;
 }
 
-void FileThread::onTimerUpdate()
-{
-    if (m_timeoutCount++ >= 10) {
-        closeFile();
-        m_timer.stop();
-        emit timeout();
-    } else {
-        startTransmit_p();
-    }
-}
-
 void FileThread::closeFile() {
-    m_file->close();
-    delete m_file;
-    m_file = nullptr;
+    if (m_file != nullptr) {
+        m_file->close();
+        delete m_file;
+        m_file = nullptr;
+    }
 }

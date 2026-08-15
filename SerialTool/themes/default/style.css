@@ -315,3 +315,103 @@ QSlider::handle:horizontal {
   margin: -6px 0px;
   border-radius: 7px;
 }
+
+/* ================= 布局重构配套样式 ================= */
+
+/* 状态栏 */
+QStatusBar {
+  background: #F5F5FF;
+  border-top: 1px solid #D0D0D0;
+}
+
+QStatusBar QLabel {
+  padding: 0 6px;
+  color: #333333;
+}
+
+QStatusBar::item {
+  border: none;
+}
+
+/* 停靠面板（左右双栏）标题栏 */
+QDockWidget::title {
+  background: #E9E9F5;
+  border: 1px solid #C2C7CB;
+  border-radius: 3px;
+  text-align: left;
+  padding: 3px 6px;
+}
+
+QDockWidget::close-button, QDockWidget::float-button {
+  border: none;
+  background: transparent;
+  padding: 1px;
+}
+
+QDockWidget::close-button:hover, QDockWidget::float-button:hover {
+  background: #CCEEFF;
+  border-radius: 2px;
+}
+
+/* tab 化停靠的标签页 */
+QDockWidget::tab {
+  background: #E1E1E1;
+  border: 1px solid #C4C4C3;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+  padding: 2px 8px;
+}
+
+QDockWidget::tab:selected, QDockWidget::tab:hover {
+  background: #fafafa;
+}
+
+/* 主操作按钮：发送 */
+QPushButton#sendButton {
+  background: #2D8CF0;
+  color: white;
+  font-weight: bold;
+  border: 1px solid #1F6FD0;
+  border-radius: 3px;
+  padding: 2px 14px;
+}
+
+QPushButton#sendButton:hover {
+  background: #3E9AFF;
+}
+
+QPushButton#sendButton:pressed {
+  background: #1F6FD0;
+}
+
+QPushButton#sendButton:disabled {
+  background: #B8C4D0;
+  color: #EEEEEE;
+  border-color: #A0AAB4;
+}
+
+/* 工具栏按钮（QAction 渲染为 QToolButton） */
+QToolBar QToolButton {
+  border: 1px solid transparent;
+  border-radius: 3px;
+  padding: 2px;
+}
+
+QToolBar QToolButton:hover {
+  background: #BBE0EE;
+  border-color: #A0C0D8;
+}
+
+QToolBar QToolButton:pressed {
+  background: #CCEEFF;
+}
+
+/* 单选/复选与分组框间距统一 */
+QGroupBox {
+  margin-top: 0.6em;
+  padding-top: 0.3em;
+}
+
+QRadioButton, QCheckBox {
+  spacing: 4px;
+}

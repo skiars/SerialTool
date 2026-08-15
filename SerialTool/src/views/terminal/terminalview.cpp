@@ -7,6 +7,7 @@
 
 TerminalView::TerminalView(QWidget *parent) : AbstractView(parent)
 {
+    m_codecName = "GB-2312";
     QHBoxLayout *layout = new QHBoxLayout(this);
     
     m_term = new QVTerminal(this);
@@ -37,13 +38,17 @@ void TerminalView::loadSettings(QSettings *config)
     //                          "font-size: " + QString::number(fontSize) + "pt;");
 
     // text codec
-    m_term->setTextCodec(config->value("TerminalTextCodec").toString());
+    m_codecName = config->value("TerminalTextCodec").toString();
+    m_term->setTextCodec(m_codecName);
     m_term->setTabWidth(config->value("TerminalTabWidth").toInt());
 }
 
 void TerminalView::sendData(const QString &string)
 {
-    QTextCodec *code = QTextCodec::codecForName("GB-2312");
+    QTextCodec *code = QTextCodec::codecForName(m_codecName.toLocal8Bit());
+    if (code == nullptr) {
+        code = QTextCodec::codecForName("GB-2312");
+    }
     QByteArray array = code->fromUnicode(string);
     emit transmitData(array);
 }

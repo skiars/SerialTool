@@ -46,10 +46,10 @@ void VedioBox::receiveData(const QByteArray &array)
     if (i != 0 && i < len) { // 匹配到内容
         m_array = m_array.mid(i); // 保留余下内容
     }
-    // 检查是否接收到一幅图像
-    if ((quint8)m_array.data()[0] == 0x0B
-        && (quint8)m_array.data()[1] == 0xBB
-        && m_array.size() >= 602) {
+    // 检查是否接收到一幅图像(长度需足够)
+    if (m_array.size() >= 602
+        && (quint8)m_array.data()[0] == 0x0B
+        && (quint8)m_array.data()[1] == 0xBB) {
         QPixmap pixmap(80, 60);
         QPainter painter(&pixmap);
         

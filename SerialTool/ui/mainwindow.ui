@@ -7,8 +7,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>600</width>
-    <height>426</height>
+    <width>1120</width>
+    <height>700</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -60,7 +60,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>600</width>
+     <width>1120</width>
      <height>23</height>
     </rect>
    </property>
@@ -82,19 +82,24 @@
    </widget>
    <widget class="QMenu" name="menu_3">
     <property name="title">
-     <string>Edit</string>
+     <string>Connection</string>
     </property>
     <addaction name="portSwitchAction"/>
     <addaction name="portRunAction"/>
-    <addaction name="clearAction"/>
     <addaction name="separator"/>
     <addaction name="portSetAction"/>
+    <addaction name="actionReset"/>
+   </widget>
+   <widget class="QMenu" name="menuEdit">
+    <property name="title">
+     <string>Edit</string>
+    </property>
+    <addaction name="clearAction"/>
    </widget>
    <widget class="QMenu" name="menu_4">
     <property name="title">
      <string>View</string>
     </property>
-    <addaction name="separator"/>
     <addaction name="actionVisibleToolbar"/>
     <addaction name="actionVisibleStatusBar"/>
     <addaction name="separator"/>
@@ -110,6 +115,7 @@
    </widget>
    <addaction name="menu"/>
    <addaction name="menu_3"/>
+   <addaction name="menuEdit"/>
    <addaction name="menu_4"/>
    <addaction name="menu_2"/>
    <addaction name="menu_5"/>

@@ -26,7 +26,6 @@ TextTRView::TextTRView(QWidget *parent) :
     QObject::connect(m_resendTimer, &QTimer::timeout, this, &TextTRView::sendData);
     connect(ui->resendIntervalBox, SIGNAL(valueChanged(int)), this, SLOT(setResendInterval(int)));
     connect(ui->historyBox, SIGNAL(activated(const QString &)), this, SLOT(onHistoryBoxChanged(const QString &)));
-    connect(ui->wrapLineBox, SIGNAL(stateChanged(int)), this, SLOT(onWrapBoxChanged(int)));
 }
 
 TextTRView::~TextTRView()

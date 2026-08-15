@@ -30,21 +30,34 @@ ViewManager::ViewManager(QString *docPath, QMainWindow *window) :
     m_views->append(loadExtensions("extensions"));
     delete window->takeCentralWidget();
     window->setDockNestingEnabled(true);
-    int index = 0;
-    QDockWidget *align = nullptr;
+
+    // 左右双栏布局：TextTR 主视图停靠左侧，其余视图 Tab 化停靠右侧
+    QDockWidget *leftDock = nullptr;
+    QDockWidget *rightAlign = nullptr;
     for (AbstractView *view : *m_views) {
         QDockWidget *dock = new QDockWidget(view->title(), window);
         dock->setObjectName(view->iid());
         dock->setFeatures(QDockWidget::AllDockWidgetFeatures);
         dock->setWidget(view);
-        if (index++) {
-            window->tabifyDockWidget(align, dock);
-        } else {
+        if (view->iid() == "text_tx/rx") {
             window->addDockWidget(Qt::LeftDockWidgetArea, dock);
-            align = dock;
+            leftDock = dock;
+        } else {
+            if (rightAlign == nullptr) {
+                window->addDockWidget(Qt::RightDockWidgetArea, dock);
+                rightAlign = dock;
+            } else {
+                window->tabifyDockWidget(rightAlign, dock);
+            }
         }
         connect(view, &AbstractView::transmitData, this, &ViewManager::transmitData);
         connect(view, &AbstractView::sendMessage, this, &ViewManager::dispatchMessage);
+    }
+    // 首次布局默认 60/40 分栏（后续运行由 restoreState 恢复用户自定义）
+    if (leftDock && rightAlign) {
+        int total = window->width() - 40;
+        window->resizeDocks({leftDock, rightAlign},
+                            {total * 3 / 5, total * 2 / 5}, Qt::Horizontal);
     }
 }
 
@@ -97,10 +110,9 @@ void ViewManager::dispatchMessage(const QString &receiver, const QByteArray &mes
 
 void ViewManager::receiveData(const QByteArray &array)
 {
+    // 所有视图都应收到数据, 否则 Tab 化停靠时不可见的视图会丢失数据
     for (AbstractView *view : *m_views) {
-        if (view->isVisible()) {
-            view->receiveData(array);
-        }
+        view->receiveData(array);
     }
 }
 

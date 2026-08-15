@@ -47,9 +47,14 @@ void PortManager::saveConfig(QSettings *config)
 
 void PortManager::loadSettings(QSettings *config)
 {
+    // 记录并退出当前分组, 使端口配置可以在各自分组下正确读写,
+    // 完成后恢复原分组, 不再依赖调用方的分组状态
+    QString group = config->group();
     QString type = config->value("PortType").toString();
 
-    m_config->endGroup(); // Group "Settings"
+    if (!group.isEmpty()) {
+        config->endGroup();
+    }
     for (AbstractPortFactory *factory : *m_portFactorys) {
         if (factory->type() == type && type != m_currentPortType) {
             m_currentPortType = type;
@@ -64,7 +69,9 @@ void PortManager::loadSettings(QSettings *config)
             break;
         }
     }
-    m_config->beginGroup("Settings");
+    if (!group.isEmpty()) {
+        config->beginGroup(group);
+    }
 }
 
 bool PortManager::open()

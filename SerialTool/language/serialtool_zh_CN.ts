@@ -159,6 +159,26 @@
         <translation>编辑</translation>
     </message>
     <message>
+        <location filename="../ui/mainwindow.ui" line="85"/>
+        <source>Connection</source>
+        <translation>连接</translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwindow.ui" line="92"/>
+        <source>Reset</source>
+        <translation>重置</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="39"/>
+        <source>Elapsed: 00:00:00</source>
+        <translation>连接时长: 00:00:00</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="249"/>
+        <source>Elapsed: %1:%2:%3</source>
+        <translation>连接时长: %1:%2:%3</translation>
+    </message>
+    <message>
         <location filename="../ui/mainwindow.ui" line="108"/>
         <source>View</source>
         <translation>视图</translation>

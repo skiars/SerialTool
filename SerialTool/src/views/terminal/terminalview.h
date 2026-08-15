@@ -25,6 +25,7 @@ private slots:
 
 private:
     QVTerminal *m_term;
+    QString m_codecName;
 };
 
 #endif // TERMINALVIEW_H

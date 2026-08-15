@@ -58,6 +58,14 @@ void XModemClass::startReceive()
     thread->sendPortData(arr);
 }
 
+// 重发 NAK 请求(接收空闲超时时调用)
+void XModemClass::sendNak()
+{
+    QByteArray arr;
+    arr.append(NAK);
+    thread->sendPortData(arr);
+}
+
 // 取消传输
 void XModemClass::cancelTrans()
 {

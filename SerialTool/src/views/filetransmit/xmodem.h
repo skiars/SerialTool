@@ -17,6 +17,7 @@ public :
     int receive(const QByteArray &arr, qint64 &bytes);
     void startTransmit();
     void startReceive();
+    void sendNak();
     void cancelTrans();
 
 private:
