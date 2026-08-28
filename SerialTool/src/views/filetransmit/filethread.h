@@ -5,9 +5,8 @@
 #include <QColor>
 #include <QFile>
 #include <QMutex>
-#include <QSemaphore>
 #include <QWaitCondition>
-#include <QTimer>
+#include "xmodem.h"
 
 class FileThread : public QThread
 {
@@ -26,8 +25,16 @@ public:
         ReceiveMode
     };
 
+    enum Status {
+        None = 0,
+        StartTrans,
+        CancelTrans,
+        ReadData
+    };
+
 public :
     FileThread();
+    ~FileThread();
     void setFileName(const QString &fileName);
     void setProtocol(Protocol mode);
     void setTransMode(TransMode mode);
@@ -42,6 +49,7 @@ public :
 
 public slots:
     void readData(const QByteArray &array);
+    void stopThread();
 
 signals:
     void sendData(const QByteArray &);
@@ -52,18 +60,9 @@ signals:
 protected:
     void run();
 
-private slots:
-    void onTimerUpdate();
-
 private:
-    enum Status {
-        None = 0,
-        StartTrans,
-        CancelTrans,
-        ReadData
-    };
-
     void setStatus(Status status);
+    void handleTimeout();
     void startTransmit_p();
     void receivePack_p(const QByteArray &array);
     void cancelTransmit_p();
@@ -74,14 +73,15 @@ private:
     TransMode transMode;
     qint64 fSize, fPos;
     QMutex m_mutex;
-    QSemaphore m_sem;
+    QWaitCondition m_cond;
     QByteArray receiveArray; // 接收缓冲区
     QString fileName;
     QFile *m_file;
-    Status m_status = None;
+    Status m_status;
     QByteArray m_rxbuffer;
-    QTimer m_timer;
     int m_timeoutCount;
+    bool m_stopping;
+    XModemClass m_xmodem;
 };
 
 #endif // FILETHREAD_H

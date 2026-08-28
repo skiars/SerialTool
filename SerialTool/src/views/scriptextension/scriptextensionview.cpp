@@ -106,7 +106,7 @@ QString ScriptExtensionView::openFileFilter()
 
 QString ScriptExtensionView::saveFileFilter()
 {
-    return m_script->evaluate("view.openFileFilter()").toString();
+    return m_script->evaluate("view.saveFileFilter()").toString();
 }
 
 void ScriptExtensionView::saveFile(const QString &fileName, const QString &filter)

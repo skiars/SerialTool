@@ -39,7 +39,7 @@ void ValueDisplay::receiveData(const QByteArray &array)
         m_array = m_array.mid(postion);
         QStringList list(str.split(QRegExp("\\s+"), QString::SkipEmptyParts));
 
-        if (list.at(0).toLower() == "vdisp" && list.size() > 1) {
+        if (list.size() > 2 && list.at(0).toLower() == "vdisp") {
             QString id = list.at(1);
             QString value = list.at(2);
             QString additional;

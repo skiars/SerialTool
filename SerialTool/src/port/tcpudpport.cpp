@@ -3,6 +3,8 @@
 #include <QtNetwork>
 #include <QMessageBox>
 #include <QUdpSocket>
+#include <QEventLoop>
+#include <QTimer>
 
 TcpUdpPort::TcpUdpPort(QWidget *parent) :
     AbstractPort(parent),
@@ -28,6 +30,7 @@ TcpUdpPort::~TcpUdpPort()
     delete ui;
     delete tcpClient;
     delete tcpServer;
+    delete udpSocket;
 }
 
 void TcpUdpPort::loadConfig(QSettings *config)
@@ -111,9 +114,19 @@ bool TcpUdpPort::openTcpClient()
     }
     tcpClient = new QTcpSocket();
     tcpClient->connectToHost(hostAddress(), ui->portEdit->text().toInt());
-    if (!tcpClient->waitForConnected(1000)) {
-        tcpClient->close();
-        delete tcpClient;
+
+    // 使用事件循环异步等待连接结果, 避免 waitForConnected 阻塞 GUI 主线程
+    QEventLoop loop;
+    bool connected = false;
+    connect(tcpClient, &QTcpSocket::connected, &loop, [&]() { connected = true; loop.quit(); });
+    connect(tcpClient, static_cast<void (QTcpSocket::*)(QAbstractSocket::SocketError)>(&QTcpSocket::error),
+            &loop, [&]() { loop.quit(); });
+    QTimer::singleShot(3000, &loop, &QEventLoop::quit); // 3 秒超时
+    loop.exec();
+
+    if (!connected) {
+        tcpClient->abort();
+        tcpClient->deleteLater();
         tcpClient = NULL;
         QMessageBox err(QMessageBox::Critical,
             tr("Error"),
@@ -143,7 +156,6 @@ bool TcpUdpPort::openTcpServer()
            tcpServer->close();
            delete tcpServer;
            tcpServer = NULL;
-           delete tcpServer;
            QMessageBox err(QMessageBox::Critical,
                tr("Error"),
                tr("Can not create server!\n"
@@ -167,6 +179,8 @@ bool TcpUdpPort::openUdpScoket()
     }
     udpSocket = new QUdpSocket();
     if (udpSocket->bind(ui->portEdit->text().toInt()) == false) {
+        delete udpSocket;
+        udpSocket = nullptr;
         QMessageBox err(QMessageBox::Critical,
             tr("Error"),
             tr("The port is occupied, Please re-enter it."),
@@ -255,13 +269,12 @@ void TcpUdpPort::newConnectSlot()
 
 void TcpUdpPort::readUdpDatagrams()
 {
-    QByteArray datagram;
-
-    do {
+    while (udpSocket->hasPendingDatagrams()) {
+        QByteArray datagram;
         datagram.resize(udpSocket->pendingDatagramSize());
         udpSocket->readDatagram(datagram.data(), datagram.size());
-    } while (udpSocket->hasPendingDatagrams());
-    readArray.append(datagram);
+        readArray.append(datagram);
+    }
 }
 
 void TcpUdpPort::readMessage()

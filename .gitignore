@@ -249,3 +249,17 @@ ModelManifest.xml
 
 .qmake.stash
 */.vscode/
+
+# Qt / MinGW 构建产物
+Makefile
+Makefile.*
+object_script.*
+.qmake.cache
+*.o
+ui_*.h
+moc_*.cpp
+qrc_*.cpp
+moc_predefs.h
+
+# 运行时生成
+config.ini

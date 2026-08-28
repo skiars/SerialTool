@@ -36,12 +36,14 @@ MainWindow::MainWindow(QWidget *parent) :
     m_rxCntLabel = new QLabel("RX: 0Bytes", this);
     m_txCntLabel = new QLabel("TX: 0Bytes", this);
     m_portInfoLabel = new QLabel("", this);
+    m_elapsedLabel = new QLabel(tr("Elapsed: 00:00:00"), this);
     m_rxCntLabel->setMinimumWidth(120);
     m_txCntLabel->setMinimumWidth(120);
     m_portInfoLabel->setMinimumWidth(120);
     ui->statusBar->addWidget(m_portInfoLabel);
     ui->statusBar->addWidget(m_rxCntLabel);
     ui->statusBar->addWidget(m_txCntLabel);
+    ui->statusBar->addPermanentWidget(m_elapsedLabel); // 连接时长显示在右侧
 
     loadConfig(); // 加载配置
 
@@ -73,6 +75,7 @@ MainWindow::~MainWindow()
     delete m_rxCntLabel;
     delete m_txCntLabel;
     delete m_portInfoLabel;
+    delete m_elapsedLabel;
 }
 
 // 关闭事件
@@ -114,9 +117,10 @@ void MainWindow::setStyleSheet(const QString &string)
 {
     // 样式表
     QFile qss("themes/" + string + "/style.css");
-    qss.open(QFile::ReadOnly);
-    qApp->setStyleSheet(qss.readAll());
-    qss.close();
+    if (qss.open(QFile::ReadOnly)) {
+        qApp->setStyleSheet(qss.readAll());
+        qss.close();
+    }
 }
 
 // 读取系统设置
@@ -239,6 +243,16 @@ void MainWindow::onSecTimerTimeout()
     m_rxCntLabel->setText(str);
     str = "TX: " + QString::number(m_controller->transmitCount()) + "Bytes";
     m_txCntLabel->setText(str);
+
+    // 更新连接时长
+    if (m_elapsedRunning) {
+        qint64 secs = m_elapsedTimer.elapsed() / 1000;
+        str = QString(tr("Elapsed: %1:%2:%3"))
+                .arg(secs / 3600, 2, 10, QChar('0'))
+                .arg((secs / 60) % 60, 2, 10, QChar('0'))
+                .arg(secs % 60, 2, 10, QChar('0'));
+        m_elapsedLabel->setText(str);
+    }
 }
 
 // 打开端口
@@ -252,6 +266,9 @@ void MainWindow::openPort()
         m_controller->setEnabled(m_runFlag);
         dispPortStatus(); // 更新端口状态显示
         m_port->setAutoOpen(1);
+
+        m_elapsedTimer.start(); // 开始记录连接时长
+        m_elapsedRunning = true;
     }
 }
 
@@ -267,19 +284,26 @@ void MainWindow::closePort()
     m_controller->setEnabled(false);
     dispPortStatus(); // 更新端口状态显示
     m_port->setAutoOpen(0);
+
+    m_elapsedRunning = false; // 停止连接时长
+    m_elapsedLabel->setText(tr("Elapsed: 00:00:00"));
 }
 
 void MainWindow::error()
 {
+    // 与 closePort() 相同的 UI/端口重置, 但保留 autoOpen 以便设备重现时自动重连
     if (m_port->isOpen()) {
         m_port->close();
     }
-//    QIcon icon(":/SerialTool/images/connect.ico");
-//    ui->portSwitchAction->setIcon(icon);
-//    ui->portSwitchAction->setText(tr("Open Port"));
-//    ui->portRunAction->setEnabled(false);
+    QIcon icon(":/SerialTool/images/connect.ico");
+    ui->portSwitchAction->setIcon(icon);
+    ui->portSwitchAction->setText(tr("Open Port"));
+    ui->portRunAction->setEnabled(false);
     m_controller->setEnabled(false);
-    dispPortStatus(); // 更新端口状态显示
+    dispPortStatus();
+
+    m_elapsedRunning = false;
+    m_elapsedLabel->setText(tr("Elapsed: 00:00:00"));
 }
 
 // 打开串口槽函数

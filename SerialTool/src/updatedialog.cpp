@@ -74,7 +74,8 @@ void UpdateDialog::checkUpdateFinished(QNetworkReply *reply)
         for(int i = 0; i < array.size(); ++i) {
             QJsonObject object = array.at(i).toObject();
 
-            if (!object.isEmpty() && object.value("name").toString().indexOf(".exe", 0, Qt::CaseInsensitive)) {
+            if (!object.isEmpty()
+                && object.value("name").toString().contains(".exe", Qt::CaseInsensitive)) {
                 m_downloadUrl = object.value("browser_download_url").toString();
                 updatedDate = object.value("updated_at").toString().split('T').at(0);
             }

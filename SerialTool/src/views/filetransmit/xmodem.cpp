@@ -1,4 +1,6 @@
 #include "xmodem.h"
+#include "filethread.h"
+#include <cstring>
 
 // 状态机使用的字符
 #define NONE 0x00 // 空闲状态
@@ -18,13 +20,12 @@ enum {
 #define CAN 0x18
 
 XModemClass::XModemClass(FileThread *thread)
+    : transMode(false)
+    , status(None)
+    , lastCount(0)
+    , thread(thread)
 {
-    this->thread = thread;
-}
-
-void XModemClass::setThread(FileThread *thread)
-{
-    this->thread = thread;
+    memset(frame, 0, sizeof(frame));
 }
 
 // 计算校验值
@@ -43,7 +44,10 @@ char XModemClass::calcVerifi(const char *frame)
 void XModemClass::startTransmit()
 {
     status = None;
+    lastCount = 0;
     transMode = true;
+    rxBuf.clear();
+    memset(frame, 0, sizeof(frame));
 }
 
 // 开始接收
@@ -52,8 +56,18 @@ void XModemClass::startReceive()
     QByteArray arr;
     rxBuf.clear();
     lastCount = 0;
+    status = None;
     transMode = false;
+    memset(frame, 0, sizeof(frame));
 
+    arr.append(NAK);
+    thread->sendPortData(arr);
+}
+
+// 重发 NAK 请求(接收空闲超时时调用)
+void XModemClass::sendNak()
+{
+    QByteArray arr;
     arr.append(NAK);
     thread->sendPortData(arr);
 }
@@ -141,14 +155,14 @@ int XModemClass::receive(const QByteArray &arr, qint64 &bytes)
     rxBuf.append(arr);
     size = rxBuf.size();
     pdata = rxBuf.data();
-    if (pdata[0] == EOT) { // 传输结束
+    if (size > 0 && pdata[0] == EOT) { // 传输结束
         tbuf.append(ACK);
         thread->sendPortData(tbuf); // 发送应答标志
         return 1;
     }
     // 寻找SOH字符
     for (pos = 0; pos < size && pdata[pos] != SOH; ++pos);
-    if (size - pos < 131) { // 接收区缓冲长度小于132bytes说明不是完整的帧
+    if (size - pos < 132) { // 接收区缓冲长度小于132bytes说明不是完整的帧
         return 0;
     }
     pdata += pos; // 获取帧数据
@@ -156,9 +170,11 @@ int XModemClass::receive(const QByteArray &arr, qint64 &bytes)
     if (calcVerifi(pdata) == pdata[131] // 检查校验字节
         && pdata[1] == ~pdata[2] // 帧计数校验
         && ((char)(lastCount + 1) == pdata[1] || lastCount == pdata[1])) { // 帧数是否正常
-        thread->writeFile(pdata + 3, 128);
-        bytes += 128;
-        lastCount = pdata[1];
+        if (lastCount != pdata[1]) { // 新帧才写入, 重传帧仅应答
+            thread->writeFile(pdata + 3, 128);
+            bytes += 128;
+            lastCount = pdata[1];
+        }
         tbuf.append(ACK);
         thread->sendPortData(tbuf); // 发送应答标志
     } else {

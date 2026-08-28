@@ -4,6 +4,7 @@
 #include <QtWidgets/QMainWindow>
 #include <QMessageBox>
 #include <QTimer>
+#include <QElapsedTimer>
 
 namespace Ui {
 class MainWindow;
@@ -54,7 +55,9 @@ private:
     QTimer m_timer;   // 秒定时器
     QSettings *m_config;
     bool m_runFlag = true;
-    QLabel *m_rxCntLabel, *m_txCntLabel, *m_portInfoLabel;
+    QLabel *m_rxCntLabel, *m_txCntLabel, *m_portInfoLabel, *m_elapsedLabel;
+    QElapsedTimer m_elapsedTimer;
+    bool m_elapsedRunning = false;
     QVector<QTranslator*> m_translator;
     PortManager *m_port;
     Controller *m_controller;
