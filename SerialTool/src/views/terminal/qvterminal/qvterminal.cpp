@@ -308,7 +308,7 @@ void QVTerminal::appendString(QByteArray array)
         }
     }else{
         QTextCodec *code = QTextCodec::codecForName(_textCodec.toLatin1());
-        QString lineStr = code->toUnicode(array);
+        QString lineStr = code ? code->toUnicode(array) : QString::fromUtf8(array);
 
         foreach (QChar c, lineStr) {
             QVTChar termChar(c, _curentFormat);

@@ -6,6 +6,7 @@
 #include <QFile>
 #include <QMutex>
 #include <QWaitCondition>
+#include "xmodem.h"
 
 class FileThread : public QThread
 {
@@ -80,6 +81,7 @@ private:
     QByteArray m_rxbuffer;
     int m_timeoutCount;
     bool m_stopping;
+    XModemClass m_xmodem;
 };
 
 #endif // FILETHREAD_H

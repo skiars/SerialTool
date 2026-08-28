@@ -30,6 +30,7 @@ TcpUdpPort::~TcpUdpPort()
     delete ui;
     delete tcpClient;
     delete tcpServer;
+    delete udpSocket;
 }
 
 void TcpUdpPort::loadConfig(QSettings *config)
@@ -178,6 +179,8 @@ bool TcpUdpPort::openUdpScoket()
     }
     udpSocket = new QUdpSocket();
     if (udpSocket->bind(ui->portEdit->text().toInt()) == false) {
+        delete udpSocket;
+        udpSocket = nullptr;
         QMessageBox err(QMessageBox::Critical,
             tr("Error"),
             tr("The port is occupied, Please re-enter it."),

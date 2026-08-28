@@ -218,7 +218,11 @@ void TextTRView::sendData()
             array = ui->textEditTx->text().toLatin1();
         }else{
             QTextCodec *code = QTextCodec::codecForName(m_codecName);
-            array = code->fromUnicode(ui->textEditTx->text());
+            if (code == nullptr) {
+                array = ui->textEditTx->text().toUtf8();
+            } else {
+                array = code->fromUnicode(ui->textEditTx->text());
+            }
         }
     } else {
         array = QByteArray::fromHex(ui->textEditTx->text().toLatin1());
@@ -339,7 +343,7 @@ void TextTRView::arrayToUTF8(QString &str, const QByteArray &array)
     QByteArray cutArray = m_asciiBuf->mid(lastIndex);
     m_asciiBuf->remove(lastIndex, cut);
     QTextCodec *code = QTextCodec::codecForName(m_codecName);
-    str = code->toUnicode(*m_asciiBuf);
+    str = code ? code->toUnicode(*m_asciiBuf) : QString::fromUtf8(*m_asciiBuf);
     m_asciiBuf->clear();
     m_asciiBuf->append(cutArray);
 }
@@ -359,12 +363,15 @@ void TextTRView::arrayToDualByte(QString &str, const QByteArray &array)
         char ch = m_asciiBuf->at(lastIndex);
         m_asciiBuf->remove(lastIndex, 1);
         QTextCodec *code = QTextCodec::codecForName(m_codecName);
-        str = code->toUnicode(*m_asciiBuf);
+        // codecForName 可能失败返回 nullptr; GB2312 等双字节编码无安全 fallback,
+        // 按 Latin1 逐字节映射可保证不丢字节
+        str = code ? code->toUnicode(*m_asciiBuf) : QString::fromLatin1(*m_asciiBuf);
         m_asciiBuf->clear();
         m_asciiBuf->append(ch);
     } else {
         QTextCodec *code = QTextCodec::codecForName(m_codecName);
-        str = code->toUnicode(*m_asciiBuf);
+        // 同上
+        str = code ? code->toUnicode(*m_asciiBuf) : QString::fromLatin1(*m_asciiBuf);
         m_asciiBuf->clear();
     }
 }
@@ -382,12 +389,12 @@ void TextTRView::arrayToUTF16(QString &str, const QByteArray &array)
         char ch = m_asciiBuf->at(lastIndex);
         m_asciiBuf->remove(lastIndex, 1);
         QTextCodec *code = QTextCodec::codecForName(m_codecName);
-        str = code->toUnicode(*m_asciiBuf);
+        str = code ? code->toUnicode(*m_asciiBuf) : QString::fromUtf8(*m_asciiBuf);
         m_asciiBuf->clear();
         m_asciiBuf->append(ch);
     } else {
         QTextCodec *code = QTextCodec::codecForName(m_codecName);
-        str = code->toUnicode(*m_asciiBuf);
+        str = code ? code->toUnicode(*m_asciiBuf) : QString::fromUtf8(*m_asciiBuf);
         m_asciiBuf->clear();
     }
 }
@@ -426,8 +433,8 @@ void TextTRView::arrayToString(QString &str, const QByteArray &array)
 
 void TextTRView::appendTimeStamp(const QString &string)
 {
-    QRegularExpression re(".+?(" + m_frameSeparator + "|$)");
-    QRegularExpressionMatch match = re.match(string);
+    QString escapedSeparator = QRegularExpression::escape(m_frameSeparator);
+    QRegularExpression re(".+?(" + escapedSeparator + "|$)");
     QRegularExpressionMatchIterator it = re.globalMatch(string);
     QString curTime = QDateTime::currentDateTime()
             .toString(m_timeStampFormat);
@@ -437,7 +444,7 @@ void TextTRView::appendTimeStamp(const QString &string)
             ui->textEditRx->append(curTime);
         }
         m_nextFrame = span.indexOf(
-                    QRegularExpression(m_frameSeparator + "$")) != -1;
+                    QRegularExpression(escapedSeparator + "$")) != -1;
         if (m_nextFrame) {
             span.chop(m_frameSeparator.length());
             span.append('\n');

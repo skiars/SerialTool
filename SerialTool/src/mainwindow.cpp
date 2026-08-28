@@ -291,17 +291,18 @@ void MainWindow::closePort()
 
 void MainWindow::error()
 {
+    // 与 closePort() 相同的 UI/端口重置, 但保留 autoOpen 以便设备重现时自动重连
     if (m_port->isOpen()) {
         m_port->close();
     }
-//    QIcon icon(":/SerialTool/images/connect.ico");
-//    ui->portSwitchAction->setIcon(icon);
-//    ui->portSwitchAction->setText(tr("Open Port"));
-//    ui->portRunAction->setEnabled(false);
+    QIcon icon(":/SerialTool/images/connect.ico");
+    ui->portSwitchAction->setIcon(icon);
+    ui->portSwitchAction->setText(tr("Open Port"));
+    ui->portRunAction->setEnabled(false);
     m_controller->setEnabled(false);
-    dispPortStatus(); // 更新端口状态显示
+    dispPortStatus();
 
-    m_elapsedRunning = false; // 连接异常，停止计时
+    m_elapsedRunning = false;
     m_elapsedLabel->setText(tr("Elapsed: 00:00:00"));
 }
 

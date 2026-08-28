@@ -3,8 +3,6 @@
 #include <QMutexLocker>
 #include <QDebug>
 
-static XModemClass xmodem;
-
 FileThread::FileThread() :
     protocol(XModem),
     transMode(StopMode),
@@ -13,9 +11,9 @@ FileThread::FileThread() :
     m_file(nullptr),
     m_status(None),
     m_timeoutCount(0),
-    m_stopping(false)
+    m_stopping(false),
+    m_xmodem(this)
 {
-    xmodem.setThread(this);
     start();
 }
 
@@ -168,7 +166,7 @@ void FileThread::handleTimeout()
             transMode = StopMode;
             emit timeout();
         } else {
-            xmodem.sendNak();
+            m_xmodem.sendNak();
         }
     }
 }
@@ -193,7 +191,7 @@ void FileThread::receivePack_p(const QByteArray &array)
         switch (protocol) {
         case XModem:
             if (!array.isEmpty()) {
-                result = xmodem.transmit(array[0], pos);
+                result = m_xmodem.transmit(array[0], pos);
             }
             break;
         default:
@@ -202,7 +200,7 @@ void FileThread::receivePack_p(const QByteArray &array)
     } else if (transMode == ReceiveMode) { // 接收模式
         switch (protocol) {
         case XModem:
-            result = xmodem.receive(array, pos);
+            result = m_xmodem.receive(array, pos);
             break;
         default:
             break;
@@ -229,7 +227,7 @@ void FileThread::startTransmit_p()
         if (res) {
             switch (protocol) {
             case XModem:
-                xmodem.startTransmit();
+                m_xmodem.startTransmit();
                 break;
             default:
                 break;
@@ -240,7 +238,7 @@ void FileThread::startTransmit_p()
         if (res) {
             switch (protocol) {
             case XModem:
-                xmodem.startReceive();
+                m_xmodem.startReceive();
                 break;
             default:
                 break;
@@ -261,7 +259,7 @@ void FileThread::cancelTransmit_p()
 {
     switch (protocol) {
     case XModem:
-        xmodem.cancelTrans();
+        m_xmodem.cancelTrans();
         break;
     default:
         break;
